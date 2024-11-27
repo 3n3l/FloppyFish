@@ -1,0 +1,17 @@
+# This is the only editorconfig we need
+root = true
+
+# Unix-style newlines
+[*]
+charset = utf-8
+end_of_line = lf
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Use spaces as indentation
+[Makefile]
+indent_style = tab
+
+[*.{c,h,cpp,hpp}]
+indent_style = space
+indent_size = 4
