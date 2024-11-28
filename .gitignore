@@ -52,3 +52,6 @@ FloppyFish
 FloppyFish_autogen/
 ui_mainwindow.h
 .cache/
+
+# Ignore Qt folder
+.qt
