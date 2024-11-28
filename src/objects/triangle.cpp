@@ -26,8 +26,8 @@ void Triangle::init() {
     _program = glCreateProgram();
 
     // Compile shader.
-    GLuint vs = Utils::compileShader(GL_VERTEX_SHADER, ":/src/shaders/triangle.vs.glsl");
-    GLuint fs = Utils::compileShader(GL_FRAGMENT_SHADER, ":/src/shaders/triangle.fs.glsl");
+    GLuint vs = Utils::compileShader(GL_VERTEX_SHADER, "src/shaders/triangle.vs.glsl");
+    GLuint fs = Utils::compileShader(GL_FRAGMENT_SHADER, "src/shaders/triangle.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);

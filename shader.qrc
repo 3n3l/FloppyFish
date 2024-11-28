@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>src/shaders/triangle.fs.glsl</file>
-        <file>src/shaders/triangle.vs.glsl</file>
-    </qresource>
-</RCC>
