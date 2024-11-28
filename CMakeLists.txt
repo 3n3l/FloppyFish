@@ -10,46 +10,50 @@ project("Floppy Fish" C CXX)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++23")
 
-# Required libraries
-find_package(Qt6OpenGL 6.7.3 REQUIRED)
+# Required libraries.
+find_package(OpenGL REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets OpenGL)
 
+# Create a compile_commands.json.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "1")
 
 # Process resource files.
 # qt6_add_resources (ResourceSources images.qrc shader.qrc)
+qt6_add_resources (ResourceSources shader.qrc)
 
 # Optional libraries.
 find_package(GTA QUIET)
 
-# Utility library.
-add_subdirectory(glbase)
-
 # Project files.
 add_executable(FloppyFish
-    main.cpp
+    src/main.cpp
     ${ResourceSources}
-    # image/image.cpp
-    # image/image.h
-    # gui/mainwindow.ui
-    gui/mainwindow.cpp
-    gui/mainwindow.hpp
-    gui/config.cpp
-    gui/config.h
+    src/objects/triangle.cpp
+    src/objects/triangle.h
+    src/gui/mainwindow.cpp
+    src/gui/mainwindow.h
+    src/config/config.cpp
+    src/config/config.h
+    src/utils/utils.cpp
+    src/utils/utils.h
 
-    # shader/skybox.vs.glsl
-    # shader/skybox.fs.glsl
+    src/shaders/triangle.vs.glsl
+    src/shaders/triangle.fs.glsl
 )
 
-include_directories(${CMAKE_SOURCE_DIR}/glbase ${OPENGL_INCLUDE_DIR})
+# Libraries.
+add_definitions(-DGLEW_STATIC)
+add_subdirectory(lib/assimp EXCLUDE_FROM_ALL)
+add_subdirectory(lib/glm EXCLUDE_FROM_ALL)
 
-# Build with correct opengl lib.
+# Build with correct OpenGL library.
 if(WIN32 OR CYGWIN)
-        target_link_libraries(FloppyFish opengl32 libglbase Qt::OpenGL ${OPENGL_gl_LIBRARY})
+        target_link_libraries(FloppyFish opengl32 Qt::Core Qt::Widgets Qt::OpenGL glm)
 elseif(APPLE)
-        target_link_libraries(FloppyFish libglbase Qt::OpenGL ${OPENGL_gl_LIBRARY})
+        target_link_libraries(FloppyFish Qt::Core Qt::Widgets Qt::OpenGL glm)
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework OpenGL")
 else()
-        target_link_libraries(FloppyFish GL libglbase Qt::OpenGL ${OPENGL_gl_LIBRARY})
+        target_link_libraries(FloppyFish GL Qt::Core Qt::Widgets Qt::OpenGL glm)
 endif()
 
 if(GTA_FOUND)
@@ -58,7 +62,7 @@ if(GTA_FOUND)
         target_link_libraries(FloppyFish ${GTA_LIBRARIES})
 endif()
 
-# copy images
+# Copy images.
 # add_custom_command(TARGET FloppyFish POST_BUILD
 #                    COMMAND ${CMAKE_COMMAND} -E copy_directory
 #                        ${CMAKE_SOURCE_DIR}/images $<TARGET_FILE_DIR:FloppyFish>/images)
