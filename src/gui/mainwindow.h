@@ -63,18 +63,6 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions {
      */
     virtual void paintGL() override;
 
-    /**
-     * @brief mousePressEvent automatically called whenever the mouse is moved
-     * @param event the QMouseEvent containing all relevant data
-     */
-    virtual void mouseMoveEvent(QMouseEvent* event) override;
-
-    /**
-     * @brief mousePressEvent automatically called whenever the mouse wheel is used
-     * @param event the QWheelEvent containing all relevant data
-     */
-    virtual void wheelEvent(QWheelEvent* event) override;
-
    protected:
     /**
      * @brief mousePressEvent automatically called whenever the mouse wheel is used

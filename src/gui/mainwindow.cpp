@@ -81,7 +81,6 @@ void GLMainWindow::paintGL() {
     glClearColor(0.5f, 0.63f, 0.74f, 1.0f);
 
     // Calculate projection matrix from current resolution, this allows for resizing the window without distortion.
-    // TODO: reimplement camera logic.
     const float fovy = glm::radians(60.0f);
     const float aspect = float(Config::windowWidth) / float(Config::windowHeight);
     glm::mat4 projectionMatrix = glm::perspective(fovy, aspect, 0.1f, 100.0f);
@@ -126,12 +125,4 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
     else if (event->key() == Qt::Key_Escape || event->key() == Qt::Key_Q) {
         close();
     }
-}
-
-void GLMainWindow::mouseMoveEvent(QMouseEvent *event) {
-    // TODO: reimplement camera logic.
-}
-
-void GLMainWindow::wheelEvent(QWheelEvent *event) {
-    // TODO: reimplement camera logic.
 }
