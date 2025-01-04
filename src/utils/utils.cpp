@@ -1,3 +1,5 @@
+#include "utils.h"
+
 #include <OpenGL/gl.h>
 #include <OpenGL/gltypes.h>
 
@@ -103,7 +105,7 @@ GLuint linkProgram(GLuint program) {
 }
 
 GLuint loadTexture(std::string path) {
-    Image image(path);
+    ImageTexture image(path);
 
     GLuint textureID;
 
@@ -112,12 +114,14 @@ GLuint loadTexture(std::string path) {
     // Generate and bind texture.
     // Allocate one texture, and assign the openGL handle (akin to a pointer).
     glGenTextures(1, &textureID);
+
     // Makes all following texture methods work on the bound texture.
     glBindTexture(GL_TEXTURE_2D, textureID);
 
     // Assign image data.
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
                  image.getData());
+    /*glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 400, 300, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getData());*/
 
     // Set texture parameters.
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

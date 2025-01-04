@@ -1,5 +1,5 @@
-#ifndef BITMAP_H
-#define BITMAP_H
+#ifndef IMAGE_H
+#define IMAGE_H
 
 #include <QImage>
 #include <string>
@@ -11,16 +11,13 @@
  * to your shader. The image will be present in
  * 32-bit RGBA format (4 * 8 bit)
  */
-class Image {
+class ImageTexture {
    public:
     /**
      * @brief Image constructor
      * @param path The path of the image
-     *
-     * You can use the Qt Ressource system for the path,
-     * e.g. ":/res/images/earth.bmp"
      */
-    Image(std::string path);
+    ImageTexture(std::string path);
 
     /**
      * @brief getWidth Getter for the image width
@@ -52,4 +49,4 @@ class Image {
     QImage _image; /**< The image in the QImage format */
 };
 
-#endif  // BITMAP_H
+#endif  // IMAGE_H
