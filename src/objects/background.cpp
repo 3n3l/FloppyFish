@@ -61,7 +61,6 @@ void Background::init() {
         glm::vec2(1, 1),
         glm::vec2(1, -1),
     };
-    std::vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};
 
     // Fill vertex array object with data.
     GLuint position_buffer;
