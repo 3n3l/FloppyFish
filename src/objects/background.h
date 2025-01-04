@@ -9,19 +9,18 @@ class Background {
     ~Background();
 
     /**
-     * @brief draw this triangle.
+     * @brief draw the background.
      */
     virtual void draw(glm::mat4 projection_matrix) const;
 
     /**
-     * @brief initialize this triangle.
+     * @brief initialize the background.
      */
     virtual void init();
 
    protected:
     GLuint _program;             /**< The opengl program handling the shaders */
     GLuint _vertexArrayObject;   /**< The vertex array object containing the vertices */
-    GLuint _verticeAmount;       /**< The amount of vertices used to draw the triangle */
     glm::mat4 _modelViewMatrix;  /**< The model view matrix to get the object into model view space */
     std::string _texture;        /**< path of the texture */
     unsigned int _textureHandle; /**< handle of the texture */

@@ -30,8 +30,7 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions(), _updateTimer
     _updateTimer.start(18);
     _stopWatch.start();
 
-    // Create a triangle to be displayed in the center.
-    // TODO: replace with actual content.
+    // Create the scrolling background.
     _background = Background("res/background.png");
 }
 
