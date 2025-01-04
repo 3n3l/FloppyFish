@@ -32,7 +32,7 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions(), _updateTimer
 
     // Create a triangle to be displayed in the center.
     // TODO: replace with actual content.
-    _background = Background("/res/background.png");
+    _background = Background("res/background.png");
 }
 
 void GLMainWindow::show() {
