@@ -28,8 +28,6 @@ add_executable(
   # Project entry.
   src/main.cpp
   # Source files.
-  src/objects/triangle.cpp
-  src/objects/triangle.h
   src/objects/background.cpp
   src/objects/background.h
   src/gui/mainwindow.cpp
@@ -41,8 +39,6 @@ add_executable(
   src/utils/image.cpp
   src/utils/image.h
   # Shaders.
-  src/shaders/triangle.vs.glsl
-  src/shaders/triangle.fs.glsl
   src/shaders/background.vs.glsl
   src/shaders/background.fs.glsl)
 
