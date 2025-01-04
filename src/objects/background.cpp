@@ -1,9 +1,11 @@
 #include "src/objects/background.h"
-#include "src/utils/utils.h"
+
+#include <iostream>
 
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "src/config/config.h"
+#include "src/utils/utils.h"
 
 #define GL_SILENCE_DEPRECATION
 
@@ -48,17 +50,18 @@ void Background::init() {
     glBindVertexArray(_vertexArrayObject);
 
     std::vector<glm::vec3> positions = {
-        glm::vec3(-0.5, -0.5, 0),
-        glm::vec3(-0.5, 0.5, 0),
-        glm::vec3(0.5, 0.5, 0),
-        glm::vec3(0.5, -0.5, 0),
+        glm::vec3(-1, -1, 0),
+        glm::vec3(-1, 1, 0),
+        glm::vec3(1, 1, 0),
+        glm::vec3(1, -1, 0),
     };
     std::vector<glm::vec2> texcoords = {
-        glm::vec2(0, 0),
-        glm::vec2(0, 0),
-        glm::vec2(0, 0),
-        glm::vec2(0, 0),
+        glm::vec2(-1, -1),
+        glm::vec2(-1, 1),
+        glm::vec2(1, 1),
+        glm::vec2(1, -1),
     };
+    std::vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};
 
     // Fill vertex array object with data.
     GLuint position_buffer;
@@ -110,14 +113,17 @@ void Background::draw(glm::mat4 projectionMatrix) const {
     glBindTexture(GL_TEXTURE_2D, _textureHandle);
     glUniform1i(glGetUniformLocation(_program, "backgroundTexture"), 0);
 
-    // Repeat the background texture.
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    // Repeat the background texture horizontally.
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+
+    // Stretch the background texture vertically.
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     // Value that goes from 0.0 to 1.0 and resets again.
     glUniform1f(glGetUniformLocation(_program, "animationLooper"), Config::animationLooper);
 
     // Call draw.
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
     glCheckError();
 
     // Unbind vertex array object.

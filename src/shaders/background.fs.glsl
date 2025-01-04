@@ -10,8 +10,8 @@ uniform float animationLooper;
 // Send color to screen.
 layout(location = 0) out vec4 fcolor;
 
-void main(void)
-{
+void main(void) {
     // Set fragment color.
-    fcolor = texture(backgroundTexture, vec2(vTexCoords.s + animatioLooper, -vTexCoords.t));
+    fcolor = texture(backgroundTexture, vec2(vTexCoords.s + animationLooper, -vTexCoords.t));
+    // fcolor = vec4(1, 1, 1, 1);
 }
