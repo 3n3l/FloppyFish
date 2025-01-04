@@ -10,6 +10,8 @@ class Config {
     static unsigned int windowWidth;  /**< current width of the window */
     static unsigned int windowHeight; /**< current height of the window */
     static unsigned int currentScore; /**< current score of the player */
+    static float animationSpeed;      /**< the number of steps per ms */
+    static float animationLooper;     /**< a float that loops through [0, 1] for animation purposes */
 };
 
 #endif  // CONFIG_H
