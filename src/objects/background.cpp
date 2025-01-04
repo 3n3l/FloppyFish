@@ -47,20 +47,13 @@ void Background::init() {
     }
     glBindVertexArray(_vertexArrayObject);
 
+    // Fill position buffer with data.
     std::vector<glm::vec3> positions = {
         glm::vec3(-1, -1, 0),
         glm::vec3(-1, 1, 0),
         glm::vec3(1, 1, 0),
         glm::vec3(1, -1, 0),
     };
-    std::vector<glm::vec2> texcoords = {
-        glm::vec2(-1, -1),
-        glm::vec2(-1, 1),
-        glm::vec2(1, 1),
-        glm::vec2(1, -1),
-    };
-
-    // Fill vertex array object with data.
     GLuint position_buffer;
     glGenBuffers(1, &position_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
@@ -69,6 +62,12 @@ void Background::init() {
     glEnableVertexAttribArray(0);
 
     // Fill the texture coordinates buffer with data.
+    std::vector<glm::vec2> texcoords = {
+        glm::vec2(-1, -1),
+        glm::vec2(-1, 1),
+        glm::vec2(1, 1),
+        glm::vec2(1, -1),
+    };
     GLuint texture_coordinate_buffer;
     glGenBuffers(1, &texture_coordinate_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, texture_coordinate_buffer);
