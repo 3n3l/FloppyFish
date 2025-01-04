@@ -15,7 +15,9 @@ find_package(OpenGL REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets OpenGL)
 
 # Create a compile_commands.json.
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "1")
+set(CMAKE_EXPORT_COMPILE_COMMANDS
+    ON
+    CACHE INTERNAL "1")
 
 # Optional libraries.
 find_package(GTA QUIET)
@@ -28,15 +30,21 @@ add_executable(
   # Source files.
   src/objects/triangle.cpp
   src/objects/triangle.h
+  src/objects/background.cpp
+  src/objects/background.h
   src/gui/mainwindow.cpp
   src/gui/mainwindow.h
   src/config/config.cpp
   src/config/config.h
   src/utils/utils.cpp
   src/utils/utils.h
+  src/utils/image.cpp
+  src/utils/image.h
   # Shaders.
   src/shaders/triangle.vs.glsl
-  src/shaders/triangle.fs.glsl)
+  src/shaders/triangle.fs.glsl
+  src/shaders/background.vs.glsl
+  src/shaders/background.fs.glsl)
 
 # Libraries.
 add_definitions(-DGLEW_STATIC)
