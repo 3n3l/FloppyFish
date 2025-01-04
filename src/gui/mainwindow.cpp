@@ -32,7 +32,7 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions(), _updateTimer
 
     // Create a triangle to be displayed in the center.
     // TODO: replace with actual content.
-    _triangle = Triangle();
+    _background = Background("/res/background.png");
 }
 
 void GLMainWindow::show() {
@@ -60,7 +60,7 @@ void GLMainWindow::initializeGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-    _triangle.init();
+    _background.init();
 }
 
 void GLMainWindow::resizeGL(int width, int height) {
@@ -88,7 +88,7 @@ void GLMainWindow::paintGL() {
     // Draw filled polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    _triangle.draw(projectionMatrix);
+    _background.draw(projectionMatrix);
 }
 
 void GLMainWindow::animateGL() {
