@@ -102,6 +102,10 @@ void GLMainWindow::animateGL() {
     // Calculate current model view matrix.
     glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0), glm::vec3(0), glm::vec3(0, 1, 0));
 
+    // Increment the animation looper if the animation is running.
+    const float incrementedLooper = Config::animationLooper + 0.0003f * Config::animationSpeed;
+    Config::animationLooper = incrementedLooper > 1.0f ? 0.0f : incrementedLooper;
+
     // Update the widget.
     update();
 }
