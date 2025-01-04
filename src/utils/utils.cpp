@@ -119,9 +119,8 @@ GLuint loadTexture(std::string path) {
     glBindTexture(GL_TEXTURE_2D, textureID);
 
     // Assign image data.
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
                  image.getData());
-    /*glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 400, 300, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getData());*/
 
     // Set texture parameters.
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
