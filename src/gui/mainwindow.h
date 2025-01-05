@@ -1,7 +1,7 @@
 #ifndef GLMAINWINDOW_H
 #define GLMAINWINDOW_H
 
-#include <src/objects/background.h>
+#include <src/drawables/background.h>
 
 #include <QColorSpace>
 #include <QElapsedTimer>
