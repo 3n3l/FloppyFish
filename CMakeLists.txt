@@ -28,8 +28,12 @@ add_executable(
   # Project entry.
   src/main.cpp
   # Source files.
-  src/objects/background.cpp
-  src/objects/background.h
+  src/drawables/background.cpp
+  src/drawables/background.h
+  src/drawables/drawable.cpp
+  src/drawables/drawable.h
+  src/drawables/obstacle.cpp
+  src/drawables/obstacle.h
   src/gui/mainwindow.cpp
   src/gui/mainwindow.h
   src/config/config.cpp
@@ -40,7 +44,10 @@ add_executable(
   src/utils/image.h
   # Shaders.
   src/shaders/background.vs.glsl
-  src/shaders/background.fs.glsl)
+  src/shaders/background.fs.glsl
+  src/shaders/obstacle.vs.glsl
+  src/shaders/obstacle.fs.glsl
+)
 
 # Libraries.
 add_definitions(-DGLEW_STATIC)
