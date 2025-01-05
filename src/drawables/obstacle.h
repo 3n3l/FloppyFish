@@ -1,27 +1,32 @@
 #include <OpenGL/gltypes.h>
 
-#include "glm/detail/type_mat4x4.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include "src/drawables/drawable.h"
 
-class Obstacle {
+class Obstacle : public Drawable {
    public:
     Obstacle(std::string texture = "/res/background.png");
     ~Obstacle();
 
     /**
-     * @brief draw the background.
+     * @brief initialize the obstacle.
+     */
+    virtual void init();
+
+    /**
+     * @brief draw the obstacle.
      */
     virtual void draw(glm::mat4 projection_matrix) const;
 
     /**
-     * @brief initialize the background.
+     * @brief update the obstacle.
+     * @param elapsedTimeMs The elapsed time since the last update in ms
      */
-    virtual void init();
+    virtual void update(float elapsedTimeMs);
 
    protected:
-    GLuint _program;             /**< The opengl program handling the shaders */
-    GLuint _vertexArrayObject;   /**< The vertex array object containing the vertices */
-    glm::mat4 _modelViewMatrix;  /**< The model view matrix to get the object into model view space */
     std::string _texture;        /**< path of the texture */
     unsigned int _textureHandle; /**< handle of the texture */
+    float _width;                /**< width of the obstacle */
+    float _height;               /**< height of the obstacle */
+    float _depth;                /**< depth of the obstacle */
 };

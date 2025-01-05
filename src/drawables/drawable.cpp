@@ -11,5 +11,5 @@
 #include <QOpenGLShaderProgram>
 #include <QTextStream>
 
-Drawable::Drawable() : _vertexArrayObject(0) {}
+Drawable::Drawable() : _vertexArrayObject(0), _modelViewMatrix(1.0f) {}
 Drawable::~Drawable() {}

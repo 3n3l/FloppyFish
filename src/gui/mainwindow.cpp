@@ -31,9 +31,8 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions(), _updateTimer
     _stopWatch.start();
 
     // Create the drawables.
-    _drawables = {
-        std::make_shared<Background>(Background("res/background.png")),
-    };
+    _drawables = {std::make_shared<Background>(Background("res/background.png")),
+                  std::make_shared<Obstacle>(Obstacle("res/background.png"))};
 }
 
 void GLMainWindow::show() {
@@ -85,9 +84,11 @@ void GLMainWindow::paintGL() {
     glClearColor(0.5f, 0.63f, 0.74f, 1.0f);
 
     // Calculate projection matrix from current resolution, this allows for resizing the window without distortion.
-    const float fovy = glm::radians(60.0f);
-    const float aspect = float(Config::windowWidth) / float(Config::windowHeight);
-    glm::mat4 projectionMatrix = glm::perspective(fovy, aspect, 0.1f, 100.0f);
+    /*const float fovy = glm::radians(60.0f);*/
+    /*const float aspect = float(Config::windowWidth) / float(Config::windowHeight);*/
+    /*glm::mat4 projectionMatrix = glm::perspective(fovy, aspect, 0.1f, 100.0f);*/
+    // TODO: projection computation is not working right now.
+    glm::mat4 projectionMatrix = glm::mat4(1.0f);
 
     // Draw filled polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

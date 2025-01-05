@@ -1,8 +1,12 @@
 #include "src/drawables/obstacle.h"
 
+#include "glm/ext/matrix_float4x4.hpp"
+#include "glm/ext/matrix_transform.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "src/config/config.h"
+#include "src/drawables/drawable.h"
 #include "src/utils/utils.h"
 
 #define GL_SILENCE_DEPRECATION
@@ -20,7 +24,12 @@
 #include "glm/fwd.hpp"
 #include "src/utils/utils.h"
 
-Obstacle::Obstacle(std::string texture) : _texture(texture), _vertexArrayObject(0) {}
+Obstacle::Obstacle(std::string texture)
+    : Drawable(),
+      _texture(texture),
+      _width(Config::obstacleWidth),
+      _height(Config::obstacleHeight),
+      _depth(Config::obstacleDepth) {}
 Obstacle::~Obstacle() {}
 
 void Obstacle::init() {
@@ -31,8 +40,8 @@ void Obstacle::init() {
     _textureHandle = Utils::loadTexture(_texture);
 
     // Compile shader.
-    GLuint vs = Utils::compileShader(GL_VERTEX_SHADER, "src/shaders/background.vs.glsl");
-    GLuint fs = Utils::compileShader(GL_FRAGMENT_SHADER, "src/shaders/background.fs.glsl");
+    GLuint vs = Utils::compileShader(GL_VERTEX_SHADER, "src/shaders/obstacle.vs.glsl");
+    GLuint fs = Utils::compileShader(GL_FRAGMENT_SHADER, "src/shaders/obstacle.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);
@@ -88,6 +97,22 @@ void Obstacle::init() {
 
     // Unbind vertex array object.
     glBindVertexArray(0);
+
+    // Scale obstacle. TODO: rescale after resetting?
+    _modelViewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(_width, _height, _depth));
+    /*_modelViewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(Config::obstacleWidth, Config::obstacleWidth,
+     * Config::obstacleDepth));*/
+
+    // Translate to initial position.
+    _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(5, -2 * _height, 0));
+}
+
+void Obstacle::update(float elapsedTimeMs) {
+    // .
+    /*_modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(_width, 0, 0));*/
+
+    // Scroll.
+    _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(-0.01, 0, 0));
 }
 
 void Obstacle::draw(glm::mat4 projectionMatrix) const {
@@ -104,6 +129,12 @@ void Obstacle::draw(glm::mat4 projectionMatrix) const {
     glBindVertexArray(_vertexArrayObject);
     glCheckError();
 
+    // Set parameter.
+    glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE,
+                       glm::value_ptr(projectionMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE,
+                       glm::value_ptr(_modelViewMatrix));
+
     // Set the background texture.
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _textureHandle);
@@ -116,7 +147,8 @@ void Obstacle::draw(glm::mat4 projectionMatrix) const {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     // Value that goes from 0.0 to 1.0 and resets again.
-    glUniform1f(glGetUniformLocation(_program, "animationLooper"), Config::animationLooper);
+    // TODO: remove
+    glUniform1f(glGetUniformLocation(_program, "animationLooper"), 0.0f);
 
     // Call draw.
     glDrawArrays(GL_TRIANGLE_FAN, 0, 6);

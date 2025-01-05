@@ -2,6 +2,7 @@
 #define GLMAINWINDOW_H
 
 #include <src/drawables/background.h>
+#include <src/drawables/obstacle.h>
 
 #include <QColorSpace>
 #include <QElapsedTimer>

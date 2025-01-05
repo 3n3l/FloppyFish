@@ -1,3 +1,4 @@
+#pragma once
 #include <OpenGL/gltypes.h>
 
 #include <string>
@@ -21,12 +22,13 @@ class Drawable {
     virtual void draw(glm::mat4 projection_matrix) const {}
 
     /**
-     * @brief update Updates the object's position, rotation etc.
+     * @brief update the drawable.
      * @param elapsedTimeMs The elapsed time since the last update in ms
      */
     virtual void update(float elapsedTimeMs) {}
 
    protected:
+    glm::mat4 _modelViewMatrix;  /**< The model view matrix to get the object into model view space */
     GLuint _program;             /**< The opengl program handling the shaders */
     GLuint _vertexArrayObject;   /**< The vertex array object containing the vertices */
     std::string _texture;        /**< Path to the texture */
