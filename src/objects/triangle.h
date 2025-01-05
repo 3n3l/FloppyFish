@@ -11,7 +11,7 @@ class Triangle {
     /**
      * @brief draw this triangle.
      */
-    virtual void draw(glm::mat4 projection_matrix) const;
+    virtual void draw(glm::mat4 projectionMatrix) const;
 
     /**
      * @brief initialize this triangle.

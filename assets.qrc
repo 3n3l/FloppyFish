@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/src/assets">
+        <file>BillAlbedo.png</file>
+        <file>BillDerLachs.mtl</file>
+        <file>BillDerLachs.obj</file>
+        <file>Lamp.mtl</file>
+        <file>Lamp.obj</file>
+        <file>LampTexture.png</file>
+        <file>Sign.mtl</file>
+        <file>Sign.obj</file>
+        <file>SignTexture.png</file>
+        <file>ico.obj</file>
+        <file>ico.mtl</file>
+    </qresource>
+</RCC>

@@ -10,6 +10,8 @@
 #include <QOpenGLWindow>
 #include <QTimer>
 
+#include "src/objects/floppyMesh.h"
+
 /**
  * @brief The GLWindow class handling the opengl window.
  */
@@ -19,7 +21,10 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions {
    private:
     QTimer _updateTimer;      /**< Used for regular frame updates */
     QElapsedTimer _stopWatch; /**< Measures time between updates */
+
     Triangle _triangle;       /**< Triangle shown in the window */
+    std::shared_ptr<FloppyMesh> _bill;  /**< Bill the salmon shown in the window */
+    std::shared_ptr<FloppyMesh> _sign;  /**< A sign to test multi-parts objs */
 
    private slots:
     /**
@@ -69,6 +74,9 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions {
      * @param event the QWheelEvent containing all relevant data
      */
     virtual void keyPressEvent(QKeyEvent* event) override;
+
+    private:
+    glm::mat4 _projectionMatrix; /* Projection Matrix */
 };
 
 #endif

@@ -14,6 +14,7 @@ int main(int argc, char *argv[]) {
     glFormat.setProfile(QSurfaceFormat::CoreProfile);
     glFormat.setSamples(8);
     glFormat.setColorSpace(QColorSpace::NamedColorSpace::SRgb);
+    glFormat.setDepthBufferSize(24);
     glFormat.setOption(QSurfaceFormat::DebugContext);
     QSurfaceFormat::setDefaultFormat(glFormat);
 
