@@ -20,7 +20,7 @@
 #include "glm/fwd.hpp"
 #include "src/utils/utils.h"
 
-Background::Background(std::string texture) : _texture(texture), _vertexArrayObject(0) {}
+Background::Background(std::string texture) : Drawable(), _texture(texture), _vertexArrayObject(0) {}
 Background::~Background() {}
 
 void Background::init() {

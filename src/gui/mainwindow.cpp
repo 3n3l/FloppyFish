@@ -30,8 +30,10 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions(), _updateTimer
     _updateTimer.start(18);
     _stopWatch.start();
 
-    // Create the scrolling background.
-    _background = Background("res/background.png");
+    // Create the drawables.
+    _drawables = {
+        std::make_shared<Background>(Background("res/background.png")),
+    };
 }
 
 void GLMainWindow::show() {
@@ -59,7 +61,10 @@ void GLMainWindow::initializeGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-    _background.init();
+    // Initialize all drawables.
+    for (auto drawable : _drawables) {
+        drawable->init();
+    }
 }
 
 void GLMainWindow::resizeGL(int width, int height) {
@@ -87,7 +92,10 @@ void GLMainWindow::paintGL() {
     // Draw filled polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    _background.draw(projectionMatrix);
+    // Draw all drawables.
+    for (auto drawable : _drawables) {
+        drawable->draw(projectionMatrix);
+    }
 }
 
 void GLMainWindow::animateGL() {
@@ -107,6 +115,11 @@ void GLMainWindow::animateGL() {
 
     // Update the widget.
     update();
+
+    // Update all drawables.
+    for (auto drawable : _drawables) {
+        drawable->update(timeElapsedMs);
+    }
 }
 
 void GLMainWindow::keyPressEvent(QKeyEvent *event) {

@@ -1,22 +1,22 @@
 #include <OpenGL/gltypes.h>
 
-#include "glm/detail/type_mat4x4.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include "src/drawables/drawable.h"
 
-class Background {
+class Background : public Drawable {
    public:
-    Background(std::string texture = "/res/background.png");
+    Background(std::string texture = "res/background.png");
     ~Background();
-
-    /**
-     * @brief draw the background.
-     */
-    virtual void draw(glm::mat4 projection_matrix) const;
 
     /**
      * @brief initialize the background.
      */
-    virtual void init();
+    virtual void init() override;
+
+    /**
+     * @brief draw the background.
+     * @param projection_matrix The current projection matrix
+     */
+    virtual void draw(glm::mat4 projection_matrix) const override;
 
    protected:
     GLuint _program;             /**< The opengl program handling the shaders */

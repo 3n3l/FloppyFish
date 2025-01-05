@@ -9,6 +9,8 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLWindow>
 #include <QTimer>
+#include <memory>
+#include <vector>
 
 /**
  * @brief The GLWindow class handling the opengl window.
@@ -17,9 +19,9 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions {
     Q_OBJECT
 
    private:
-    QTimer _updateTimer;      /**< Used for regular frame updates */
-    QElapsedTimer _stopWatch; /**< Measures time between updates */
-    Background _background;   /**< Background shown in the window */
+    QTimer _updateTimer;                               /**< Used for regular frame updates */
+    QElapsedTimer _stopWatch;                          /**< Measures time between updates */
+    std::vector<std::shared_ptr<Drawable>> _drawables; /**< Vector holding pointers to the drawables */
 
    private slots:
     /**
