@@ -8,6 +8,10 @@ unsigned int Config::currentScore = 0;
 unsigned int Config::windowWidth = 1440;
 unsigned int Config::windowHeight = 1080;
 
+// PBR Cook-Torrance parameters.
+float Config::etaValue = 1.2f;
+float Config::roughness = 0.4f;
+
 // Obstacles.
 unsigned int Config::obstacleAmount = 5;
 float Config::obstacleLowerBound = 0.33f;

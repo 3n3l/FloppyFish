@@ -10,6 +10,7 @@
 #include <memory>
 
 #include "src/drawables/fish.h"
+#include "src/objects/floppyMesh.h"
 
 /**
  * @brief The GLWindow class handling the opengl window.
@@ -18,10 +19,13 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     Q_OBJECT
 
    private:
-    std::shared_ptr<Fish> _billTheSalmon;              /**< Bill the Salmon */
-    QTimer _updateTimer;                               /**< Used for regular frame updates */
-    QElapsedTimer _stopWatch;                          /**< Measures time between updates */
+    QTimer _updateTimer;                  /**< Used for regular frame updates */
+    QElapsedTimer _stopWatch;             /**< Measures time between updates */
+
+    std::shared_ptr<Fish> _billTheSalmon; /**< Bill the Salmon */
     std::vector<std::shared_ptr<Drawable>> _drawables; /**< Vector holding pointers to the drawables */
+    std::shared_ptr<FloppyMesh> _bill;                 /**< Bill the salmon shown in the window */
+    std::shared_ptr<FloppyMesh> _sign;                 /**< A sign to test multi-parts objs */
 
    private slots:
     /**
@@ -71,6 +75,9 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
      * @param event the QWheelEvent containing all relevant data
      */
     virtual void keyPressEvent(QKeyEvent* event) override;
+
+   private:
+    glm::mat4 _projectionMatrix; /* Projection Matrix */
 };
 
 #endif  // GLMAINWINDOW_H

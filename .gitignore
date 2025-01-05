@@ -57,3 +57,4 @@ ui_mainwindow.h
 .qt
 /.idea
 /cmake-build-debug
+/.cmake
