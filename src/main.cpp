@@ -6,6 +6,9 @@
 int main(int argc, char *argv[]) {
     QGuiApplication app(argc, argv);
 
+    // Seed the random number generator with the current time.
+    std::srand(std::time(nullptr));
+
     // Set gl format.
     QSurfaceFormat glFormat;
     glFormat.setSwapBehavior(QSurfaceFormat::DoubleBuffer);

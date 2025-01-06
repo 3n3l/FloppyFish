@@ -4,7 +4,13 @@
 
 class Obstacle : public Drawable {
    public:
-    Obstacle(std::string texture = "/res/background.png");
+    float x;      /**< current x position */
+    float width;  /**< width of the obstacle */
+    float height; /**< height of the obstacle */
+    float depth;  /**< depth of the obstacle */
+    float offset; /**< x-offset from the origin */
+
+    Obstacle(std::string texture = "/res/background.png", float offset = 0.0f);
     ~Obstacle();
 
     /**
@@ -23,10 +29,13 @@ class Obstacle : public Drawable {
      */
     virtual void update(float elapsedTimeMs);
 
+    /**
+     * @brief update the obstacle.
+     * @param elapsedTimeMs The elapsed time since the last update in ms
+     */
+    virtual void reset(float x);
+
    protected:
     std::string _texture;        /**< path of the texture */
     unsigned int _textureHandle; /**< handle of the texture */
-    float _width;                /**< width of the obstacle */
-    float _height;               /**< height of the obstacle */
-    float _depth;                /**< depth of the obstacle */
 };

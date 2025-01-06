@@ -31,8 +31,13 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions(), _updateTimer
     _stopWatch.start();
 
     // Create the drawables.
-    _drawables = {std::make_shared<Background>(Background("res/background.png")),
-                  std::make_shared<Obstacle>(Obstacle("res/background.png"))};
+    _drawables = {std::make_shared<Background>(Background("res/background.png"))};
+
+    // Create the obstacles.
+    float offset = Config::obstacleOffset;
+    for (unsigned int i = 0; i < Config::obstacleAmount; i++) {
+        _obstacles.push_back(std::make_shared<Obstacle>(Obstacle("res/background.png", i * offset)));
+    }
 }
 
 void GLMainWindow::show() {
@@ -63,6 +68,11 @@ void GLMainWindow::initializeGL() {
     // Initialize all drawables.
     for (auto drawable : _drawables) {
         drawable->init();
+    }
+
+    // Initialize all obstacles.
+    for (auto obstacle : _obstacles) {
+        obstacle->init();
     }
 }
 
@@ -97,6 +107,11 @@ void GLMainWindow::paintGL() {
     for (auto drawable : _drawables) {
         drawable->draw(projectionMatrix);
     }
+
+    // Draw all obstacles.
+    for (auto obstacle : _obstacles) {
+        obstacle->draw(projectionMatrix);
+    }
 }
 
 void GLMainWindow::animateGL() {
@@ -104,7 +119,7 @@ void GLMainWindow::animateGL() {
     makeCurrent();
 
     // Get the time delta and restart the stopwatch.
-    float timeElapsedMs = _stopWatch.nsecsElapsed() / 1000000.0f;
+    float elapsedTimeMs = _stopWatch.nsecsElapsed() / 1000000.0f;
     _stopWatch.restart();
 
     // Calculate current model view matrix.
@@ -119,8 +134,34 @@ void GLMainWindow::animateGL() {
 
     // Update all drawables.
     for (auto drawable : _drawables) {
-        drawable->update(timeElapsedMs);
+        drawable->update(elapsedTimeMs);
     }
+
+    // Iterate over all obstacles and sort list by x-values in place.
+    for (auto it = _obstacles.begin(); it != _obstacles.end(); ++it) {
+        std::shared_ptr<Obstacle> obstacle = *it;
+        if (obstacle->x <= -((1 / obstacle->width) + 1)) {
+            // Reset the obstacle based on the last element of the list.
+            std::shared_ptr<Obstacle> last = _obstacles.back();
+            /*float offset = 1 + (1 / last->width);*/
+            obstacle->reset(last->x + Config::obstacleOffset);
+
+            // Move newly reset obstacle to the end of the list.
+            _obstacles.splice(_obstacles.end(), _obstacles, it);
+        }
+        obstacle->update(elapsedTimeMs);
+    }
+
+    // Iterate over all obstacles and reset if out of bounds.
+    /*for (auto it = _obstacles.begin(); it != _obstacles.end(); ++it) {*/
+    /*    std::shared_ptr<Obstacle> obstacle = *it;*/
+    /*    obstacle->update(elapsedTimeMs);*/
+    /*    if (obstacle->x > -1 - (1 / obstacle->width)) {*/
+    /*        std::shared_ptr<Obstacle> previous = *std::prev(it);*/
+    /*        float offset = 1 + (1 / previous->width);*/
+    /*        obstacle->reset(previous->x + offset);*/
+    /*    }*/
+    /*}*/
 }
 
 void GLMainWindow::keyPressEvent(QKeyEvent *event) {

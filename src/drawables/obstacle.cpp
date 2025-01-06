@@ -24,12 +24,14 @@
 #include "glm/fwd.hpp"
 #include "src/utils/utils.h"
 
-Obstacle::Obstacle(std::string texture)
+Obstacle::Obstacle(std::string texture, float offset)
     : Drawable(),
+      height(Config::obstacleHeight),
+      width(Config::obstacleWidth),
+      depth(Config::obstacleDepth),
       _texture(texture),
-      _width(Config::obstacleWidth),
-      _height(Config::obstacleHeight),
-      _depth(Config::obstacleDepth) {}
+      offset(offset),
+      x(0) {}
 Obstacle::~Obstacle() {}
 
 void Obstacle::init() {
@@ -98,21 +100,32 @@ void Obstacle::init() {
     // Unbind vertex array object.
     glBindVertexArray(0);
 
-    // Scale obstacle. TODO: rescale after resetting?
-    _modelViewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(_width, _height, _depth));
-    /*_modelViewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(Config::obstacleWidth, Config::obstacleWidth,
-     * Config::obstacleDepth));*/
+    // Set size and position.
+    x = 1 + (1 / width) + offset;
+    reset(x);
+}
 
-    // Translate to initial position.
-    _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(5, -2 * _height, 0));
+void Obstacle::reset(float newX) {
+    // Reset the x-coordinate to be to the right of the window.
+    /*x = 1 + (1 / width) + offset;*/
+    x = newX;
+
+    // Scale obstacle to the configured size, reset _modelViewMatrix.
+    float height = 0.25 + float(std::rand()) / float(RAND_MAX);
+    _modelViewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(width, height, depth));
+
+    // Translate to the right of the window.
+    _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(x, -(1 / height), 0));
 }
 
 void Obstacle::update(float elapsedTimeMs) {
-    // .
-    /*_modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(_width, 0, 0));*/
-
     // Scroll.
-    _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(-0.01, 0, 0));
+    x += Config::obstacleStep;
+    /*if (x > -((1 / width) + 1)) {*/
+    _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(Config::obstacleStep, 0, 0));
+    /*} else {*/
+    /*    reset();*/
+    /*}*/
 }
 
 void Obstacle::draw(glm::mat4 projectionMatrix) const {

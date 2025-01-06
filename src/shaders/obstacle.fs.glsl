@@ -13,5 +13,5 @@ layout(location = 0) out vec4 fcolor;
 void main(void) {
     // Set fragment color.
     // fcolor = texture(backgroundTexture, vec2(vTexCoords.s + animationLooper, -vTexCoords.t));
-    fcolor = vec4(1, 0, 0, 1);
+    fcolor = vec4(0, 0.5, 0.5, 1);
 }
