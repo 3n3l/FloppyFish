@@ -120,7 +120,7 @@ void GLMainWindow::animateGL() {
     _stopWatch.restart();
 
     // Calculate current model view matrix.
-    glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     // Increment the animation looper if the animation is running.
     const float incrementedLooper = Config::animationLooper + Config::animationSpeed;
