@@ -11,7 +11,6 @@
 #include <QOpenGLWindow>
 #include <glm/glm.hpp>
 
-#include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "src/config/config.h"
 
@@ -94,10 +93,7 @@ void GLMainWindow::paintGL() {
     glClearColor(0.5f, 0.63f, 0.74f, 1.0f);
 
     // Calculate projection matrix from current resolution, this allows for resizing the window without distortion.
-    /*const float fovy = glm::radians(60.0f);*/
-    /*const float aspect = float(Config::windowWidth) / float(Config::windowHeight);*/
-    /*glm::mat4 projectionMatrix = glm::perspective(fovy, aspect, 0.1f, 100.0f);*/
-    // TODO: projection computation is not working right now.
+    // TODO: projection computation is not working right now?!
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
 
     // Draw filled polygons.
@@ -126,10 +122,10 @@ void GLMainWindow::animateGL() {
     glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0), glm::vec3(0), glm::vec3(0, 1, 0));
 
     // Increment the animation looper if the animation is running.
-    const float incrementedLooper = Config::animationLooper + 0.0003f * Config::animationSpeed;
+    const float incrementedLooper = Config::animationLooper + Config::animationSpeed;
     Config::animationLooper = incrementedLooper > 1.0f ? 0.0f : incrementedLooper;
 
-    // Update the widget.
+    // Update the window.
     update();
 
     // Update all drawables.
@@ -137,31 +133,22 @@ void GLMainWindow::animateGL() {
         drawable->update(elapsedTimeMs);
     }
 
-    // Iterate over all obstacles and sort list by x-values in place.
+    // Iterate over all obstacles, reset if necessary, and update.
     for (auto it = _obstacles.begin(); it != _obstacles.end(); ++it) {
         std::shared_ptr<Obstacle> obstacle = *it;
         if (obstacle->x <= -((1 / obstacle->width) + 1)) {
-            // Reset the obstacle based on the last element of the list.
-            std::shared_ptr<Obstacle> last = _obstacles.back();
-            /*float offset = 1 + (1 / last->width);*/
-            obstacle->reset(last->x + Config::obstacleOffset);
+            // Reset the obstacle based on the last element of the list,
+            // which is the element that is the furthest to the right.
+            std::shared_ptr<Obstacle> furthest = _obstacles.back();
+            obstacle->reset(furthest->x + Config::obstacleOffset);
 
-            // Move newly reset obstacle to the end of the list.
+            // Move newly reset obstacle to the end of the list,
+            // this ensures that the last element in the list is
+            // always the furthest to the right.
             _obstacles.splice(_obstacles.end(), _obstacles, it);
         }
         obstacle->update(elapsedTimeMs);
     }
-
-    // Iterate over all obstacles and reset if out of bounds.
-    /*for (auto it = _obstacles.begin(); it != _obstacles.end(); ++it) {*/
-    /*    std::shared_ptr<Obstacle> obstacle = *it;*/
-    /*    obstacle->update(elapsedTimeMs);*/
-    /*    if (obstacle->x > -1 - (1 / obstacle->width)) {*/
-    /*        std::shared_ptr<Obstacle> previous = *std::prev(it);*/
-    /*        float offset = 1 + (1 / previous->width);*/
-    /*        obstacle->reset(previous->x + offset);*/
-    /*    }*/
-    /*}*/
 }
 
 void GLMainWindow::keyPressEvent(QKeyEvent *event) {

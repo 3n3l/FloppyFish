@@ -101,17 +101,15 @@ void Obstacle::init() {
     glBindVertexArray(0);
 
     // Set size and position.
-    x = 1 + (1 / width) + offset;
-    reset(x);
+    reset(1 + (1 / width) + offset);
 }
 
 void Obstacle::reset(float newX) {
     // Reset the x-coordinate to be to the right of the window.
-    /*x = 1 + (1 / width) + offset;*/
     x = newX;
 
     // Scale obstacle to the configured size, reset _modelViewMatrix.
-    float height = 0.25 + float(std::rand()) / float(RAND_MAX);
+    float height = 0.25 + float(std::rand()) / float(RAND_MAX / 0.75);
     _modelViewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(width, height, depth));
 
     // Translate to the right of the window.
@@ -121,11 +119,7 @@ void Obstacle::reset(float newX) {
 void Obstacle::update(float elapsedTimeMs) {
     // Scroll.
     x += Config::obstacleStep;
-    /*if (x > -((1 / width) + 1)) {*/
     _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(Config::obstacleStep, 0, 0));
-    /*} else {*/
-    /*    reset();*/
-    /*}*/
 }
 
 void Obstacle::draw(glm::mat4 projectionMatrix) const {
@@ -158,10 +152,6 @@ void Obstacle::draw(glm::mat4 projectionMatrix) const {
 
     // Stretch the background texture vertically.
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    // Value that goes from 0.0 to 1.0 and resets again.
-    // TODO: remove
-    glUniform1f(glGetUniformLocation(_program, "animationLooper"), 0.0f);
 
     // Call draw.
     glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
