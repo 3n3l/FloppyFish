@@ -48,14 +48,12 @@ void Obstacle::reset(float x) {
     _x = x;
 
     // Reset the properties of the lower part of this obstacle.
-    float lowerHeight = 0.25f + float(std::rand()) / float(RAND_MAX / 0.5f);
-    float lowerY = (0.5 * lowerHeight) - 1;
-    _lowerPart.reset(_x, lowerY, lowerHeight);
+    _lowerPart.setHeight(0.25f + float(std::rand()) / float(RAND_MAX / 0.5f));
+    _lowerPart.setY((0.5 * _lowerPart.height()) - 1);
 
     // Reset the properties of the upper part of this obstacle.
-    float upperHeight = 2 - (lowerHeight + Config::obstacleGap);
-    float upperY = 2 - (0.5 * upperHeight);
-    _upperPart.reset(_x, upperY, upperHeight);
+    _upperPart.setHeight(2 - (_lowerPart.height() + Config::obstacleGap));
+    _upperPart.setY(2 - (0.5 * _upperPart.height()));
 }
 
 void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {

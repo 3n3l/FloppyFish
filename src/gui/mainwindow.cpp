@@ -132,6 +132,8 @@ void GLMainWindow::animateGL() {
     }
 
     // Iterate over all obstacles, reset if necessary, and update.
+    // TODO: this can probably be computed without the list, with
+    //       just the offset, width and number of obstacles.
     for (auto it = _obstacles.begin(); it != _obstacles.end(); ++it) {
         std::shared_ptr<Obstacle> obstacle = *it;
         if (obstacle->isOutOfBounds()) {

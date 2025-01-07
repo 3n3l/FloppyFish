@@ -95,17 +95,6 @@ void Part::init() {
     glBindVertexArray(0);
 }
 
-void Part::reset(float x, float y, float height) {
-    _height = height;
-    _y = y;
-
-    // TODO
-    // _modelViewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0, _height, 0));
-
-    // TODO
-    // _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(0, _y, 0));
-}
-
 void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // TODO
     _modelViewMatrix = glm::translate(modelViewMatrix, glm::vec3(0, _y, 0));
