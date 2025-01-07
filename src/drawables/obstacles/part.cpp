@@ -108,10 +108,10 @@ void Part::reset(float x, float y, float height) {
 
 void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // TODO
-    _modelViewMatrix = glm::scale(modelViewMatrix, glm::vec3(1, _height, 1));
+    _modelViewMatrix = glm::translate(modelViewMatrix, glm::vec3(0, _y, 0));
 
     // TODO
-    _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(0, _y, 0));
+    _modelViewMatrix = glm::scale(_modelViewMatrix, glm::vec3(1, _height, 1));
 }
 
 void Part::draw(glm::mat4 projectionMatrix) const {

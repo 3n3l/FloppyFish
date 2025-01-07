@@ -11,7 +11,8 @@ class Obstacle : public Drawable {
     Obstacle(std::string texture = "/res/background.png", float offset = 0.0f);
     ~Obstacle();
 
-    bool isOutOfBounds() const { return _x <= -((1 / _width) + 1); }
+    /*bool isOutOfBounds() const { return _x <= -((1 / _width) + 1); }*/
+    bool isOutOfBounds() const { return _x < -1 - (_width / 2); }
     float x() const { return _x; }
 
     /**
