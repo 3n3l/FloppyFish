@@ -21,13 +21,13 @@ class Drawable {
      * @brief draw the drawable.
      * @param projection_matrix The current projection matrix
      */
-    virtual void draw(glm::mat4 projection_matrix) const {}
+    virtual void draw(glm::mat4 projectionMatrix) const {}
 
     /**
      * @brief update the drawable.
      * @param elapsedTimeMs The elapsed time since the last update in ms
      */
-    virtual void update(float elapsedTimeMs) {}
+    virtual void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {}
 
    protected:
     glm::mat4 _modelViewMatrix;  /**< The model view matrix to get the object into model view space */

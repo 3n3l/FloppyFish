@@ -120,7 +120,7 @@ void GLMainWindow::animateGL() {
     _stopWatch.restart();
 
     // Calculate current model view matrix.
-    glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0), glm::vec3(0), glm::vec3(0, 1, 0));
+    glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     // Increment the animation looper if the animation is running.
     const float incrementedLooper = Config::animationLooper + Config::animationSpeed;
@@ -128,7 +128,7 @@ void GLMainWindow::animateGL() {
 
     // Update all drawables.
     for (auto drawable : _drawables) {
-        drawable->update(elapsedTimeMs);
+        drawable->update(elapsedTimeMs, modelViewMatrix);
     }
 
     // Iterate over all obstacles, reset if necessary, and update.
@@ -146,7 +146,7 @@ void GLMainWindow::animateGL() {
             _obstacles.splice(_obstacles.end(), _obstacles, it);
         }
         // Now the obstacle can be updated.
-        obstacle->update(elapsedTimeMs);
+        obstacle->update(elapsedTimeMs, modelViewMatrix);
     }
 
     // Update the window.
