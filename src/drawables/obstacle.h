@@ -4,14 +4,11 @@
 
 class Obstacle : public Drawable {
    public:
-    float x;      /**< current x position */
-    float width;  /**< width of the obstacle */
-    float height; /**< height of the obstacle */
-    float depth;  /**< depth of the obstacle */
-    float offset; /**< x-offset from the origin */
-
     Obstacle(std::string texture = "/res/background.png", float offset = 0.0f);
     ~Obstacle();
+
+    bool isOutOfBounds() const { return _x <= -((1 / _width) + 1); }
+    float x() const { return _x; }
 
     /**
      * @brief initialize the obstacle.
@@ -30,12 +27,17 @@ class Obstacle : public Drawable {
     virtual void update(float elapsedTimeMs);
 
     /**
-     * @brief update the obstacle.
-     * @param elapsedTimeMs The elapsed time since the last update in ms
+     * @brief reset modelViewMatrix and position.
+     * @param nx - the new x-coordinate
      */
-    virtual void reset(float x);
+    virtual void reset(float nx);
 
-   protected:
-    std::string _texture;        /**< path of the texture */
+   private:
     unsigned int _textureHandle; /**< handle of the texture */
+    std::string _texture;        /**< path of the texture */
+    float _offset;               /**< x-offset from the origin */
+    float _height;               /**< height of the obstacle */
+    float _width;                /**< width of the obstacle */
+    float _depth;                /**< depth of the obstacle */
+    float _x;                    /**< current x position */
 };

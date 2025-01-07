@@ -136,11 +136,11 @@ void GLMainWindow::animateGL() {
     // Iterate over all obstacles, reset if necessary, and update.
     for (auto it = _obstacles.begin(); it != _obstacles.end(); ++it) {
         std::shared_ptr<Obstacle> obstacle = *it;
-        if (obstacle->x <= -((1 / obstacle->width) + 1)) {
+        if (obstacle->isOutOfBounds()) {
             // Reset the obstacle based on the last element of the list,
             // which is the element that is the furthest to the right.
             std::shared_ptr<Obstacle> furthest = _obstacles.back();
-            obstacle->reset(furthest->x + Config::obstacleOffset);
+            obstacle->reset(furthest->x() + Config::obstacleOffset);
 
             // Move newly reset obstacle to the end of the list,
             // this ensures that the last element in the list is

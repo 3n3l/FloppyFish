@@ -26,12 +26,12 @@
 
 Obstacle::Obstacle(std::string texture, float offset)
     : Drawable(),
-      height(Config::obstacleHeight),
-      width(Config::obstacleWidth),
-      depth(Config::obstacleDepth),
+      _height(Config::obstacleHeight),
+      _width(Config::obstacleWidth),
+      _depth(Config::obstacleDepth),
       _texture(texture),
-      offset(offset),
-      x(0) {}
+      _offset(offset),
+      _x(0) {}
 Obstacle::~Obstacle() {}
 
 void Obstacle::init() {
@@ -101,24 +101,24 @@ void Obstacle::init() {
     glBindVertexArray(0);
 
     // Set size and position.
-    reset(1 + (1 / width) + offset);
+    reset(1 + (1 / _width) + _offset);
 }
 
 void Obstacle::reset(float newX) {
     // Reset the x-coordinate to be to the right of the window.
-    x = newX;
+    _x = newX;
 
     // Scale obstacle to the configured size, reset _modelViewMatrix.
     float height = 0.25 + float(std::rand()) / float(RAND_MAX / 0.75);
-    _modelViewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(width, height, depth));
+    _modelViewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(_width, height, _depth));
 
     // Translate to the right of the window.
-    _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(x, -(1 / height), 0));
+    _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(_x, -(1 / height), 0));
 }
 
 void Obstacle::update(float elapsedTimeMs) {
     // Scroll.
-    x += Config::obstacleStep;
+    _x += Config::obstacleStep;
     _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(Config::obstacleStep, 0, 0));
 }
 
