@@ -4,6 +4,7 @@
 #include <OpenGL/gltypes.h>
 
 #include "src/drawables/drawable.h"
+#include "src/drawables/obstacles/part.h"
 
 class Obstacle : public Drawable {
    public:
@@ -27,7 +28,7 @@ class Obstacle : public Drawable {
      * @brief update the obstacle.
      * @param elapsedTimeMs The elapsed time since the last update in ms
      */
-    virtual void update(float elapsedTimeMs);
+    virtual void update(float elapsedTimeMs, glm::mat4 modelViewMatrix);
 
     /**
      * @brief reset modelViewMatrix and position.
@@ -38,6 +39,8 @@ class Obstacle : public Drawable {
    private:
     unsigned int _textureHandle; /**< handle of the texture */
     std::string _texture;        /**< path of the texture */
+    Part _upperPart;             /**< lower part of the Obstacle */
+    Part _lowerPart;             /**< upper part of the Obstacle */
     float _offset;               /**< x-offset from the origin */
     float _height;               /**< height of the obstacle */
     float _width;                /**< width of the obstacle */

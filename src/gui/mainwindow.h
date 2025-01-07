@@ -2,7 +2,7 @@
 #define GLMAINWINDOW_H
 
 #include <src/drawables/drawable.h>
-#include <src/drawables/obstacle.h>
+#include <src/drawables/obstacles/obstacle.h>
 
 #include <QElapsedTimer>
 #include <QOpenGLFunctions>

@@ -28,12 +28,14 @@ add_executable(
   # Project entry.
   src/main.cpp
   # Source files.
+  src/drawables/obstacles/obstacle.cpp
+  src/drawables/obstacles/obstacle.h
+  src/drawables/obstacles/part.cpp
+  src/drawables/obstacles/part.h
   src/drawables/background.cpp
   src/drawables/background.h
   src/drawables/drawable.cpp
   src/drawables/drawable.h
-  src/drawables/obstacle.cpp
-  src/drawables/obstacle.h
   src/gui/mainwindow.cpp
   src/gui/mainwindow.h
   src/config/config.cpp

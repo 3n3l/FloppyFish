@@ -1,4 +1,4 @@
-#include "src/drawables/obstacle.h"
+#include "src/drawables/obstacles/part.h"
 
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/matrix_transform.hpp"
@@ -24,17 +24,10 @@
 #include "glm/fwd.hpp"
 #include "src/utils/utils.h"
 
-Obstacle::Obstacle(std::string texture, float offset)
-    : Drawable(),
-      _height(Config::obstacleHeight),
-      _width(Config::obstacleWidth),
-      _depth(Config::obstacleDepth),
-      _texture(texture),
-      _offset(offset),
-      _x(0) {}
-Obstacle::~Obstacle() {}
+Part::Part(std::string texture) : Drawable(), _y(0) {}
+Part::~Part() {}
 
-void Obstacle::init() {
+void Part::init() {
     // Create a program for this class.
     _program = glCreateProgram();
 
@@ -93,36 +86,35 @@ void Obstacle::init() {
 
     // Unbind vertex array object.
     glBindVertexArray(0);
+
     // Delete buffers (the data is stored in the vertex array object).
     glDeleteBuffers(1, &position_buffer);
     glDeleteBuffers(1, &texture_coordinate_buffer);
 
     // Unbind vertex array object.
     glBindVertexArray(0);
-
-    // Set size and position.
-    reset(1 + (1 / _width) + _offset);
 }
 
-void Obstacle::reset(float newX) {
-    // Reset the x-coordinate to be to the right of the window.
-    _x = newX;
+void Part::reset(float x, float y, float height) {
+    _height = height;
+    _y = y;
 
-    // Scale obstacle to the configured size, reset _modelViewMatrix.
-    float height = 0.25 + float(std::rand()) / float(RAND_MAX / 0.75);
-    _modelViewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(_width, height, _depth));
+    // TODO
+    // _modelViewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0, _height, 0));
 
-    // Translate to the right of the window.
-    _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(_x, -(1 / height), 0));
+    // TODO
+    // _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(0, _y, 0));
 }
 
-void Obstacle::update(float elapsedTimeMs) {
-    // Scroll.
-    _x += Config::obstacleStep;
-    _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(Config::obstacleStep, 0, 0));
+void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
+    // TODO
+    _modelViewMatrix = glm::scale(modelViewMatrix, glm::vec3(1, _height, 1));
+
+    // TODO
+    _modelViewMatrix = glm::translate(_modelViewMatrix, glm::vec3(0, _y, 0));
 }
 
-void Obstacle::draw(glm::mat4 projectionMatrix) const {
+void Part::draw(glm::mat4 projectionMatrix) const {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;
@@ -146,12 +138,6 @@ void Obstacle::draw(glm::mat4 projectionMatrix) const {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _textureHandle);
     glUniform1i(glGetUniformLocation(_program, "backgroundTexture"), 0);
-
-    // Repeat the background texture horizontally.
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-
-    // Stretch the background texture vertically.
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     // Call draw.
     glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
