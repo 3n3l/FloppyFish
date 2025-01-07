@@ -1,4 +1,6 @@
-#pragma once
+#ifndef DRAWABLE_H
+#define DRAWABLE_H
+
 #include <OpenGL/gltypes.h>
 
 #include <string>
@@ -34,3 +36,5 @@ class Drawable {
     std::string _texture;        /**< Path to the texture */
     unsigned int _textureHandle; /**< Handle of the texture */
 };
+
+#endif  // DRAWABLE_H

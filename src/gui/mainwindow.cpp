@@ -3,6 +3,7 @@
 #define GLM_FORCE_RADIANS
 #define GLM_SWIZZLE
 #include <OpenGL/gl.h>
+#include <src/drawables/background.h>
 
 #include <QApplication>
 #include <QMessageBox>
@@ -125,9 +126,6 @@ void GLMainWindow::animateGL() {
     const float incrementedLooper = Config::animationLooper + Config::animationSpeed;
     Config::animationLooper = incrementedLooper > 1.0f ? 0.0f : incrementedLooper;
 
-    // Update the window.
-    update();
-
     // Update all drawables.
     for (auto drawable : _drawables) {
         drawable->update(elapsedTimeMs);
@@ -147,8 +145,12 @@ void GLMainWindow::animateGL() {
             // always the furthest to the right.
             _obstacles.splice(_obstacles.end(), _obstacles, it);
         }
+        // Now the obstacle can be updated.
         obstacle->update(elapsedTimeMs);
     }
+
+    // Update the window.
+    update();
 }
 
 void GLMainWindow::keyPressEvent(QKeyEvent *event) {

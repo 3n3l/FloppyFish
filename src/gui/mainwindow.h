@@ -1,17 +1,13 @@
 #ifndef GLMAINWINDOW_H
 #define GLMAINWINDOW_H
 
-#include <src/drawables/background.h>
+#include <src/drawables/drawable.h>
 #include <src/drawables/obstacle.h>
 
-#include <QColorSpace>
 #include <QElapsedTimer>
-#include <QOpenGLContext>
 #include <QOpenGLFunctions>
 #include <QOpenGLWindow>
 #include <QTimer>
-#include <memory>
-#include <vector>
 
 /**
  * @brief The GLWindow class handling the opengl window.
@@ -75,4 +71,4 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions {
     std::list<std::shared_ptr<Obstacle>> _obstacles; /**< doubly linked list of obstacles */
 };
 
-#endif
+#endif  // GLMAINWINDOW_H

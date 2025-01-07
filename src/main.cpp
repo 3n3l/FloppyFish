@@ -1,3 +1,4 @@
+#include <QColorSpace>
 #include <QSurfaceFormat>
 #include <QtWidgets/QApplication>
 

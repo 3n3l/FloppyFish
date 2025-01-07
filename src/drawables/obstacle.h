@@ -1,3 +1,6 @@
+#ifndef OBSTACLE_H
+#define OBSTACLE_H
+
 #include <OpenGL/gltypes.h>
 
 #include "src/drawables/drawable.h"
@@ -41,3 +44,5 @@ class Obstacle : public Drawable {
     float _depth;                /**< depth of the obstacle */
     float _x;                    /**< current x position */
 };
+
+#endif  // OBSTACLE_H
