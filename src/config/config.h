@@ -12,7 +12,7 @@ class Config {
     static unsigned int currentScore;   /**< current score of the player */
     static unsigned int obstacleAmount; /**< number of obstacles to spawn */
     static float obstacleWidth;         /**< width of the obstacle */
-    static float obstacleHeight;        /**< height of the obstacle */
+    static float obstacleGap;           /**< height of the obstacle */
     static float obstacleDepth;         /**< depth of the obstacle */
     static float obstacleOffset;        /**< distance between obstacle */
     static float obstacleStep;          /**< distance scrolled per frame */
