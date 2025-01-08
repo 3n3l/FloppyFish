@@ -48,7 +48,9 @@ void Obstacle::reset(float x) {
     _x = x;
 
     // Reset the properties of the lower part of this obstacle.
-    _lowerPart.setHeight(0.25f + float(std::rand()) / float(RAND_MAX / 0.5f));
+    float lower = Config::obstacleLowerBound;
+    float upper = Config::obstacleUpperBound;
+    _lowerPart.setHeight(lower + float(std::rand()) / float(RAND_MAX / (upper - lower)));
     _lowerPart.setY((0.5 * _lowerPart.height()) - 1);
 
     // Reset the properties of the upper part of this obstacle.

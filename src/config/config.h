@@ -11,6 +11,8 @@ class Config {
     static unsigned int windowHeight;   /**< current height of the window */
     static unsigned int currentScore;   /**< current score of the player */
     static unsigned int obstacleAmount; /**< number of obstacles to spawn */
+    static float obstacleLowerBound;    /**< lower bound of the height of the obstacle */
+    static float obstacleUpperBound;    /**< upper bound of the height of the obstacle */
     static float obstacleGapHeight;     /**< height of the gap of the obstacle */
     static float obstacleDistance;      /**< distance between obstacle */
     static float obstacleWidth;         /**< width of the obstacle */
