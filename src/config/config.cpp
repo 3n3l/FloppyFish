@@ -9,12 +9,12 @@ unsigned int Config::windowWidth = 1440;
 unsigned int Config::windowHeight = 1080;
 
 // Obstacles.
-float Config::obstacleWidth = 0.1f;
-float Config::obstacleGap = 0.4;
-float Config::obstacleDepth = 1.0f;
-float Config::obstacleStep = -0.01f;
-float Config::obstacleOffset = 0.8;
 unsigned int Config::obstacleAmount = 6;
+float Config::obstacleGapHeight = 0.4;
+float Config::obstacleDistance = 0.8;
+float Config::obstacleWidth = 0.1f;
+float Config::obstacleDepth = 1.0f;
+float Config::obstacleSpeed = -0.01f;
 
 // Animations.
 float Config::animationSpeed = 0.0f;

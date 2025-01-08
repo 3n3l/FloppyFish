@@ -31,10 +31,13 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions(), _updateTimer
     _stopWatch.start();
 
     // Create the drawables.
+    // TODO: this might not be needed, as there are only two drawables besides the
+    // obstacles (fish + background) and the fish has to be accessed separately for
+    // checking the collisions against the obstacles anyway.
     _drawables = {std::make_shared<Background>(Background("res/background.png"))};
 
     // Create the obstacles.
-    float offset = Config::obstacleOffset;
+    float offset = Config::obstacleDistance;
     for (unsigned int i = 0; i < Config::obstacleAmount; i++) {
         _obstacles.push_back(std::make_shared<Obstacle>(Obstacle("res/background.png", i * offset)));
     }
@@ -140,7 +143,7 @@ void GLMainWindow::animateGL() {
             // Reset the obstacle based on the last element of the list,
             // which is the element that is the furthest to the right.
             std::shared_ptr<Obstacle> furthest = _obstacles.back();
-            obstacle->reset(furthest->x() + Config::obstacleOffset);
+            obstacle->reset(furthest->x() + Config::obstacleDistance);
 
             // Move newly reset obstacle to the end of the list,
             // this ensures that the last element in the list is

@@ -24,7 +24,7 @@ Obstacle::Obstacle(std::string texture, float offset)
     : Drawable(),
       _upperPart(Part("/res/sign.png")),
       _lowerPart(Part("/res/lamp.png")),
-      _height(Config::obstacleGap),
+      _height(Config::obstacleGapHeight),
       _width(Config::obstacleWidth),
       _depth(Config::obstacleDepth),
       _texture(texture),
@@ -52,13 +52,13 @@ void Obstacle::reset(float x) {
     _lowerPart.setY((0.5 * _lowerPart.height()) - 1);
 
     // Reset the properties of the upper part of this obstacle.
-    _upperPart.setHeight(2 - (_lowerPart.height() + Config::obstacleGap));
+    _upperPart.setHeight(2 - (_lowerPart.height() + Config::obstacleGapHeight));
     _upperPart.setY(2 - (0.5 * _upperPart.height()));
 }
 
 void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // Scroll this obstacle.
-    _x += Config::obstacleStep;
+    _x += Config::obstacleSpeed;
     _modelViewMatrix = glm::translate(modelViewMatrix, glm::vec3(_x, 0, 0));
 
     // Scale to width and depth, height is handled by the individual parts.
