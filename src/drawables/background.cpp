@@ -27,24 +27,24 @@ Background::~Background() {}
 
 void Background::init() {
     // Initialize OpenGL funtions, replacing glewInit().
-    initializeOpenGLFunctions();
+    Drawable::init();
 
     // Create a program for this class.
     _program = glCreateProgram();
 
     // Create texture handle.
-    _textureHandle = Utils::loadTexture(_texture);
+    _textureHandle = loadTexture(_texture);
 
     // Compile shader.
-    GLuint vs = Utils::compileShader(GL_VERTEX_SHADER, "src/shaders/background.vs.glsl");
-    GLuint fs = Utils::compileShader(GL_FRAGMENT_SHADER, "src/shaders/background.fs.glsl");
+    GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/background.vs.glsl");
+    GLuint fs = compileShader(GL_FRAGMENT_SHADER, "src/shaders/background.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);
     glAttachShader(_program, fs);
 
     // Link program.
-    _program = Utils::linkProgram(_program);
+    _program = linkProgram(_program);
 
     // Set up a vertex array object for the geometry.
     if (_vertexArrayObject == 0) {
