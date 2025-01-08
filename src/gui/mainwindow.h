@@ -5,14 +5,14 @@
 #include <src/drawables/obstacles/obstacle.h>
 
 #include <QElapsedTimer>
-#include <QOpenGLFunctions>
+#include <QOpenGLFunctions_4_1_Core>
 #include <QOpenGLWindow>
 #include <QTimer>
 
 /**
  * @brief The GLWindow class handling the opengl window.
  */
-class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions {
+class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     Q_OBJECT
 
    private:
@@ -34,7 +34,7 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions {
      * @brief MainWindow constructor
      * @param parent the parent widget
      */
-    explicit GLMainWindow();
+    GLMainWindow();
 
     /**
      * @brief show opens the widget

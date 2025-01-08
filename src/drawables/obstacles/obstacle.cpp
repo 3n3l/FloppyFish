@@ -30,6 +30,16 @@ Obstacle::Obstacle(std::string texture, float offset)
       _texture(texture),
       _offset(offset),
       _x(0) {}
+Obstacle::Obstacle(Obstacle const &o)
+    : Drawable(),
+      _upperPart(Part("/res/sign.png")),
+      _lowerPart(Part("/res/lamp.png")),
+      _height(Config::obstacleGapHeight),
+      _width(Config::obstacleWidth),
+      _depth(Config::obstacleDepth),
+      _texture(o._texture),
+      _offset(o._offset),
+      _x(0) {}
 Obstacle::~Obstacle() {}
 
 void Obstacle::init() {
@@ -71,7 +81,7 @@ void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _lowerPart.update(elapsedTimeMs, _modelViewMatrix);
 }
 
-void Obstacle::draw(glm::mat4 projectionMatrix) const {
+void Obstacle::draw(glm::mat4 projectionMatrix) {
     // Draw the individual parts.
     _upperPart.draw(projectionMatrix);
     _lowerPart.draw(projectionMatrix);

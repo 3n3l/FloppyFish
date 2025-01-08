@@ -15,7 +15,7 @@
 #include "glm/ext/matrix_transform.hpp"
 #include "src/config/config.h"
 
-GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions(), _updateTimer(this), _stopWatch() {
+GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _updateTimer(this), _stopWatch() {
     // Set to the preconfigured size.
     setWidth(Config::windowWidth);
     setHeight(Config::windowHeight);

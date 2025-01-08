@@ -5,7 +5,6 @@
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "src/config/config.h"
 #include "src/drawables/drawable.h"
 #include "src/utils/utils.h"
 
@@ -25,9 +24,13 @@
 #include "src/utils/utils.h"
 
 Part::Part(std::string texture) : Drawable(), _y(0) {}
+Part::Part(Part const &p) :Drawable(), _y(0) {}
 Part::~Part() {}
 
 void Part::init() {
+    // Initialize OpenGL funtions, replacing glewInit().
+    initializeOpenGLFunctions();
+
     // Create a program for this class.
     _program = glCreateProgram();
 
@@ -103,7 +106,7 @@ void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _modelViewMatrix = glm::scale(_modelViewMatrix, glm::vec3(1, _height, 1));
 }
 
-void Part::draw(glm::mat4 projectionMatrix) const {
+void Part::draw(glm::mat4 projectionMatrix) {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;

@@ -1,18 +1,18 @@
-#include "utils.h"
-
-#include <OpenGL/gl.h>
-#include <OpenGL/gltypes.h>
+#include "src/utils/utils.h"
 
 #include <QDebug>
 #include <QFile>
+#include <QOpenGLFunctions_4_1_Core>
+#include <QOpenGLVersionFunctionsFactory>
 
-#include "image.h"
-
+#include "src/utils/image.h"
 namespace Utils {
 
 void _glCheckError(const char *file, int line) {
+    QOpenGLFunctions_4_1_Core *gl =
+        QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_1_Core>(QOpenGLContext::currentContext());
     GLenum errorCode;
-    while ((errorCode = glGetError()) != GL_NO_ERROR) {
+    while ((errorCode = gl->glGetError()) != GL_NO_ERROR) {
         std::string error;
         switch (errorCode) {
             case GL_INVALID_ENUM:
@@ -23,12 +23,6 @@ void _glCheckError(const char *file, int line) {
                 break;
             case GL_INVALID_OPERATION:
                 error = "INVALID_OPERATION";
-                break;
-            case GL_STACK_OVERFLOW:
-                error = "STACK_OVERFLOW";
-                break;
-            case GL_STACK_UNDERFLOW:
-                error = "STACK_UNDERFLOW";
                 break;
             case GL_OUT_OF_MEMORY:
                 error = "OUT_OF_MEMORY";
@@ -42,6 +36,9 @@ void _glCheckError(const char *file, int line) {
 }
 
 GLuint compileShader(GLenum type, const std::string &path) {
+    QOpenGLFunctions_4_1_Core *gl =
+        QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_1_Core>(QOpenGLContext::currentContext());
+
     QFile f(path.c_str());
     if (!f.open(QFile::ReadOnly | QFile::Text)) {
         qDebug() << "Could not open file: " << path;
@@ -49,18 +46,18 @@ GLuint compileShader(GLenum type, const std::string &path) {
     QTextStream in(&f);
     std::string src = in.readAll().toStdString();
 
-    GLuint shader = glCreateShader(type);
+    GLuint shader = gl->glCreateShader(type);
     const GLchar *glsrc = src.c_str();
-    glShaderSource(shader, 1, &glsrc, NULL);
-    glCompileShader(shader);
+    gl->glShaderSource(shader, 1, &glsrc, NULL);
+    gl->glCompileShader(shader);
 
     std::string message;
     GLint error, length;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &error);
-    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
+    gl->glGetShaderiv(shader, GL_COMPILE_STATUS, &error);
+    gl->glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
     if (length > 0) {
         char *tmplog = new char[length];
-        glGetShaderInfoLog(shader, length, NULL, tmplog);
+        gl->glGetShaderInfoLog(shader, length, NULL, tmplog);
         /*kill_crlf(tmplog);*/
         message = std::string(tmplog);
         delete[] tmplog;
@@ -79,15 +76,17 @@ GLuint compileShader(GLenum type, const std::string &path) {
 }
 
 GLuint linkProgram(GLuint program) {
-    glLinkProgram(program);
+    QOpenGLFunctions_4_1_Core *gl =
+        QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_1_Core>(QOpenGLContext::currentContext());
+    gl->glLinkProgram(program);
 
     std::string log;
     GLint e, l;
-    glGetProgramiv(program, GL_LINK_STATUS, &e);
-    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &l);
+    gl->glGetProgramiv(program, GL_LINK_STATUS, &e);
+    gl->glGetProgramiv(program, GL_INFO_LOG_LENGTH, &l);
     if (l > 0) {
         char *tmplog = new char[l];
-        glGetProgramInfoLog(program, l, NULL, tmplog);
+        gl->glGetProgramInfoLog(program, l, NULL, tmplog);
         /*kill_crlf(tmplog);*/
         log = std::string(tmplog);
         delete[] tmplog;
@@ -105,34 +104,36 @@ GLuint linkProgram(GLuint program) {
 }
 
 GLuint loadTexture(std::string path) {
+    QOpenGLFunctions_4_1_Core *gl =
+        QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_1_Core>(QOpenGLContext::currentContext());
     ImageTexture image(path);
 
     GLuint textureID;
 
-    glActiveTexture(GL_TEXTURE0);
+    gl->glActiveTexture(GL_TEXTURE0);
 
     // Generate and bind texture.
     // Allocate one texture, and assign the openGL handle (akin to a pointer).
-    glGenTextures(1, &textureID);
+    gl->glGenTextures(1, &textureID);
 
     // Makes all following texture methods work on the bound texture.
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    gl->glBindTexture(GL_TEXTURE_2D, textureID);
 
     // Assign image data.
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                 image.getData());
+    gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                     image.getData());
 
     // Set texture parameters.
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    gl->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    gl->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    gl->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    gl->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    gl->glGenerateMipmap(GL_TEXTURE_2D);
 
     // Retrieve maximum supported anisotropy level, and set it.
     GLfloat maxAnisotropy;
-    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
+    gl->glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
+    gl->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
 
     return textureID;
 }

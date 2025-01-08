@@ -9,6 +9,8 @@ class Part : public Drawable {
    public:
     Part(std::string texture = "/res/sign.png");
     ~Part();
+    Part(const Part&);
+
     void setHeight(float height) { _height = height; }
     float height() { return _height; }
     void setY(float y) { _y = y; }
@@ -21,7 +23,7 @@ class Part : public Drawable {
     /**
      * @brief Draw the sign.
      */
-    virtual void draw(glm::mat4 projection_matrix) const override;
+    virtual void draw(glm::mat4 projection_matrix) override;
 
     /**
      * @brief Update the sign.

@@ -1,5 +1,7 @@
 #include "src/drawables/drawable.h"
 
+#include "src/utils/image.h"
+
 #define GL_SILENCE_DEPRECATION
 
 #include <OpenGL/gl.h>
@@ -12,4 +14,5 @@
 #include <QTextStream>
 
 Drawable::Drawable() : _vertexArrayObject(0), _modelViewMatrix(1.0f) {}
+Drawable::Drawable(Drawable const &d) : _vertexArrayObject(0), _modelViewMatrix(1.0f) {}
 Drawable::~Drawable() {}

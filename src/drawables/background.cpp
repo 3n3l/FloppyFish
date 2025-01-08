@@ -3,6 +3,7 @@
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "src/config/config.h"
+#include "src/drawables/drawable.h"
 #include "src/utils/utils.h"
 
 #define GL_SILENCE_DEPRECATION
@@ -21,9 +22,13 @@
 #include "src/utils/utils.h"
 
 Background::Background(std::string texture) : Drawable(), _texture(texture) {}
+Background::Background(Background const &b) : Drawable(), _texture(b._texture) {}
 Background::~Background() {}
 
 void Background::init() {
+    // Initialize OpenGL funtions, replacing glewInit().
+    initializeOpenGLFunctions();
+
     // Create a program for this class.
     _program = glCreateProgram();
 
@@ -90,7 +95,7 @@ void Background::init() {
     glBindVertexArray(0);
 }
 
-void Background::draw(glm::mat4 projectionMatrix) const {
+void Background::draw(glm::mat4 projectionMatrix) {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;

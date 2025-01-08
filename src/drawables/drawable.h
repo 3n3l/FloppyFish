@@ -3,14 +3,16 @@
 
 #include <OpenGL/gltypes.h>
 
+#include <QOpenGLFunctions_4_1_Core>
 #include <string>
 
 #include "glm/ext/matrix_float4x4.hpp"
 
-class Drawable {
+class Drawable : protected QOpenGLFunctions_4_1_Core {
    public:
     Drawable();
     ~Drawable();
+    Drawable(const Drawable&);
 
     /**
      * @brief initialize the drawable.
@@ -21,7 +23,7 @@ class Drawable {
      * @brief draw the drawable.
      * @param projection_matrix The current projection matrix
      */
-    virtual void draw(glm::mat4 projectionMatrix) const {}
+    virtual void draw(glm::mat4 projectionMatrix) {}
 
     /**
      * @brief update the drawable.
