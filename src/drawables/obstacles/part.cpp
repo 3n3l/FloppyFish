@@ -24,7 +24,7 @@
 #include "src/utils/utils.h"
 
 Part::Part(std::string texture) : Drawable(), _y(0) {}
-Part::Part(Part const &p) :Drawable(), _y(0) {}
+Part::Part(Part const &p) : Drawable(), _y(p._y) {}
 Part::~Part() {}
 
 void Part::init() {

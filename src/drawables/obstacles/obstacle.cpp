@@ -32,14 +32,14 @@ Obstacle::Obstacle(std::string texture, float offset)
       _x(0) {}
 Obstacle::Obstacle(Obstacle const &o)
     : Drawable(),
-      _upperPart(Part("/res/sign.png")),
-      _lowerPart(Part("/res/lamp.png")),
-      _height(Config::obstacleGapHeight),
-      _width(Config::obstacleWidth),
-      _depth(Config::obstacleDepth),
+      _upperPart(o._upperPart),
+      _lowerPart(o._lowerPart),
+      _height(o._height),
+      _width(o._width),
+      _depth(o._depth),
       _texture(o._texture),
       _offset(o._offset),
-      _x(0) {}
+      _x(o._x) {}
 Obstacle::~Obstacle() {}
 
 void Obstacle::init() {
