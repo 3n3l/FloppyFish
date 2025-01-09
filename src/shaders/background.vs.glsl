@@ -19,7 +19,6 @@ void main(void) {
 
     // Set the position in homogeneous coordinates,
     // and force the background to be in the back at all times.
-    // vec4 p = projection_matrix * worldPosition;
-    // gl_Position = vec4(p.x, p.y, -0.99f, p.w);
-    gl_Position = projection_matrix * worldPosition;
+    vec4 p = projection_matrix * worldPosition;
+    gl_Position = vec4(p.x, p.y, -0.99f, p.w);
 }
