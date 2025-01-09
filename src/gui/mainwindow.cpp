@@ -139,20 +139,11 @@ void GLMainWindow::animateGL() {
     }
 
     // Iterate over all obstacles, reset if necessary, and update.
-    // TODO: this can probably be computed without the list, with
-    //       just the offset, width and number of obstacles.
-    for (auto it = _obstacles.begin(); it != _obstacles.end(); ++it) {
-        std::shared_ptr<Obstacle> obstacle = *it;
+    for (auto obstacle : _obstacles) {
         if (obstacle->isOutOfBounds()) {
-            // Reset the obstacle based on the last element of the list,
-            // which is the element that is the furthest to the right.
-            std::shared_ptr<Obstacle> furthest = _obstacles.back();
-            obstacle->reset(furthest->x() + Config::obstacleDistance);
-
-            // Move newly reset obstacle to the end of the list,
-            // this ensures that the last element in the list is
-            // always the furthest to the right.
-            _obstacles.splice(_obstacles.end(), _obstacles, it);
+            // Reset the obstacle, this sets it to the right of all the other obstacles
+            // and recomputes height of the parts.
+            obstacle->reset(obstacle->x() + (Config::obstacleAmount * Config::obstacleDistance));
         }
         // Now the obstacle can be updated.
         obstacle->update(elapsedTimeMs, modelViewMatrix);
