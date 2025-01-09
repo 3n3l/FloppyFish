@@ -9,11 +9,11 @@ unsigned int Config::windowWidth = 1440;
 unsigned int Config::windowHeight = 1080;
 
 // Obstacles.
-unsigned int Config::obstacleAmount = 6;
-float Config::obstacleLowerBound = 0.25f;
-float Config::obstacleUpperBound = 0.75f;
-float Config::obstacleGapHeight = 0.4;
-float Config::obstacleDistance = 0.8;
+unsigned int Config::obstacleAmount = 5;
+float Config::obstacleLowerBound = 0.33f;
+float Config::obstacleUpperBound = 0.66f;
+float Config::obstacleGapHeight = 0.2f;
+float Config::obstacleDistance = 0.66f;
 float Config::obstacleWidth = 0.1f;
 float Config::obstacleDepth = 1.0f;
 float Config::obstacleSpeed = -0.01f;
