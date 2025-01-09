@@ -88,6 +88,9 @@ void Background::init() {
 
     // Unbind vertex array object.
     glBindVertexArray(0);
+
+    // Check for an OpenGL error in this method.
+    glCheckError();
 }
 
 void Background::draw(glm::mat4 projectionMatrix) const {
@@ -98,11 +101,9 @@ void Background::draw(glm::mat4 projectionMatrix) const {
 
     // Load program.
     glUseProgram(_program);
-    glCheckError();
 
     // Bind vertex array object.
     glBindVertexArray(_vertexArrayObject);
-    glCheckError();
 
     // Set the background texture.
     glActiveTexture(GL_TEXTURE0);
@@ -120,9 +121,10 @@ void Background::draw(glm::mat4 projectionMatrix) const {
 
     // Call draw.
     glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
-    glCheckError();
 
     // Unbind vertex array object.
     glBindVertexArray(0);
+
+    // Check for an OpenGL error in this method.
     glCheckError();
 }
