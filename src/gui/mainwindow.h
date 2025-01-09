@@ -2,7 +2,6 @@
 #define GLMAINWINDOW_H
 
 #include <src/drawables/drawable.h>
-#include <src/drawables/obstacles/obstacle.h>
 
 #include <QElapsedTimer>
 #include <QOpenGLFunctions>
@@ -68,7 +67,6 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions {
      * @param event the QWheelEvent containing all relevant data
      */
     virtual void keyPressEvent(QKeyEvent* event) override;
-    std::list<std::shared_ptr<Obstacle>> _obstacles; /**< doubly linked list of obstacles */
 };
 
 #endif  // GLMAINWINDOW_H

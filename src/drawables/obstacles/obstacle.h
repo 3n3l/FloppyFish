@@ -11,9 +11,7 @@ class Obstacle : public Drawable {
     Obstacle(std::string texture = "/res/background.png", float offset = 0.0f);
     ~Obstacle();
 
-    /*bool isOutOfBounds() const { return _x <= -((1 / _width) + 1); }*/
     bool isOutOfBounds() const { return _x < -1 - (_width / 2); }
-    float x() const { return _x; }
 
     /**
      * @brief initialize the obstacle.
@@ -32,10 +30,9 @@ class Obstacle : public Drawable {
     virtual void update(float elapsedTimeMs, glm::mat4 modelViewMatrix);
 
     /**
-     * @brief reset modelViewMatrix and position.
-     * @param nx - the new x-coordinate
+     * @brief reset child parts.
      */
-    virtual void reset(float nx);
+    virtual void reset();
 
    private:
     unsigned int _textureHandle; /**< handle of the texture */
