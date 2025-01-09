@@ -9,14 +9,19 @@ class Background {
     ~Background();
 
     /**
-     * @brief draw the background.
-     */
-    virtual void draw(glm::mat4 projection_matrix) const;
-
-    /**
      * @brief initialize the background.
      */
     virtual void init();
+
+    /**
+     * @brief draw the background.
+     */
+    virtual void draw(glm::mat4 projectionMatrix) const;
+
+    /**
+     * @brief draw the background.
+     */
+    virtual void update(float elapsedTimeMs, glm::mat4 modelViewMatrix);
 
    protected:
     GLuint _program;             /**< The opengl program handling the shaders */
