@@ -22,6 +22,6 @@ class Background {
     GLuint _program;             /**< The opengl program handling the shaders */
     GLuint _vertexArrayObject;   /**< The vertex array object containing the vertices */
     glm::mat4 _modelViewMatrix;  /**< The model view matrix to get the object into model view space */
-    std::string _texture;        /**< path of the texture */
+    std::string _texturePath;    /**< path of the texture */
     unsigned int _textureHandle; /**< handle of the texture */
 };

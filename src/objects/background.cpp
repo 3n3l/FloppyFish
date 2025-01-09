@@ -20,7 +20,7 @@
 #include "glm/fwd.hpp"
 #include "src/utils/utils.h"
 
-Background::Background(std::string texture) : _texture(texture), _vertexArrayObject(0) {}
+Background::Background(std::string texture) : _texturePath(texture), _vertexArrayObject(0) {}
 Background::~Background() {}
 
 void Background::init() {
@@ -28,7 +28,7 @@ void Background::init() {
     _program = glCreateProgram();
 
     // Create texture handle.
-    _textureHandle = Utils::loadTexture(_texture);
+    _textureHandle = Utils::loadTexture(_texturePath);
 
     // Compile shader.
     GLuint vs = Utils::compileShader(GL_VERTEX_SHADER, "src/shaders/background.vs.glsl");
