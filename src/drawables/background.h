@@ -16,13 +16,19 @@ class Background : public Drawable {
     virtual void init() override;
 
     /**
+     * @brief update the drawable.
+     * @param elapsedTimeMs The elapsed time since the last update in ms
+     */
+    virtual void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) override;
+
+    /**
      * @brief draw the background.
      * @param projection_matrix The current projection matrix
      */
     virtual void draw(glm::mat4 projection_matrix) const override;
 
    protected:
-    std::string _texture;        /**< path of the texture */
+    std::string _texturePath;    /**< path of the texture */
     unsigned int _textureHandle; /**< handle of the texture */
 };
 

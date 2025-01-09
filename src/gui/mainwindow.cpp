@@ -1,5 +1,8 @@
 #include "mainwindow.h"
 
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/ext/matrix_float4x4.hpp"
+
 #define GLM_FORCE_RADIANS
 #define GLM_SWIZZLE
 #include <OpenGL/gl.h>
@@ -94,11 +97,12 @@ void GLMainWindow::paintGL() {
     glEnable(GL_DEPTH_TEST);
 
     // Set a background color.
-    glClearColor(0.5f, 0.63f, 0.74f, 1.0f);
+    glClearColor(0, 0, 0, 0.5f);
 
-    // Calculate projection matrix from current resolution, this allows for resizing the window without distortion.
     // TODO: projection computation is not working right now?!
-    glm::mat4 projectionMatrix = glm::mat4(1.0f);
+    const float fovy = glm::radians(60.0f);
+    const float aspect = float(Config::windowWidth) / float(Config::windowHeight);
+    glm::mat4 projectionMatrix = glm::perspective(fovy, aspect, 0.1f, 100.0f);
 
     // Draw filled polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
