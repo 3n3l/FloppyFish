@@ -2,6 +2,7 @@
 
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "src/config/config.h"
 #include "src/drawables/drawable.h"
 #include "src/utils/utils.h"
@@ -21,8 +22,8 @@
 #include "glm/fwd.hpp"
 #include "src/utils/utils.h"
 
-Background::Background(std::string texture) : Drawable(), _texture(texture) {}
-Background::Background(Background const &b) : Drawable(), _texture(b._texture) {}
+Background::Background(std::string texture) : Drawable(), _texturePath(texture) {}
+Background::Background(Background const &b) : Drawable(), _texturePath(b._texturePath) {}
 Background::~Background() {}
 
 void Background::init() {
@@ -33,7 +34,7 @@ void Background::init() {
     _program = glCreateProgram();
 
     // Create texture handle.
-    _textureHandle = loadTexture(_texture);
+    _textureHandle = loadTexture(_texturePath);
 
     // Compile shader.
     GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/background.vs.glsl");
@@ -53,11 +54,12 @@ void Background::init() {
     glBindVertexArray(_vertexArrayObject);
 
     // Fill position buffer with data.
+    // TODO: I have no idea why 0.6?!
     std::vector<glm::vec3> positions = {
-        glm::vec3(-1, -1, 0),
-        glm::vec3(-1, 1, 0),
-        glm::vec3(1, 1, 0),
-        glm::vec3(1, -1, 0),
+        glm::vec3(-1, -0.6, 0),
+        glm::vec3(-1, 0.6, 0),
+        glm::vec3(1, 0.6, 0),
+        glm::vec3(1, -0.6, 0),
     };
     GLuint position_buffer;
     glGenBuffers(1, &position_buffer);
@@ -93,7 +95,12 @@ void Background::init() {
 
     // Unbind vertex array object.
     glBindVertexArray(0);
+
+    // Check for an OpenGL error in this method.
+    glCheckError();
 }
+
+void Background::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) { _modelViewMatrix = modelViewMatrix; }
 
 void Background::draw(glm::mat4 projectionMatrix) {
     if (_program == 0) {
@@ -103,11 +110,15 @@ void Background::draw(glm::mat4 projectionMatrix) {
 
     // Load program.
     glUseProgram(_program);
-    glCheckError();
 
     // Bind vertex array object.
     glBindVertexArray(_vertexArrayObject);
-    glCheckError();
+
+    // Set parameter.
+    glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE,
+                       glm::value_ptr(projectionMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE,
+                       glm::value_ptr(_modelViewMatrix));
 
     // Set the background texture.
     glActiveTexture(GL_TEXTURE0);
@@ -124,10 +135,11 @@ void Background::draw(glm::mat4 projectionMatrix) {
     glUniform1f(glGetUniformLocation(_program, "animationLooper"), Config::animationLooper);
 
     // Call draw.
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
-    glCheckError();
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
     // Unbind vertex array object.
     glBindVertexArray(0);
+
+    // Check for an OpenGL error in this method.
     glCheckError();
 }

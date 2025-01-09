@@ -56,7 +56,7 @@ class Drawable : protected QOpenGLFunctions_4_1_Core {
     glm::mat4 _modelViewMatrix;  /**< The model view matrix to get the object into model view space */
     GLuint _program;             /**< The opengl program handling the shaders */
     GLuint _vertexArrayObject;   /**< The vertex array object containing the vertices */
-    std::string _texture;        /**< Path to the texture */
+    std::string _texturePath;    /**< Path to the texture */
     unsigned int _textureHandle; /**< Handle of the texture */
 };
 
