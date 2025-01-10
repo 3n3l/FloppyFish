@@ -1,7 +1,7 @@
 #ifndef PART_H
 #define PART_H
 
-#include <OpenGL/gltypes.h>
+
 
 #include "src/drawables/drawable.h"
 

@@ -4,9 +4,6 @@
 
 #define GL_SILENCE_DEPRECATION
 
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/gltypes.h>
 
 #include <QDebug>
 #include <QFile>
