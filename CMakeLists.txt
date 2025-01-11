@@ -8,7 +8,7 @@ cmake_policy(SET CMP0022 NEW)
 
 project("Floppy Fish" C CXX)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++23")
+set(CMAKE_CXX_STANDARD 23 CACHE STRING "" FORCE)
 
 # Required libraries.
 find_package(OpenGL REQUIRED)
@@ -52,19 +52,21 @@ add_executable(
 )
 
 # Libraries.
-add_definitions(-DGLEW_STATIC)
-add_subdirectory(lib/assimp EXCLUDE_FROM_ALL)
-add_subdirectory(lib/glm EXCLUDE_FROM_ALL)
+set(GLM_BUILD_LIBRARY OFF CACHE BOOL "" FORCE) # Header only to avoid linking errors
+add_subdirectory(lib/glm)
 
 # Build with correct OpenGL library.
 if(WIN32 OR CYGWIN)
-  target_link_libraries(FloppyFish opengl32 Qt::Core Qt::Widgets Qt::OpenGL glm)
+  target_link_libraries(FloppyFish Qt::Core Qt::Widgets Qt::OpenGL glm::glm)
 elseif(APPLE)
   target_link_libraries(FloppyFish Qt::Core Qt::Widgets Qt::OpenGL glm)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework OpenGL")
 else()
   target_link_libraries(FloppyFish GL Qt::Core Qt::Widgets Qt::OpenGL glm)
 endif()
+
+# set root directory in visual studio
+set_property(TARGET FloppyFish PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 
 if(GTA_FOUND)
   add_definitions(-DHAVE_GTA)
