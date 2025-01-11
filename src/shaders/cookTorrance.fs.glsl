@@ -16,6 +16,8 @@ uniform sampler2D albedo;
 // Components for Cook-Toorance.
 uniform float kdMaterialDiffuse;
 uniform float roughness;
+uniform float transparency;
+uniform vec3 emissiveColour;
 uniform float eta;
 
 uniform vec3 lightColour = vec3(10.0f, 10.0f, 10.0f);
@@ -42,7 +44,7 @@ vec3 cook_torrance(vec3 materialDiffuseColour,
     // Dot pre-calculation rest.
     float dotNV = max(0.0f, dot(normal, viewDir));
     // Sometimes called gamma.
-    float dotNH = max(0.0f, dot(normal, halfway));
+    float dotNH = dot(normal, halfway);
 
     // Cook-Torrance.
     // Fresnel - Schlick's-approximation.
@@ -74,6 +76,13 @@ vec3 cook_torrance(vec3 materialDiffuseColour,
 
 void main(void)
 {
+    // If the texture is emissive, just set the colour to a bright colour.
+    if (emissiveColour.r+emissiveColour.g+emissiveColour.b > 0.01)
+    {
+        fColour = vec4(1.8f * emissiveColour, 1.0f);
+        return;
+    }
+
     // Sample the texture.
     vec4 textureColour = texture(albedo, vec2(vTexCoords.s, -vTexCoords.t));
 
@@ -97,5 +106,5 @@ void main(void)
                                             light_vec,
                                             view_vec,
                                             lightColour * intensity_attenuation_factor);
-    fColour = vec4(colourCookTorrance, textureColour.a);
+    fColour = vec4(colourCookTorrance, transparency);
 }

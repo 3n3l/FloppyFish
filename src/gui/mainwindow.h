@@ -1,6 +1,12 @@
 #ifndef GLMAINWINDOW_H
 #define GLMAINWINDOW_H
 
+#include <QtMultimedia/qmediaplayer.h>
+#include <QtMultimedia/qsoundeffect.h>
+#include <QtMultimedia/qaudiooutput.h>
+#include <QtMultimedia/qaudiodevice.h>
+#include <QtMultimedia/qmediadevices.h>
+
 #include <src/drawables/drawable.h>
 
 #include <QElapsedTimer>
@@ -11,6 +17,7 @@
 
 #include "src/drawables/fish.h"
 #include "src/objects/floppyMesh.h"
+#include "src/objects/skybox.h"
 
 /**
  * @brief The GLWindow class handling the opengl window.
@@ -19,13 +26,17 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     Q_OBJECT
 
    private:
-    QTimer _updateTimer;                  /**< Used for regular frame updates */
-    QElapsedTimer _stopWatch;             /**< Measures time between updates */
+    std::shared_ptr<QSoundEffect> _jumpSFX; /**< Jump SFX */
+    std::shared_ptr<QMediaPlayer> _mediaPlayer;/**< Media Player used for SFX */
+    std::shared_ptr<QAudioOutput> _audioOutput;/**< AudioOutput used for Sound */
+    QTimer _updateTimer;      /**< Used for regular frame updates */
+    QElapsedTimer _stopWatch; /**< Measures time between updates */
 
     std::shared_ptr<Fish> _billTheSalmon; /**< Bill the Salmon */
     std::vector<std::shared_ptr<Drawable>> _drawables; /**< Vector holding pointers to the drawables */
     std::shared_ptr<FloppyMesh> _bill;                 /**< Bill the salmon shown in the window */
     std::shared_ptr<FloppyMesh> _sign;                 /**< A sign to test multi-parts objs */
+    std::shared_ptr<Skybox> _skybox;    /**< A skybox */
 
    private slots:
     /**

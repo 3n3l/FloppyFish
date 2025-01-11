@@ -9,7 +9,15 @@
         <file>Sign.mtl</file>
         <file>Sign.obj</file>
         <file>SignTexture.png</file>
-        <file>ico.obj</file>
-        <file>ico.mtl</file>
+
+        <file>starsNX.png</file>
+        <file>starsPX.png</file>
+        <file>starsNY.png</file>
+        <file>starsPY.png</file>
+        <file>starsNZ.png</file>
+        <file>starsPZ.png</file>
+
+        <file>FloppyJumpOST_v1.wav</file>
+        <file>FloppyJumpSFX.wav</file>
     </qresource>
 </RCC>

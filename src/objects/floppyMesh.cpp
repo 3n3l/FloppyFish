@@ -1,6 +1,8 @@
 #define GL_SILENCE_DEPRECATION
 #define GLM_ENABLE_EXPERIMENTAL
 
+#include "src/objects/floppyMesh.h"
+
 #include <OpenGL/gl.h>
 #include <OpenGL/gltypes.h>
 
@@ -14,9 +16,10 @@
 #include "glm/ext/vector_float3.hpp"
 #include "glm/fwd.hpp"
 #include "glm/gtx/rotate_vector.hpp"
+
 #include "lib/tinyobj/tiny_obj_loader.h"
+
 #include "src/config/config.h"
-#include "src/objects/floppyMesh.h"
 #include "src/utils/image.h"
 #include "src/utils/utils.h"
 
@@ -38,7 +41,6 @@ FloppyMesh::~FloppyMesh() = default;
      // Set the scale to 1.0f, so it will keep the parent's transformation.
      _initialScale = 1.0f;
  }
-
 
 void FloppyMesh::init() {
     // Create a program for this class.
@@ -72,6 +74,8 @@ void FloppyMesh::init() {
         indices,
         _textureName,
         _shininess,
+        _transparency,
+        _emissiveColour,
         amountMeshParts);
 
     // If the current index is lower than the maximum, attach and initialize a child / subsequent mesh part.
@@ -158,8 +162,12 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix) const {
                        glm::value_ptr(_modelViewMatrix));
 
     // Set lighting parameters.
-    glUniform1f(glGetUniformLocation(_program, "eta"), Config::etaValue);
-    glUniform1f(glGetUniformLocation(_program, "roughness"), 1.0f-_shininess/100.0f);
+    glUniform1f(glGetUniformLocation(_program, "eta"), Config::indexOfRefraction);
+    // Map shininess [0,1000] to roughness [0,1].
+    float roughness = 0.000001f*pow(_shininess-1000,2.0f);
+    glUniform1f(glGetUniformLocation(_program, "roughness"), roughness);
+    glUniform1f(glGetUniformLocation(_program, "transparency"), _transparency);
+    glUniform3fv(glGetUniformLocation(_program, "emissiveColour"), 1, value_ptr(_emissiveColour));
     // TODO: Replace this light position in the future.
     glm::vec3 lightPosition = glm::vec3(-2.0f, 2.0f, 2.0f);
     glUniform3fv(glGetUniformLocation(_program, "light_position"), 1, value_ptr(lightPosition));
@@ -187,6 +195,8 @@ bool FloppyMesh::loadObj(const std::string& filename,
         std::vector<unsigned int>& indices,
         std::string& textureName,
         float& shininess,
+        float& transparency,
+        glm::vec3& emissiveColour,
         uint& amountMeshParts)
 {
     positions.clear();
@@ -265,6 +275,12 @@ bool FloppyMesh::loadObj(const std::string& filename,
     int materialIndex = shapes[partIndex].mesh.material_ids[0];
     textureName = materialIndex >= 0 ? materials[materialIndex].diffuse_texname : "";
     shininess = materialIndex >= 0 ? materials[materialIndex].shininess : 0.5f;
+    transparency = materialIndex >= 0 ? materials[materialIndex].dissolve : 1.0f;
+    emissiveColour = materialIndex >= 0 ?
+            glm::vec3(  materials[materialIndex].emission[0],
+                        materials[materialIndex].emission[1],
+                        materials[materialIndex].emission[2])
+            : glm::vec3(0.0f);
 
     return true;
 }

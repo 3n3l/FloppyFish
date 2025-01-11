@@ -12,7 +12,6 @@
 
 #include <src/drawables/background.h>
 
-#include <QApplication>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QOpenGLFunctions>
@@ -40,8 +39,8 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     _bill = std::make_shared<FloppyMesh>("src/assets/BillDerLachs.obj",
         glm::vec3(0.0f, -0.3f, 0.0f),
         0.1f, 90.0f, 0.05f);
-    _sign = std::make_shared<FloppyMesh>("src/assets/Sign.obj",
-        glm::vec3(0.5f, -0.3f, 0.0f),
+    _sign = std::make_shared<FloppyMesh>("src/assets/Lamp.obj",
+        glm::vec3(0.5f, 0.3f, 0.0f),
         0.1f, 45.0f, 0.05f);
     _billTheSalmon = std::make_shared<Fish>(Fish("res/fish.png", 0.0f, 0.0f, 0.05f, 0.05f));
 
@@ -58,6 +57,23 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     for (std::size_t i = 0; i < Config::obstacleAmount; i++) {
         _drawables.push_back(std::make_shared<Obstacle>(Obstacle("res/background.png", i * offset)));
     }
+
+    _skybox = std::make_shared<Skybox>();
+
+    // TODO: Initialize the media player.
+    _mediaPlayer = std::make_shared<QMediaPlayer>();
+    const auto devices = QMediaDevices::audioOutputs();
+    _audioOutput = std::make_shared<QAudioOutput>(devices.first());
+
+    _audioOutput->setVolume(100);
+    _mediaPlayer->setAudioOutput(_audioOutput.get());
+
+    _mediaPlayer->setSource(QUrl::fromLocalFile("src/assets/FloppyJumpOST_v1.wav"));
+    _mediaPlayer->play();
+
+    _jumpSFX = std::make_shared<QSoundEffect>();
+    _jumpSFX->setSource(QUrl::fromLocalFile("src/assets/FloppyJumpSFX.wav"));
+    _jumpSFX->setVolume(100);
 }
 
 void GLMainWindow::show() {
@@ -91,6 +107,7 @@ void GLMainWindow::initializeGL() {
 
     _bill->init();
     _sign->init();
+    _skybox->init();
 
     // Initialize all drawables.
     for (auto drawable : _drawables) {
@@ -107,9 +124,8 @@ void GLMainWindow::resizeGL(int width, int height) {
     Config::windowHeight = height;
 
     // Calculate projection matrix from current resolution, this allows for resizing the window without distortion.
-    const float fovy = glm::radians(60.0f);
     const float aspect = float(Config::windowWidth) / float(Config::windowHeight);
-    _projectionMatrix = glm::perspective(fovy, aspect, 0.1f, 100.0f);
+    _projectionMatrix = glm::perspective(glm::radians(Config::fieldOfVision), aspect, 0.1f, 100.0f);
 }
 
 void GLMainWindow::paintGL() {
@@ -122,9 +138,12 @@ void GLMainWindow::paintGL() {
     // Draw filled polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    // glFrontFace(GL_CW);
-    // glEnable(GL_CULL_FACE);
-
+    // Disable culling and set a less strict depth function.
+    glDisable(GL_CULL_FACE);
+    glDepthFunc(GL_LEQUAL);
+    _skybox->draw(_projectionMatrix);
+    glEnable(GL_CULL_FACE);
+    glDepthFunc(GL_LESS);
     _bill->draw(_projectionMatrix);
     _sign->draw(_projectionMatrix);
     // Draw all drawables.
@@ -148,6 +167,7 @@ void GLMainWindow::animateGL() {
     const float incrementedLooper = Config::animationLooper + Config::animationSpeed;
     Config::animationLooper = incrementedLooper > 1.0f ? 0.0f : incrementedLooper;
 
+    _skybox->update(elapsedTimeMs, modelViewMatrix);
     _bill->update(elapsedTimeMs, modelViewMatrix);
     _sign->update(elapsedTimeMs, modelViewMatrix);
 
@@ -164,6 +184,9 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
     const bool isFullscreen = visibility() == QWindow::FullScreen;
     // Pressing SPACE will make the fish flop or flop the fish idk.
     if (event->key() == Qt::Key_Space) {
+        // TODO: make the fish flop!
+        if (!_jumpSFX->isPlaying()) _jumpSFX->play();
+        qDebug() << "FLOPPY FISH";
         _billTheSalmon->flop();
     }
     // Pressing F in fullscreen mode will reset the window.
