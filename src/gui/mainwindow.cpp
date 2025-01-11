@@ -79,7 +79,7 @@ void GLMainWindow::paintGL() {
     glEnable(GL_DEPTH_TEST);
 
     // Set a background color.
-    glClearColor(0, 0, 0, 0.5f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     // Calculate projection matrix from current resolution, this allows for resizing the window without distortion.
     const float fovy = glm::radians(60.0f);
