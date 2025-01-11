@@ -4,7 +4,6 @@
 #define GLM_SWIZZLE
 #include <OpenGL/gl.h>
 
-#include <QApplication>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QOpenGLFunctions>
@@ -31,14 +30,30 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions(), _updateTimer
     _stopWatch.start();
 
     // Create a triangle to be displayed in the center.
-    // TODO: replace with actual content.
-    _triangle = Triangle();
+
     _bill = std::make_shared<FloppyMesh>("src/assets/BillDerLachs.obj",
         glm::vec3(0.0f, -0.3f, 0.0f),
         0.1f, 90.0f, 0.05f);
-    _sign = std::make_shared<FloppyMesh>("src/assets/Sign.obj",
-        glm::vec3(0.5f, -0.3f, 0.0f),
+    _sign = std::make_shared<FloppyMesh>("src/assets/Lamp.obj",
+        glm::vec3(0.5f, 0.3f, 0.0f),
         0.1f, 45.0f, 0.05f);
+
+    _skybox = std::make_shared<Skybox>();
+
+    // TODO: Initialize the media player.
+    _mediaPlayer = std::make_shared<QMediaPlayer>();
+    const auto devices = QMediaDevices::audioOutputs();
+    _audioOutput = std::make_shared<QAudioOutput>(devices.first());
+
+    _audioOutput->setVolume(100);
+    _mediaPlayer->setAudioOutput(_audioOutput.get());
+
+    _mediaPlayer->setSource(QUrl::fromLocalFile("src/assets/FloppyJumpOST_v1.wav"));
+    _mediaPlayer->play();
+
+    _jumpSFX = std::make_shared<QSoundEffect>();
+    _jumpSFX->setSource(QUrl::fromLocalFile("src/assets/FloppyJumpSFX.wav"));
+    _jumpSFX->setVolume(100);
 }
 
 void GLMainWindow::show() {
@@ -70,9 +85,9 @@ void GLMainWindow::initializeGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-    _triangle.init();
     _bill->init();
     _sign->init();
+    _skybox->init();
 }
 
 void GLMainWindow::resizeGL(int width, int height) {
@@ -84,9 +99,8 @@ void GLMainWindow::resizeGL(int width, int height) {
     Config::windowHeight = height;
 
     // Calculate projection matrix from current resolution, this allows for resizing the window without distortion.
-    const float fovy = glm::radians(60.0f);
     const float aspect = float(Config::windowWidth) / float(Config::windowHeight);
-    _projectionMatrix = glm::perspective(fovy, aspect, 0.1f, 100.0f);
+    _projectionMatrix = glm::perspective(glm::radians(Config::fieldOfVision), aspect, 0.1f, 100.0f);
 }
 
 void GLMainWindow::paintGL() {
@@ -99,9 +113,12 @@ void GLMainWindow::paintGL() {
     // Draw filled polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    // glFrontFace(GL_CW);
-    // glEnable(GL_CULL_FACE);
-
+    // Disable culling and set a less strict depth function.
+    glDisable(GL_CULL_FACE);
+    glDepthFunc(GL_LEQUAL);
+    _skybox->draw(_projectionMatrix);
+    glEnable(GL_CULL_FACE);
+    glDepthFunc(GL_LESS);
     _bill->draw(_projectionMatrix);
     _sign->draw(_projectionMatrix);
 }
@@ -119,6 +136,7 @@ void GLMainWindow::animateGL() {
                                             glm::vec3(0.0f),
                                             glm::vec3(0.0f, 1.0f, 0.0f));
 
+    _skybox->update(timeElapsedMs, modelViewMatrix);
     _bill->update(timeElapsedMs, modelViewMatrix);
     _sign->update(timeElapsedMs, modelViewMatrix);
 
@@ -131,6 +149,7 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
     // Pressing SPACE will make the fish flop or flop the fish idk.
     if (event->key() == Qt::Key_Space) {
         // TODO: make the fish flop!
+        if (!_jumpSFX->isPlaying()) _jumpSFX->play();
         qDebug() << "FLOPPY FISH";
     }
     // Pressing F in fullscreen mode will reset the window.

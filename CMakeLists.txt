@@ -12,7 +12,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++23")
 
 # Required libraries.
 find_package(OpenGL REQUIRED)
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets OpenGL)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets OpenGL Multimedia)
 
 # Create a compile_commands.json.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "1")
@@ -40,8 +40,10 @@ add_executable(
     src/config/config.h
     src/utils/utils.cpp
     src/utils/utils.h
-        src/objects/floppyMesh.cpp
-        src/objects/floppyMesh.h
+    src/objects/floppyMesh.cpp
+    src/objects/floppyMesh.h
+    src/objects/skybox.cpp
+    src/objects/skybox.h
     src/utils/image.cpp
     src/utils/image.h
     # Shaders.
@@ -60,12 +62,12 @@ add_subdirectory(lib/glm EXCLUDE_FROM_ALL)
 
 # Build with correct OpenGL library.
 if(WIN32 OR CYGWIN)
-  target_link_libraries(FloppyFish opengl32 Qt::Core Qt::Widgets Qt::OpenGL glm)
+  target_link_libraries(FloppyFish opengl32 Qt::Core Qt::Widgets Qt::OpenGL Qt::Multimedia glm)
 elseif(APPLE)
-  target_link_libraries(FloppyFish Qt::Core Qt::Widgets Qt::OpenGL glm)
+  target_link_libraries(FloppyFish Qt::Core Qt::Widgets Qt::OpenGL Qt::Multimedia glm)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework OpenGL")
 else()
-  target_link_libraries(FloppyFish GL Qt::Core Qt::Widgets Qt::OpenGL glm)
+  target_link_libraries(FloppyFish GL Qt::Core Qt::Widgets Qt::OpenGL Qt::Multimedia glm)
 endif()
 
 if(GTA_FOUND)

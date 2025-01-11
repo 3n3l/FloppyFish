@@ -1,6 +1,11 @@
 #ifndef GLMAINWINDOW_H
 #define GLMAINWINDOW_H
 
+#include <QtMultimedia/qmediaplayer.h>
+#include <QtMultimedia/qsoundeffect.h>
+#include <QtMultimedia/qaudiooutput.h>
+#include <QtMultimedia/qaudiodevice.h>
+#include <QtMultimedia/qmediadevices.h>
 #include <src/objects/triangle.h>
 
 #include <QColorSpace>
@@ -11,6 +16,7 @@
 #include <QTimer>
 
 #include "src/objects/floppyMesh.h"
+#include "src/objects/skybox.h"
 
 /**
  * @brief The GLWindow class handling the opengl window.
@@ -19,12 +25,16 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions {
     Q_OBJECT
 
    private:
+    std::shared_ptr<QSoundEffect> _jumpSFX; /**< Jump SFX */
+    std::shared_ptr<QMediaPlayer> _mediaPlayer;/**< Media Player used for SFX */
+    std::shared_ptr<QAudioOutput> _audioOutput;/**< AudioOutput used for Sound */
     QTimer _updateTimer;      /**< Used for regular frame updates */
     QElapsedTimer _stopWatch; /**< Measures time between updates */
 
     Triangle _triangle;       /**< Triangle shown in the window */
     std::shared_ptr<FloppyMesh> _bill;  /**< Bill the salmon shown in the window */
     std::shared_ptr<FloppyMesh> _sign;  /**< A sign to test multi-parts objs */
+    std::shared_ptr<Skybox> _skybox;    /**< A skybox */
 
    private slots:
     /**
