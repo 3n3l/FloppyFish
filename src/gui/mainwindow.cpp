@@ -158,6 +158,12 @@ void GLMainWindow::animateGL() {
         obstacle->update(elapsedTimeMs, modelViewMatrix);
     }
 
+  /*  // check if collision is true
+    if (CollisionChecker::checkCollision(floppyfish, obstacle)) {
+        std::cout << "collision is true!" << std::endl;
+        // Stop the game and Game Over
+    } */
+
     // Update the window.
     update();
 }
