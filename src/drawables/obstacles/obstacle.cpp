@@ -8,8 +8,6 @@
 
 #define GL_SILENCE_DEPRECATION
 
-
-
 #include <QDebug>
 #include <QFile>
 #include <QOpenGLShaderProgram>
