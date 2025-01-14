@@ -1,8 +1,6 @@
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
-#include <OpenGL/gltypes.h>
-
 #include "src/drawables/drawable.h"
 #include "src/drawables/obstacles/part.h"
 
@@ -10,6 +8,7 @@ class Obstacle : public Drawable {
    public:
     Obstacle(std::string texture = "/res/background.png", float offset = 0.0f);
     ~Obstacle();
+    Obstacle(const Obstacle&);
 
     bool isOutOfBounds() const { return _x < -1 - (_width / 2); }
 
@@ -21,7 +20,7 @@ class Obstacle : public Drawable {
     /**
      * @brief draw the obstacle.
      */
-    virtual void draw(glm::mat4 projection_matrix) const;
+    virtual void draw(glm::mat4 projection_matrix);
 
     /**
      * @brief update the obstacle.

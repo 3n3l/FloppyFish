@@ -8,10 +8,6 @@
 
 #define GL_SILENCE_DEPRECATION
 
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/gltypes.h>
-
 #include <QDebug>
 #include <QFile>
 #include <QOpenGLShaderProgram>
@@ -30,6 +26,16 @@ Obstacle::Obstacle(std::string texture, float offset)
       _texture(texture),
       _offset(offset),
       _x(0) {}
+Obstacle::Obstacle(Obstacle const &o)
+    : Drawable(),
+      _upperPart(o._upperPart),
+      _lowerPart(o._lowerPart),
+      _height(o._height),
+      _width(o._width),
+      _depth(o._depth),
+      _texture(o._texture),
+      _offset(o._offset),
+      _x(o._x) {}
 Obstacle::~Obstacle() {}
 
 void Obstacle::init() {
@@ -78,7 +84,7 @@ void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _lowerPart.update(elapsedTimeMs, _modelViewMatrix);
 }
 
-void Obstacle::draw(glm::mat4 projectionMatrix) const {
+void Obstacle::draw(glm::mat4 projectionMatrix) {
     // Draw the individual parts.
     _upperPart.draw(projectionMatrix);
     _lowerPart.draw(projectionMatrix);

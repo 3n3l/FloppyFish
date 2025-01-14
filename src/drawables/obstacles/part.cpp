@@ -5,15 +5,10 @@
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "src/config/config.h"
 #include "src/drawables/drawable.h"
 #include "src/utils/utils.h"
 
 #define GL_SILENCE_DEPRECATION
-
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/gltypes.h>
 
 #include <QDebug>
 #include <QFile>
@@ -25,25 +20,29 @@
 #include "src/utils/utils.h"
 
 Part::Part(std::string texture) : Drawable(), _y(0) {}
+Part::Part(Part const &p) : Drawable(), _y(p._y) {}
 Part::~Part() {}
 
 void Part::init() {
+    // Initialize OpenGL funtions, replacing glewInit().
+    Drawable::init();
+
     // Create a program for this class.
     _program = glCreateProgram();
 
     // Create texture handle.
-    _textureHandle = Utils::loadTexture(_texture);
+    _textureHandle = loadTexture(_texture);
 
     // Compile shader.
-    GLuint vs = Utils::compileShader(GL_VERTEX_SHADER, "src/shaders/obstacle.vs.glsl");
-    GLuint fs = Utils::compileShader(GL_FRAGMENT_SHADER, "src/shaders/obstacle.fs.glsl");
+    GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/obstacle.vs.glsl");
+    GLuint fs = compileShader(GL_FRAGMENT_SHADER, "src/shaders/obstacle.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);
     glAttachShader(_program, fs);
 
     // Link program.
-    _program = Utils::linkProgram(_program);
+    _program = linkProgram(_program);
 
     // Set up a vertex array object for the geometry.
     if (_vertexArrayObject == 0) {
@@ -103,7 +102,7 @@ void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _modelViewMatrix = glm::scale(_modelViewMatrix, glm::vec3(1, _height, 1));
 }
 
-void Part::draw(glm::mat4 projectionMatrix) const {
+void Part::draw(glm::mat4 projectionMatrix) {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;

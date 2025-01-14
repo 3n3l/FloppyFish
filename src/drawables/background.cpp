@@ -4,13 +4,10 @@
 #include "glm/ext/vector_float3.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "src/config/config.h"
+#include "src/drawables/drawable.h"
 #include "src/utils/utils.h"
 
 #define GL_SILENCE_DEPRECATION
-
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/gltypes.h>
 
 #include <QDebug>
 #include <QFile>
@@ -22,25 +19,29 @@
 #include "src/utils/utils.h"
 
 Background::Background(std::string texture) : Drawable(), _texturePath(texture) {}
+Background::Background(Background const &b) : Drawable(), _texturePath(b._texturePath) {}
 Background::~Background() {}
 
 void Background::init() {
+    // Initialize OpenGL funtions, replacing glewInit().
+    Drawable::init();
+
     // Create a program for this class.
     _program = glCreateProgram();
 
     // Create texture handle.
-    _textureHandle = Utils::loadTexture(_texturePath);
+    _textureHandle = loadTexture(_texturePath);
 
     // Compile shader.
-    GLuint vs = Utils::compileShader(GL_VERTEX_SHADER, "src/shaders/background.vs.glsl");
-    GLuint fs = Utils::compileShader(GL_FRAGMENT_SHADER, "src/shaders/background.fs.glsl");
+    GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/background.vs.glsl");
+    GLuint fs = compileShader(GL_FRAGMENT_SHADER, "src/shaders/background.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);
     glAttachShader(_program, fs);
 
     // Link program.
-    _program = Utils::linkProgram(_program);
+    _program = linkProgram(_program);
 
     // Set up a vertex array object for the geometry.
     if (_vertexArrayObject == 0) {
@@ -97,7 +98,7 @@ void Background::init() {
 
 void Background::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) { _modelViewMatrix = modelViewMatrix; }
 
-void Background::draw(glm::mat4 projectionMatrix) const {
+void Background::draw(glm::mat4 projectionMatrix) {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;

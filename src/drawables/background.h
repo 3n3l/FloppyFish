@@ -1,13 +1,12 @@
 #ifndef BACKGROUND_H
 #define BACKGROUND_H
 
-#include <OpenGL/gltypes.h>
-
 #include "src/drawables/drawable.h"
 
 class Background : public Drawable {
    public:
     Background(std::string texture = "res/background.png");
+    Background(const Background&);
     ~Background();
 
     /**
@@ -25,7 +24,7 @@ class Background : public Drawable {
      * @brief draw the background.
      * @param projection_matrix The current projection matrix
      */
-    virtual void draw(glm::mat4 projection_matrix) const override;
+    virtual void draw(glm::mat4 projection_matrix) override;
 
    protected:
     std::string _texturePath;    /**< path of the texture */
