@@ -1,7 +1,6 @@
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
 
-
 #include <QOpenGLFunctions_4_1_Core>
 #include <string>
 
