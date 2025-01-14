@@ -1,11 +1,11 @@
 #ifndef GLMAINWINDOW_H
 #define GLMAINWINDOW_H
 
+#include <QtMultimedia/qaudiodevice.h>
+#include <QtMultimedia/qaudiooutput.h>
+#include <QtMultimedia/qmediadevices.h>
 #include <QtMultimedia/qmediaplayer.h>
 #include <QtMultimedia/qsoundeffect.h>
-#include <QtMultimedia/qaudiooutput.h>
-#include <QtMultimedia/qaudiodevice.h>
-#include <QtMultimedia/qmediadevices.h>
 
 #include <src/drawables/drawable.h>
 
@@ -26,17 +26,18 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     Q_OBJECT
 
    private:
-    std::shared_ptr<QSoundEffect> _jumpSFX; /**< Jump SFX */
-    std::shared_ptr<QMediaPlayer> _mediaPlayer;/**< Media Player used for SFX */
-    std::shared_ptr<QAudioOutput> _audioOutput;/**< AudioOutput used for Sound */
-    QTimer _updateTimer;      /**< Used for regular frame updates */
-    QElapsedTimer _stopWatch; /**< Measures time between updates */
+    std::shared_ptr<QSoundEffect> _jumpSFX;     /**< Jump SFX */
+    std::shared_ptr<QMediaPlayer> _mediaPlayer; /**< Media Player used for SFX */
+    std::shared_ptr<QAudioOutput> _audioOutput; /**< AudioOutput used for Sound */
+    QTimer _updateTimer;                        /**< Used for regular frame updates */
+    QElapsedTimer _stopWatch;                   /**< Measures time between updates */
 
-    std::shared_ptr<Fish> _billTheSalmon; /**< Bill the Salmon */
+    std::shared_ptr<FloppyMesh> _billTheSalmon; /**< Bill the salmon shown in the window */
+    std::shared_ptr<FloppyMesh> _secondProp;    /**< A sign to test multi-parts objs */
+    std::shared_ptr<Skybox> _skybox;            /**< A skybox */
+
+    std::shared_ptr<Fish> _billTheSalmonX; /**< Bill the Salmon */
     std::vector<std::shared_ptr<Drawable>> _drawables; /**< Vector holding pointers to the drawables */
-    std::shared_ptr<FloppyMesh> _bill;                 /**< Bill the salmon shown in the window */
-    std::shared_ptr<FloppyMesh> _sign;                 /**< A sign to test multi-parts objs */
-    std::shared_ptr<Skybox> _skybox;    /**< A skybox */
 
    private slots:
     /**

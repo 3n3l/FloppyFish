@@ -3,10 +3,6 @@
 
 #include "src/objects/floppyMesh.h"
 
-#include <OpenGL/gl.h>
-#include <OpenGL/gltypes.h>
-
-#include <QDebug>
 #include <QFile>
 #include <QOpenGLShaderProgram>
 #include <string>
@@ -16,16 +12,14 @@
 #include "glm/ext/vector_float3.hpp"
 #include "glm/fwd.hpp"
 #include "glm/gtx/rotate_vector.hpp"
-
 #include "lib/tinyobj/tiny_obj_loader.h"
-
 #include "src/config/config.h"
 #include "src/utils/image.h"
 #include "src/utils/utils.h"
 
 // Main constructor.
-FloppyMesh::FloppyMesh(std::string meshPath, glm::vec3 initialTranslation,
-                       float initialScale, float initialRotation, float subsequentRotationSpeed) {
+FloppyMesh::FloppyMesh(std::string meshPath, glm::vec3 initialTranslation, float initialScale, float initialRotation,
+                       float subsequentRotationSpeed) {
     _meshPath = std::move(meshPath);
     _initialTranslation = initialTranslation;
     _initialScale = initialScale;
@@ -35,14 +29,17 @@ FloppyMesh::FloppyMesh(std::string meshPath, glm::vec3 initialTranslation,
 FloppyMesh::~FloppyMesh() = default;
 
 // Constructor for next mesh parts.
- FloppyMesh::FloppyMesh(std::string meshPath, uint meshIndex) {
-     _meshPath = std::move(meshPath);
-     _meshIndex = meshIndex;
-     // Set the scale to 1.0f, so it will keep the parent's transformation.
-     _initialScale = 1.0f;
- }
+FloppyMesh::FloppyMesh(std::string meshPath, uint meshIndex) {
+    _meshPath = std::move(meshPath);
+    _meshIndex = meshIndex;
+    // Set the scale to 1.0f, so it will keep the parent's transformation.
+    _initialScale = 1.0f;
+}
 
 void FloppyMesh::init() {
+    // Initialize OpenGL funtions, replacing glewInit().
+    initializeOpenGLFunctions();
+
     // Create a program for this class.
     _program = glCreateProgram();
 
@@ -66,17 +63,8 @@ void FloppyMesh::init() {
     uint amountMeshParts = 0;
 
     // Load mesh.
-    loadObj(_meshPath,
-        _meshIndex,
-        positions,
-        normals,
-        textureCoordinates,
-        indices,
-        _textureName,
-        _shininess,
-        _transparency,
-        _emissiveColour,
-        amountMeshParts);
+    loadObj(_meshPath, _meshIndex, positions, normals, textureCoordinates, indices, _textureName, _shininess,
+            _transparency, _emissiveColour, amountMeshParts);
 
     // If the current index is lower than the maximum, attach and initialize a child / subsequent mesh part.
     if (_meshIndex < amountMeshParts - 1) {
@@ -112,7 +100,8 @@ void FloppyMesh::init() {
     glGenBuffers(1, &textureCoordinateBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, textureCoordinateBuffer);
     // Multiply with 2, as it is only vec2.
-    glBufferData(GL_ARRAY_BUFFER, textureCoordinates.size() * 2 * sizeof(float), textureCoordinates.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, textureCoordinates.size() * 2 * sizeof(float), textureCoordinates.data(),
+                 GL_STATIC_DRAW);
     // Use indices of 2.
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(2);
@@ -132,10 +121,10 @@ void FloppyMesh::init() {
     glDeleteBuffers(1, &indexBuffer);
 
     // Load texture.
-    _textureHandle = loadTexture("src/assets/" + _textureName);
+    _textureHandle = loadTexture("res/" + _textureName);
 }
 
-void FloppyMesh::draw(glm::mat4 projectionMatrix) const {
+void FloppyMesh::draw(glm::mat4 projectionMatrix) {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;
@@ -164,7 +153,7 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix) const {
     // Set lighting parameters.
     glUniform1f(glGetUniformLocation(_program, "eta"), Config::indexOfRefraction);
     // Map shininess [0,1000] to roughness [0,1].
-    float roughness = 0.000001f*pow(_shininess-1000,2.0f);
+    float roughness = 0.000001f * pow(_shininess - 1000, 2.0f);
     glUniform1f(glGetUniformLocation(_program, "roughness"), roughness);
     glUniform1f(glGetUniformLocation(_program, "transparency"), _transparency);
     glUniform3fv(glGetUniformLocation(_program, "emissiveColour"), 1, value_ptr(_emissiveColour));
@@ -187,18 +176,10 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix) const {
     glCheckError();
 }
 
-bool FloppyMesh::loadObj(const std::string& filename,
-        uint partIndex,
-        std::vector<glm::vec3>& positions,
-        std::vector<glm::vec3>& normals,
-        std::vector<glm::vec2>& textureCoordinates,
-        std::vector<unsigned int>& indices,
-        std::string& textureName,
-        float& shininess,
-        float& transparency,
-        glm::vec3& emissiveColour,
-        uint& amountMeshParts)
-{
+bool FloppyMesh::loadObj(const std::string& filename, uint partIndex, std::vector<glm::vec3>& positions,
+                         std::vector<glm::vec3>& normals, std::vector<glm::vec2>& textureCoordinates,
+                         std::vector<unsigned int>& indices, std::string& textureName, float& shininess,
+                         float& transparency, glm::vec3& emissiveColour, uint& amountMeshParts) {
     positions.clear();
     normals.clear();
     textureCoordinates.clear();
@@ -228,17 +209,14 @@ bool FloppyMesh::loadObj(const std::string& filename,
     std::vector<tinyobj::material_t> materials = objReader.GetMaterials();
 
     bool have_normals = (attributes.normals.size() / 3 == attributes.vertices.size() / 3);
-    bool have_texcoords = (attributes.texcoords.size() / 2 == attributes.vertices.size() );
+    bool have_texcoords = (attributes.texcoords.size() / 2 == attributes.vertices.size());
 
     // Validate.
-    if (attributes.vertices.empty()
-            || attributes.vertices.size() % 3 != 0
-            || attributes.normals.size() % 3 != 0
-            || (have_normals && attributes.normals.size() / 3 != attributes.vertices.size() / 3)
-            || attributes.texcoords.size() % 2 != 0
-            || (have_texcoords && attributes.texcoords.size() / 2 != attributes.vertices.size())
-            || shapes[partIndex].mesh.indices.empty()
-            || shapes[partIndex].mesh.indices.size() % 3 != 0) {
+    if (attributes.vertices.empty() || attributes.vertices.size() % 3 != 0 || attributes.normals.size() % 3 != 0 ||
+        (have_normals && attributes.normals.size() / 3 != attributes.vertices.size() / 3) ||
+        attributes.texcoords.size() % 2 != 0 ||
+        (have_texcoords && attributes.texcoords.size() / 2 != attributes.vertices.size()) ||
+        shapes[partIndex].mesh.indices.empty() || shapes[partIndex].mesh.indices.size() % 3 != 0) {
         positions.clear();
         normals.clear();
         textureCoordinates.clear();
@@ -256,17 +234,12 @@ bool FloppyMesh::loadObj(const std::string& filename,
         vertPosition = shapes[partIndex].mesh.indices[i].vertex_index;
         vertNormal = shapes[partIndex].mesh.indices[i].normal_index;
         vertTexCoord = shapes[partIndex].mesh.indices[i].texcoord_index;
-        positions.emplace_back(
-                        attributes.vertices[3 * vertPosition + 0],
-                        attributes.vertices[3 * vertPosition + 1],
-                        attributes.vertices[3 * vertPosition + 2]);
-        normals.emplace_back(
-                        attributes.normals[3 * vertNormal + 0],
-                        attributes.normals[3 * vertNormal + 1],
-                        attributes.normals[3 * vertNormal + 2]);
-        textureCoordinates.emplace_back(
-                        attributes.texcoords[2 * vertTexCoord + 0],
-                        attributes.texcoords[2 * vertTexCoord + 1]);
+        positions.emplace_back(attributes.vertices[3 * vertPosition + 0], attributes.vertices[3 * vertPosition + 1],
+                               attributes.vertices[3 * vertPosition + 2]);
+        normals.emplace_back(attributes.normals[3 * vertNormal + 0], attributes.normals[3 * vertNormal + 1],
+                             attributes.normals[3 * vertNormal + 2]);
+        textureCoordinates.emplace_back(attributes.texcoords[2 * vertTexCoord + 0],
+                                        attributes.texcoords[2 * vertTexCoord + 1]);
         indices.push_back(i);
     }
 
@@ -276,21 +249,20 @@ bool FloppyMesh::loadObj(const std::string& filename,
     textureName = materialIndex >= 0 ? materials[materialIndex].diffuse_texname : "";
     shininess = materialIndex >= 0 ? materials[materialIndex].shininess : 0.5f;
     transparency = materialIndex >= 0 ? materials[materialIndex].dissolve : 1.0f;
-    emissiveColour = materialIndex >= 0 ?
-            glm::vec3(  materials[materialIndex].emission[0],
-                        materials[materialIndex].emission[1],
-                        materials[materialIndex].emission[2])
-            : glm::vec3(0.0f);
+    emissiveColour = materialIndex >= 0
+                         ? glm::vec3(materials[materialIndex].emission[0], materials[materialIndex].emission[1],
+                                     materials[materialIndex].emission[2])
+                         : glm::vec3(0.0f);
 
     return true;
 }
 
-GLuint FloppyMesh::loadTexture(std::string path, TextureType type){
+GLuint FloppyMesh::loadTexture(std::string path, TextureType type) {
     Image image(path);
 
     GLuint textureID;
 
-    glActiveTexture (GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
 
     // Generate and bind texture.
     // Allocate one texture, and assign the openGL handle (akin to a pointer).
@@ -299,24 +271,27 @@ GLuint FloppyMesh::loadTexture(std::string path, TextureType type){
     glBindTexture(GL_TEXTURE_2D, textureID);
 
     // Assign image data.
-    switch (type)
-    {
+    switch (type) {
         case Monochrome:
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getData());
-        break;
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                         image.getData());
+            break;
 
         case RGB:
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getData());
-        break;
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                         image.getData());
+            break;
 
         case NormalMap:
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getData());
-        break;
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                         image.getData());
+            break;
 
         case SRGB:
-            default:
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getData());
-        break;
+        default:
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, image.getWidth(), image.getHeight(), 0, GL_RGBA,
+                         GL_UNSIGNED_BYTE, image.getData());
+            break;
     }
 
     // Set texture parameters.
@@ -325,7 +300,7 @@ GLuint FloppyMesh::loadTexture(std::string path, TextureType type){
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     // Make magnification use nearest, in order to preserve pixel look.
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glGenerateMipmap (GL_TEXTURE_2D);
+    glGenerateMipmap(GL_TEXTURE_2D);
 
     // Retrieve maximum supported anisotropy level, and set it.
     GLfloat maxAnisotropy;
@@ -336,7 +311,6 @@ GLuint FloppyMesh::loadTexture(std::string path, TextureType type){
 }
 
 void FloppyMesh::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
-
     // Translations.
     modelViewMatrix = translate(modelViewMatrix, _initialTranslation);
     modelViewMatrix = translate(modelViewMatrix, _subsequentTranslation);
@@ -345,16 +319,12 @@ void FloppyMesh::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     modelViewMatrix = scale(modelViewMatrix, glm::vec3(_initialScale));
 
     // Rotations.
-    modelViewMatrix = rotate(modelViewMatrix,
-        glm::radians(_initialRotation),
-        glm::vec3(0.0f, 1.0f, 0.0f));
+    modelViewMatrix = rotate(modelViewMatrix, glm::radians(_initialRotation), glm::vec3(0.0f, 1.0f, 0.0f));
     if (_subsequentRotationSpeed > 0.0f) {
         // Rotate around Y for debug reasons.
         _subsequentRotation += _subsequentRotationSpeed * elapsedTimeMs;
         _subsequentRotation = _subsequentRotation >= 360.0f ? 0.0f : _subsequentRotation;
-        modelViewMatrix = rotate(modelViewMatrix,
-                                    glm::radians(_subsequentRotation),
-                                    glm::vec3(0.0f, 1.0f, 0.0f));
+        modelViewMatrix = rotate(modelViewMatrix, glm::radians(_subsequentRotation), glm::vec3(0.0f, 1.0f, 0.0f));
     }
 
     // Update the next mesh part if applicable.

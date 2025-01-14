@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/src/assets">
+    <qresource prefix="/res">
         <file>BillAlbedo.png</file>
         <file>BillDerLachs.mtl</file>
         <file>BillDerLachs.obj</file>

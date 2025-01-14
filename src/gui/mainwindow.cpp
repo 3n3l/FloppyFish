@@ -29,20 +29,17 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     // Set the title.
     setTitle("Floppy Fish");
 
-    setSurfaceType(QWindow::OpenGLSurface);
+    setSurfaceType(OpenGLSurface);
 
     // Update the scene periodically.
-    QObject::connect(&_updateTimer, SIGNAL(timeout()), this, SLOT(animateGL()));
+    connect(&_updateTimer, SIGNAL(timeout()), this, SLOT(animateGL()));
     _updateTimer.start(18);
     _stopWatch.start();
 
-    _bill = std::make_shared<FloppyMesh>("src/assets/BillDerLachs.obj",
-        glm::vec3(0.0f, -0.3f, 0.0f),
-        0.1f, 90.0f, 0.05f);
-    _sign = std::make_shared<FloppyMesh>("src/assets/Lamp.obj",
-        glm::vec3(0.5f, 0.3f, 0.0f),
-        0.1f, 45.0f, 0.05f);
-    _billTheSalmon = std::make_shared<Fish>(Fish("res/fish.png", 0.0f, 0.0f, 0.05f, 0.05f));
+    _billTheSalmon =
+        std::make_shared<FloppyMesh>("res/BillDerLachs.obj", glm::vec3(0.0f, -0.3f, 0.0f), 0.1f, 90.0f, 0.05f);
+    _secondProp = std::make_shared<FloppyMesh>("res/Lamp.obj", glm::vec3(0.5f, 0.3f, 0.0f), 0.1f, 45.0f, 0.05f);
+    _billTheSalmonX = std::make_shared<Fish>(Fish("res/fish.png", 0.0f, 0.0f, 0.05f, 0.05f));
 
     // Create all the drawables.
     // NOTE: Order in list is important for culling.
@@ -50,7 +47,7 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
                   // std::make_shared<Ground>(Ground("res/ground.png")),
                   std::make_shared<Background>(Background("res/background.png")),
                   // Bill the Salmon.
-                  _billTheSalmon};
+                  _billTheSalmonX};
 
     // Create the in the Config specified amount of obstacles and add it to the drawables.
     float offset = Config::obstacleDistance;
@@ -68,11 +65,11 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     _audioOutput->setVolume(100);
     _mediaPlayer->setAudioOutput(_audioOutput.get());
 
-    _mediaPlayer->setSource(QUrl::fromLocalFile("src/assets/FloppyJumpOST_v1.wav"));
+    _mediaPlayer->setSource(QUrl::fromLocalFile("res/FloppyJumpOST_v1.wav"));
     _mediaPlayer->play();
 
     _jumpSFX = std::make_shared<QSoundEffect>();
-    _jumpSFX->setSource(QUrl::fromLocalFile("src/assets/FloppyJumpSFX.wav"));
+    _jumpSFX->setSource(QUrl::fromLocalFile("res/FloppyJumpSFX.wav"));
     _jumpSFX->setVolume(100);
 }
 
@@ -105,8 +102,8 @@ void GLMainWindow::initializeGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-    _bill->init();
-    _sign->init();
+    _billTheSalmon->init();
+    _secondProp->init();
     _skybox->init();
 
     // Initialize all drawables.
@@ -144,8 +141,8 @@ void GLMainWindow::paintGL() {
     _skybox->draw(_projectionMatrix);
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
-    _bill->draw(_projectionMatrix);
-    _sign->draw(_projectionMatrix);
+    _billTheSalmon->draw(_projectionMatrix);
+    _secondProp->draw(_projectionMatrix);
     // Draw all drawables.
     for (auto drawable : _drawables) {
         drawable->draw(_projectionMatrix);
@@ -168,8 +165,8 @@ void GLMainWindow::animateGL() {
     Config::animationLooper = incrementedLooper > 1.0f ? 0.0f : incrementedLooper;
 
     _skybox->update(elapsedTimeMs, modelViewMatrix);
-    _bill->update(elapsedTimeMs, modelViewMatrix);
-    _sign->update(elapsedTimeMs, modelViewMatrix);
+    _billTheSalmon->update(elapsedTimeMs, modelViewMatrix);
+    _secondProp->update(elapsedTimeMs, modelViewMatrix);
 
     // Update all drawables.
     for (auto drawable : _drawables) {
@@ -187,7 +184,7 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
         // TODO: make the fish flop!
         if (!_jumpSFX->isPlaying()) _jumpSFX->play();
         qDebug() << "FLOPPY FISH";
-        _billTheSalmon->flop();
+        _billTheSalmonX->flop();
     }
     // Pressing F in fullscreen mode will reset the window.
     else if (event->key() == Qt::Key_F && isFullscreen) {

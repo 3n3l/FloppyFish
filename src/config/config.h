@@ -16,6 +16,7 @@ class Config {
     // Debug values.
     static float indexOfRefraction;            /**< the eta value for cook torrance */
     static float roughness;           /**< the roughness for cook torrance */
+
     static unsigned int obstacleAmount; /**< number of obstacles to spawn */
     static float obstacleLowerBound;    /**< lower bound of the height of the obstacle */
     static float obstacleUpperBound;    /**< upper bound of the height of the obstacle */

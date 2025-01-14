@@ -24,7 +24,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS
 # Optional libraries.
 find_package(GTA QUIET)
 
-# Add the assets.qrc file.
+# Add the res.qrc file.
 set(ASSETS assets.qrc)
 
 # Add the shaders.qrc file.
@@ -75,12 +75,12 @@ add_subdirectory(lib/glm)
 
 # Build with correct OpenGL library.
 if (WIN32 OR CYGWIN)
-  target_link_libraries(FloppyFish Qt::Core Qt::Widgets Qt::OpenGL Qt::Multimedia glm::glm)
+  target_link_libraries(FloppyFish Qt::Core Qt::Widgets Qt::OpenGL Qt::Multimedia glm::glm-header-only)
 elseif (APPLE)
-    target_link_libraries(FloppyFish Qt::Core Qt::Widgets Qt::OpenGL Qt::Multimedia glm::glm)
+    target_link_libraries(FloppyFish Qt::Core Qt::Widgets Qt::OpenGL Qt::Multimedia glm::glm-header-only)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework OpenGL")
 else ()
-    target_link_libraries(FloppyFish GL Qt::Core Qt::Widgets Qt::OpenGL Qt::Multimedia glm::glm)
+    target_link_libraries(FloppyFish GL Qt::Core Qt::Widgets Qt::OpenGL Qt::Multimedia glm::glm-header-only)
 endif ()
 
 # set root directory in visual studio
