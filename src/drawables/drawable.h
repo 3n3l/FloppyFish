@@ -1,8 +1,6 @@
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
 
-#include <OpenGL/gltypes.h>
-
 #include <QOpenGLFunctions_4_1_Core>
 #include <string>
 

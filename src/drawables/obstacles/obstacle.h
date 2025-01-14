@@ -1,8 +1,6 @@
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
-#include <OpenGL/gltypes.h>
-
 #include "src/drawables/drawable.h"
 #include "src/drawables/obstacles/part.h"
 

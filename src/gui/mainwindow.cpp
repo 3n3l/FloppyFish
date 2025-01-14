@@ -7,7 +7,7 @@
 
 #define GLM_FORCE_RADIANS
 #define GLM_SWIZZLE
-#include <OpenGL/gl.h>
+
 #include <src/drawables/background.h>
 
 #include <QApplication>
