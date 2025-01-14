@@ -1,8 +1,12 @@
-#include "src/objects/background.h"
+#include "src/drawables/obstacles/part.h"
 
+#include "glm/ext/matrix_float4x4.hpp"
+#include "glm/ext/matrix_transform.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "src/config/config.h"
+#include "src/drawables/drawable.h"
 #include "src/utils/utils.h"
 
 #define GL_SILENCE_DEPRECATION
@@ -20,19 +24,19 @@
 #include "glm/fwd.hpp"
 #include "src/utils/utils.h"
 
-Background::Background(std::string texture) : _texturePath(texture), _vertexArrayObject(0), _modelViewMatrix(1.0f) {}
-Background::~Background() {}
+Part::Part(std::string texture) : Drawable(), _y(0) {}
+Part::~Part() {}
 
-void Background::init() {
+void Part::init() {
     // Create a program for this class.
     _program = glCreateProgram();
 
     // Create texture handle.
-    _textureHandle = Utils::loadTexture(_texturePath);
+    _textureHandle = Utils::loadTexture(_texture);
 
     // Compile shader.
-    GLuint vs = Utils::compileShader(GL_VERTEX_SHADER, "src/shaders/background.vs.glsl");
-    GLuint fs = Utils::compileShader(GL_FRAGMENT_SHADER, "src/shaders/background.fs.glsl");
+    GLuint vs = Utils::compileShader(GL_VERTEX_SHADER, "src/shaders/obstacle.vs.glsl");
+    GLuint fs = Utils::compileShader(GL_FRAGMENT_SHADER, "src/shaders/obstacle.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);
@@ -48,12 +52,11 @@ void Background::init() {
     glBindVertexArray(_vertexArrayObject);
 
     // Fill position buffer with data.
-    // TODO: I have no idea why 0.6?!
     std::vector<glm::vec3> positions = {
-        glm::vec3(-1, -0.6, 0),
-        glm::vec3(-1, 0.6, 0),
-        glm::vec3(1, 0.6, 0),
-        glm::vec3(1, -0.6, 0),
+        glm::vec3(-1, -1, 0),
+        glm::vec3(-1, 1, 0),
+        glm::vec3(1, 1, 0),
+        glm::vec3(1, -1, 0),
     };
     GLuint position_buffer;
     glGenBuffers(1, &position_buffer);
@@ -83,20 +86,24 @@ void Background::init() {
 
     // Unbind vertex array object.
     glBindVertexArray(0);
+
     // Delete buffers (the data is stored in the vertex array object).
     glDeleteBuffers(1, &position_buffer);
     glDeleteBuffers(1, &texture_coordinate_buffer);
 
     // Unbind vertex array object.
     glBindVertexArray(0);
-
-    // Check for an OpenGL error in this method.
-    glCheckError();
 }
 
-void Background::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) { _modelViewMatrix = modelViewMatrix; }
+void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
+    // TODO
+    _modelViewMatrix = glm::translate(modelViewMatrix, glm::vec3(0, _y, 0));
 
-void Background::draw(glm::mat4 projectionMatrix) const {
+    // TODO
+    _modelViewMatrix = glm::scale(_modelViewMatrix, glm::vec3(1, _height, 1));
+}
+
+void Part::draw(glm::mat4 projectionMatrix) const {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;
@@ -104,9 +111,11 @@ void Background::draw(glm::mat4 projectionMatrix) const {
 
     // Load program.
     glUseProgram(_program);
+    glCheckError();
 
     // Bind vertex array object.
     glBindVertexArray(_vertexArrayObject);
+    glCheckError();
 
     // Set parameter.
     glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE,
@@ -119,21 +128,11 @@ void Background::draw(glm::mat4 projectionMatrix) const {
     glBindTexture(GL_TEXTURE_2D, _textureHandle);
     glUniform1i(glGetUniformLocation(_program, "backgroundTexture"), 0);
 
-    // Repeat the background texture horizontally.
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-
-    // Stretch the background texture vertically.
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    // Value that goes from 0.0 to 1.0 and resets again.
-    glUniform1f(glGetUniformLocation(_program, "animationLooper"), Config::animationLooper);
-
     // Call draw.
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+    glCheckError();
 
     // Unbind vertex array object.
     glBindVertexArray(0);
-
-    // Check for an OpenGL error in this method.
     glCheckError();
 }

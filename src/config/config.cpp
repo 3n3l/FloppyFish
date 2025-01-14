@@ -8,6 +8,16 @@ unsigned int Config::currentScore = 0;
 unsigned int Config::windowWidth = 1440;
 unsigned int Config::windowHeight = 1080;
 
+// Obstacles.
+unsigned int Config::obstacleAmount = 5;
+float Config::obstacleLowerBound = 0.33f;
+float Config::obstacleUpperBound = 0.66f;
+float Config::obstacleGapHeight = 0.2f;
+float Config::obstacleDistance = 0.66f;
+float Config::obstacleWidth = 0.1f;
+float Config::obstacleDepth = 1.0f;
+float Config::obstacleSpeed = -0.01f;
+
 // Animations.
-float Config::animationSpeed = 1.5f;
+float Config::animationSpeed = 0.0f;
 float Config::animationLooper = 0.0f;

@@ -1,11 +1,9 @@
 #ifndef GLMAINWINDOW_H
 #define GLMAINWINDOW_H
 
-#include <src/objects/background.h>
+#include <src/drawables/drawable.h>
 
-#include <QColorSpace>
 #include <QElapsedTimer>
-#include <QOpenGLContext>
 #include <QOpenGLFunctions>
 #include <QOpenGLWindow>
 #include <QTimer>
@@ -17,9 +15,9 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions {
     Q_OBJECT
 
    private:
-    QTimer _updateTimer;      /**< Used for regular frame updates */
-    QElapsedTimer _stopWatch; /**< Measures time between updates */
-    Background _background;   /**< Background shown in the window */
+    QTimer _updateTimer;                               /**< Used for regular frame updates */
+    QElapsedTimer _stopWatch;                          /**< Measures time between updates */
+    std::vector<std::shared_ptr<Drawable>> _drawables; /**< Vector holding pointers to the drawables */
 
    private slots:
     /**
@@ -71,4 +69,4 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions {
     virtual void keyPressEvent(QKeyEvent* event) override;
 };
 
-#endif
+#endif  // GLMAINWINDOW_H
