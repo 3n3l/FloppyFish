@@ -7,6 +7,9 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <QOpenGLWindow>
 #include <QTimer>
+#include <memory>
+
+#include "src/drawables/fish.h"
 
 /**
  * @brief The GLWindow class handling the opengl window.
@@ -15,6 +18,7 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     Q_OBJECT
 
    private:
+    std::shared_ptr<Fish> _billTheSalmon;              /**< Bill the Salmon */
     QTimer _updateTimer;                               /**< Used for regular frame updates */
     QElapsedTimer _stopWatch;                          /**< Measures time between updates */
     std::vector<std::shared_ptr<Drawable>> _drawables; /**< Vector holding pointers to the drawables */

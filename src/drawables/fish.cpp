@@ -2,8 +2,8 @@
 
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "src/config/config.h"
 #include "src/drawables/drawable.h"
-#include "src/utils/utils.h"
 
 #define GL_SILENCE_DEPRECATION
 
@@ -89,6 +89,7 @@ void Fish::init() {
 }
 
 void Fish::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
+    _y -= Config::gravity;  // Apply gravity.
     _modelViewMatrix = glm::translate(modelViewMatrix, glm::vec3(_x, _y, 0));
     _modelViewMatrix = glm::scale(_modelViewMatrix, glm::vec3(_width, _height, 1));
 }

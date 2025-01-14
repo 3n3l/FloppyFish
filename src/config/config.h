@@ -20,6 +20,8 @@ class Config {
     static float obstacleSpeed;         /**< distance scrolled per frame */
     static float animationLooper;       /**< a float that loops through [0, 1] for animation purposes */
     static float animationSpeed;        /**< the number of steps per ms */
+    static float gravity;               /**< gravity constant for the fish */
+    static float flop;                  /**< distance travelled per flop the fish */
 };
 
 #endif  // CONFIG_H

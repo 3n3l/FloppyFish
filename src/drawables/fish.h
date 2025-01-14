@@ -4,6 +4,7 @@
 #include <string>
 
 #include "glm/ext/matrix_float4x4.hpp"
+#include "src/config/config.h"
 #include "src/drawables/drawable.h"
 
 class Fish : public Drawable {
@@ -17,6 +18,7 @@ class Fish : public Drawable {
     float y() { return _y; }
     float width() { return _width; }
     float height() { return _height; }
+    void flop() { _y += Config::flop; }
 
     /**
      * Initialize the fish.

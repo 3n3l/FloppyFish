@@ -21,3 +21,7 @@ float Config::obstacleSpeed = -0.01f;
 // Animations.
 float Config::animationSpeed = 0.0f;
 float Config::animationLooper = 0.0f;
+
+// Bill the Salmon.
+float Config::gravity = 0.005f;
+float Config::flop = 0.2f;
