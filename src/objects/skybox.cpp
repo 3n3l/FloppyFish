@@ -3,10 +3,6 @@
 
 #include "skybox.h"
 
-#include <OpenGL/gl.h>
-#include <OpenGL/gltypes.h>
-
-#include <QDebug>
 #include <QFile>
 #include <QOpenGLShaderProgram>
 #include <string>
@@ -16,17 +12,12 @@
 #include "glm/ext/vector_float3.hpp"
 #include "glm/fwd.hpp"
 #include "glm/gtx/rotate_vector.hpp"
-
 #include "src/utils/image.h"
 #include "src/utils/utils.h"
 
-Skybox::Skybox()
-{
-    _subsequentRotationSpeed = 0.0125f;
-}
+Skybox::Skybox() { _subsequentRotationSpeed = 0.0125f; }
 
-void Skybox::init()
-{
+void Skybox::init() {
     // Create a program for this class.
     _program = glCreateProgram();
 
@@ -101,14 +92,13 @@ void Skybox::init()
 
     // Save the number of vertices for drawing.
     // Multiplied by because every index will be used thrice.
-    _verticeAmount = indices.size()*3;
+    _verticeAmount = indices.size() * 3;
 
     // Load texture.
     this->loadTexture();
 }
 
-void Skybox::draw(glm::mat4 projection_matrix) const
-{
+void Skybox::draw(glm::mat4 projection_matrix) {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;
@@ -121,8 +111,10 @@ void Skybox::draw(glm::mat4 projection_matrix) const
     glBindVertexArray(_vertexArrayObject);
 
     // Set parameter.
-    glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE, glm::value_ptr(projection_matrix));
-    glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE, glm::value_ptr(_modelViewMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE,
+                       glm::value_ptr(projection_matrix));
+    glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE,
+                       glm::value_ptr(_modelViewMatrix));
 
     // Activate and bind texture.
     glActiveTexture(GL_TEXTURE0);
@@ -138,32 +130,24 @@ void Skybox::draw(glm::mat4 projection_matrix) const
     glCheckError();
 }
 
-void Skybox::update(float elapsedTimeMs, glm::mat4 modelViewMatrix)
-{
+void Skybox::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // Rotate around Y for debug reasons.
     _subsequentRotation += _subsequentRotationSpeed * elapsedTimeMs;
     _subsequentRotation = _subsequentRotation >= 360.0f ? 0.0f : _subsequentRotation;
-    modelViewMatrix = rotate(modelViewMatrix,
-                                glm::radians(_subsequentRotation),
-                                glm::vec3(0.0f, -0.2f, -1.0f));
+    modelViewMatrix = rotate(modelViewMatrix, glm::radians(_subsequentRotation), glm::vec3(0.0f, -0.2f, -1.0f));
     // Update the model-view matrix.
     _modelViewMatrix = modelViewMatrix;
 }
 
-void Skybox::loadTexture()
-{
-    auto star_images  = std::vector<std::string>();
+void Skybox::loadTexture() {
+    auto star_images = std::vector<std::string>();
     star_images = {
-        "src/assets/starsPX.png",
-        "src/assets/starsNX.png",
-        "src/assets/starsPY.png",
-        "src/assets/starsNY.png",
-        "src/assets/starsPZ.png",
-        "src/assets/starsNZ.png",
+        "res/starsPX.png", "res/starsNX.png", "res/starsPY.png",
+        "res/starsNY.png", "res/starsPZ.png", "res/starsNZ.png",
     };
 
     GLuint textureID;
-    glActiveTexture (GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
     // Generate and bind texture.
     // Allocate one texture, and assign the openGL handle (akin to a pointer).
     glGenTextures(1, &textureID);
@@ -178,13 +162,14 @@ void Skybox::loadTexture()
     glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     // Assign image data.
-    for (int i = 0; i<6; i++){
+    for (int i = 0; i < 6; i++) {
         // Iterate throughout the 6 sides of the cubemap.
         Image image(star_images[i]);
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X+i, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getData());
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA,
+                     GL_UNSIGNED_BYTE, image.getData());
     }
 
-    glGenerateMipmap (GL_TEXTURE_CUBE_MAP);
+    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
     _textureHandle = textureID;
 }

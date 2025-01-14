@@ -2,7 +2,6 @@
 
 #define GLM_FORCE_RADIANS
 #define GLM_SWIZZLE
-#include <OpenGL/gl.h>
 
 #include <QMessageBox>
 #include <QMouseEvent>
@@ -22,21 +21,18 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions(), _updateTimer
     // Set the title.
     setTitle("Floppy Fish");
 
-    setSurfaceType(QWindow::OpenGLSurface);
+    setSurfaceType(OpenGLSurface);
 
     // Update the scene periodically.
-    QObject::connect(&_updateTimer, SIGNAL(timeout()), this, SLOT(animateGL()));
+    connect(&_updateTimer, SIGNAL(timeout()), this, SLOT(animateGL()));
     _updateTimer.start(18);
     _stopWatch.start();
 
     // Create a triangle to be displayed in the center.
 
-    _bill = std::make_shared<FloppyMesh>("src/assets/BillDerLachs.obj",
-        glm::vec3(0.0f, -0.3f, 0.0f),
-        0.1f, 90.0f, 0.05f);
-    _sign = std::make_shared<FloppyMesh>("src/assets/Lamp.obj",
-        glm::vec3(0.5f, 0.3f, 0.0f),
-        0.1f, 45.0f, 0.05f);
+    _billTheSalmon =
+        std::make_shared<FloppyMesh>("res/BillDerLachs.obj", glm::vec3(0.0f, -0.3f, 0.0f), 0.1f, 90.0f, 0.05f);
+    _secondProp = std::make_shared<FloppyMesh>("res/Lamp.obj", glm::vec3(0.5f, 0.3f, 0.0f), 0.1f, 45.0f, 0.05f);
 
     _skybox = std::make_shared<Skybox>();
 
@@ -48,11 +44,11 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions(), _updateTimer
     _audioOutput->setVolume(100);
     _mediaPlayer->setAudioOutput(_audioOutput.get());
 
-    _mediaPlayer->setSource(QUrl::fromLocalFile("src/assets/FloppyJumpOST_v1.wav"));
+    _mediaPlayer->setSource(QUrl::fromLocalFile("res/FloppyJumpOST_v1.wav"));
     _mediaPlayer->play();
 
     _jumpSFX = std::make_shared<QSoundEffect>();
-    _jumpSFX->setSource(QUrl::fromLocalFile("src/assets/FloppyJumpSFX.wav"));
+    _jumpSFX->setSource(QUrl::fromLocalFile("res/FloppyJumpSFX.wav"));
     _jumpSFX->setVolume(100);
 }
 
@@ -85,8 +81,8 @@ void GLMainWindow::initializeGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-    _bill->init();
-    _sign->init();
+    _billTheSalmon->init();
+    _secondProp->init();
     _skybox->init();
 }
 
@@ -119,8 +115,8 @@ void GLMainWindow::paintGL() {
     _skybox->draw(_projectionMatrix);
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
-    _bill->draw(_projectionMatrix);
-    _sign->draw(_projectionMatrix);
+    _billTheSalmon->draw(_projectionMatrix);
+    _secondProp->draw(_projectionMatrix);
 }
 
 void GLMainWindow::animateGL() {
@@ -132,13 +128,11 @@ void GLMainWindow::animateGL() {
     _stopWatch.restart();
 
     // Calculate current model view matrix.
-    glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, -1.0f),
-                                            glm::vec3(0.0f),
-                                            glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     _skybox->update(timeElapsedMs, modelViewMatrix);
-    _bill->update(timeElapsedMs, modelViewMatrix);
-    _sign->update(timeElapsedMs, modelViewMatrix);
+    _billTheSalmon->update(timeElapsedMs, modelViewMatrix);
+    _secondProp->update(timeElapsedMs, modelViewMatrix);
 
     // Update the widget.
     update();

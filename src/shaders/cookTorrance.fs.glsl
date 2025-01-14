@@ -11,7 +11,6 @@ smooth in float vLightDistance;
 // The texture of the current planetoid.
 // Primary texture mostly used for albedo.
 uniform sampler2D albedo;
-//uniform float animationLooper;
 
 // Components for Cook-Toorance.
 uniform float kdMaterialDiffuse;
@@ -26,7 +25,7 @@ uniform vec3 materialSpecularColour = vec3(1.0f, 1.0f, 1.0f);
 const float pi = 3.14159265358979323846f;
 
 // Send color to screen.
-layout(location = 0) out vec4 fColour;
+layout (location = 0) out vec4 fColour;
 
 vec3 cook_torrance(vec3 materialDiffuseColour,
                    vec3 materialSpecularColour,
@@ -71,13 +70,13 @@ vec3 cook_torrance(vec3 materialDiffuseColour,
 
     // Combine lambertian diffuse with cook-torrance specular.
     return materialDiffuseColour * lightColour * dotNL
-        + materialSpecularColour * lightColour * factorCookTorranceSpec;
+    + materialSpecularColour * lightColour * factorCookTorranceSpec;
 }
 
 void main(void)
 {
     // If the texture is emissive, just set the colour to a bright colour.
-    if (emissiveColour.r+emissiveColour.g+emissiveColour.b > 0.01)
+    if (emissiveColour.r + emissiveColour.g + emissiveColour.b > 0.01)
     {
         fColour = vec4(1.8f * emissiveColour, 1.0f);
         return;

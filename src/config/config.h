@@ -14,8 +14,8 @@ class Config {
     static float fieldOfVision;       /**< field of vision */
 
     // Debug values.
-    static float indexOfRefraction;            /**< the eta value for cook torrance */
-    static float roughness;           /**< the roughness for cook torrance */
+    static float indexOfRefraction; /**< the eta value for cook torrance */
+    static float roughness;         /**< the roughness for cook torrance */
 };
 
 #endif  // CONFIG_H
