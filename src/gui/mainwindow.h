@@ -1,7 +1,7 @@
 #ifndef GLMAINWINDOW_H
 #define GLMAINWINDOW_H
 
-#include <src/objects/triangle.h>
+#include <src/objects/background.h>
 
 #include <QColorSpace>
 #include <QElapsedTimer>
@@ -19,7 +19,7 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions {
    private:
     QTimer _updateTimer;      /**< Used for regular frame updates */
     QElapsedTimer _stopWatch; /**< Measures time between updates */
-    Triangle _triangle;       /**< Triangle shown in the window */
+    Background _background;   /**< Background shown in the window */
 
    private slots:
     /**

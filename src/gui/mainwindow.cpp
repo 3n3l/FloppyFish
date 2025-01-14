@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 
+#include "glm/ext/matrix_float4x4.hpp"
+
 #define GLM_FORCE_RADIANS
 #define GLM_SWIZZLE
 #include <OpenGL/gl.h>
@@ -30,9 +32,8 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions(), _updateTimer
     _updateTimer.start(18);
     _stopWatch.start();
 
-    // Create a triangle to be displayed in the center.
-    // TODO: replace with actual content.
-    _triangle = Triangle();
+    // Create the scrolling background.
+    _background = Background("res/background.png");
 }
 
 void GLMainWindow::show() {
@@ -60,7 +61,7 @@ void GLMainWindow::initializeGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-    _triangle.init();
+    _background.init();
 }
 
 void GLMainWindow::resizeGL(int width, int height) {
@@ -78,7 +79,7 @@ void GLMainWindow::paintGL() {
     glEnable(GL_DEPTH_TEST);
 
     // Set a background color.
-    glClearColor(0.5f, 0.63f, 0.74f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     // Calculate projection matrix from current resolution, this allows for resizing the window without distortion.
     const float fovy = glm::radians(60.0f);
@@ -88,7 +89,7 @@ void GLMainWindow::paintGL() {
     // Draw filled polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    _triangle.draw(projectionMatrix);
+    _background.draw(projectionMatrix);
 }
 
 void GLMainWindow::animateGL() {
@@ -96,11 +97,17 @@ void GLMainWindow::animateGL() {
     makeCurrent();
 
     // Get the time delta and restart the stopwatch.
-    float timeElapsedMs = _stopWatch.nsecsElapsed() / 1000000.0f;
+    float elapsedTimeMs = _stopWatch.nsecsElapsed() / 1000000.0f;
     _stopWatch.restart();
 
     // Calculate current model view matrix.
-    glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0), glm::vec3(0), glm::vec3(0, 1, 0));
+    glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    // Increment the animation looper if the animation is running.
+    const float incrementedLooper = Config::animationLooper + 0.0003f * Config::animationSpeed;
+    Config::animationLooper = incrementedLooper > 1.0f ? 0.0f : incrementedLooper;
+
+    _background.update(elapsedTimeMs, modelViewMatrix);
 
     // Update the widget.
     update();

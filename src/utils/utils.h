@@ -3,7 +3,6 @@
 
 #include <OpenGL/gltypes.h>
 
-#include <cstdio>
 #include <cstdlib>
 #include <string>
 
@@ -26,9 +25,15 @@ GLuint linkProgram(GLuint program);
 /**
  * @brief Checks for ALL OpenGL errors and prints them as clear sentences.
  * @param file - the file this was called from.
- * @param line - the line this was called from
+ * @param line - the line this was called from.
  */
 void _glCheckError(const char* file, int line);
+
+/**
+ * @brief Loads an image as a texture from a given path.
+ * @param path - the path to the image file.
+ */
+GLuint loadTexture(std::string path);
 
 }  // namespace Utils
 
