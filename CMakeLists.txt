@@ -8,7 +8,9 @@ cmake_policy(SET CMP0022 NEW)
 
 project("Floppy Fish" C CXX)
 
-set(CMAKE_CXX_STANDARD 23 CACHE STRING "" FORCE)
+set(CMAKE_CXX_STANDARD
+    23
+    CACHE STRING "" FORCE)
 
 # Required libraries.
 find_package(OpenGL REQUIRED)
@@ -36,6 +38,8 @@ add_executable(
   src/drawables/background.h
   src/drawables/drawable.cpp
   src/drawables/drawable.h
+  src/drawables/fish.cpp
+  src/drawables/fish.h
   src/gui/mainwindow.cpp
   src/gui/mainwindow.h
   src/config/config.cpp
@@ -49,10 +53,13 @@ add_executable(
   src/shaders/background.fs.glsl
   src/shaders/obstacle.vs.glsl
   src/shaders/obstacle.fs.glsl
-)
+  src/shaders/fish.vs.glsl
+  src/shaders/fish.fs.glsl)
 
 # Libraries.
-set(GLM_BUILD_LIBRARY OFF CACHE BOOL "" FORCE) # Header only to avoid linking errors
+set(GLM_BUILD_LIBRARY
+    OFF
+    CACHE BOOL "" FORCE) # Header only to avoid linking errors
 add_subdirectory(lib/glm)
 
 # Build with correct OpenGL library.
@@ -66,7 +73,8 @@ else()
 endif()
 
 # set root directory in visual studio
-set_property(TARGET FloppyFish PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+set_property(TARGET FloppyFish PROPERTY VS_DEBUGGER_WORKING_DIRECTORY
+                                        "${CMAKE_SOURCE_DIR}")
 
 if(GTA_FOUND)
   add_definitions(-DHAVE_GTA)

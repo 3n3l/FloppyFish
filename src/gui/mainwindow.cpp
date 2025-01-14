@@ -1,8 +1,10 @@
 #include "mainwindow.h"
+
 #include <cstddef>
 
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
+#include "src/drawables/fish.h"
 #include "src/drawables/obstacles/obstacle.h"
 
 #define GLM_FORCE_RADIANS
@@ -37,11 +39,11 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
 
     // Create all the drawables.
     _drawables = {
-        // TODO: create the fish (character)
-        // std::make_shared<Fish>(Fish("res/fish.png")),
         // TODO: create the fence (ground)
         // std::make_shared<Ground>(Ground("res/ground.png")),
-        std::make_shared<Background>(Background("res/background.png"))
+        std::make_shared<Background>(Background("res/background.png")),
+        // Bill the Salmon.
+        std::make_shared<Fish>(Fish("res/fish.png", 0.0f, 0.0f, 0.05f, 0.05f))
     };
 
     // Create the in the Config specified amount of obstacles and add it to the drawables.
