@@ -7,7 +7,7 @@
 
 class Part : public Drawable {
    public:
-    Part(std::string texture = "/res/sign.png");
+    Part(std::string texturePath = "/res/sign.png");
     ~Part();
     Part(const Part&);
 
@@ -33,7 +33,7 @@ class Part : public Drawable {
 
    private:
     unsigned int _textureHandle; /**< handle of the texture */
-    std::string _texture;        /**< path of the texture */
+    std::string _texturePath;        /**< path of the texture */
     float _height;               /**< height of the sign */
     float _y;                    /**< y-coordinate of the sign */
 };

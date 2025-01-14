@@ -19,8 +19,8 @@
 #include "glm/fwd.hpp"
 #include "src/utils/utils.h"
 
-Part::Part(std::string texture) : Drawable(), _y(0) {}
-Part::Part(Part const &p) : Drawable(), _y(p._y) {}
+Part::Part(std::string texturePath) : Drawable(), _texturePath(texturePath), _y(0) {}
+Part::Part(Part const &p) : Drawable(), _texturePath(p._texturePath), _y(p._y) {}
 Part::~Part() {}
 
 void Part::init() {
@@ -31,7 +31,7 @@ void Part::init() {
     _program = glCreateProgram();
 
     // Create texture handle.
-    _textureHandle = loadTexture(_texture);
+    _textureHandle = loadTexture(_texturePath);
 
     // Compile shader.
     GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/obstacle.vs.glsl");

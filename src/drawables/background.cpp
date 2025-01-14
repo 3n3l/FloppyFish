@@ -18,7 +18,7 @@
 #include "glm/fwd.hpp"
 #include "src/utils/utils.h"
 
-Background::Background(std::string texture) : Drawable(), _texturePath(texture) {}
+Background::Background(std::string texturePath) : Drawable(), _texturePath(texturePath) {}
 Background::Background(Background const &b) : Drawable(), _texturePath(b._texturePath) {}
 Background::~Background() {}
 
