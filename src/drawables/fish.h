@@ -13,6 +13,11 @@ class Fish : public Drawable {
     Fish(const Fish&);
     ~Fish();
 
+    float x() { return _x; }
+    float y() { return _y; }
+    float width() { return _width; }
+    float height() { return _height; }
+
     /**
      * Initialize the fish.
      */
