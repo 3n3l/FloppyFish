@@ -54,7 +54,6 @@ add_executable(
 # Libraries.
 set(GLM_BUILD_LIBRARY OFF CACHE BOOL "" FORCE) # Header only to avoid linking errors
 add_subdirectory(lib/glm)
-add_subdirectory(lib/glad)
 
 # Build with correct OpenGL library.
 if(WIN32 OR CYGWIN)
@@ -65,8 +64,6 @@ elseif(APPLE)
 else()
   target_link_libraries(FloppyFish GL Qt::Core Qt::Widgets Qt::OpenGL glm)
 endif()
-
-target_link_libraries(FloppyFish glad)
 
 # set root directory in visual studio
 set_property(TARGET FloppyFish PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
