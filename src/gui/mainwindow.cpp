@@ -126,9 +126,6 @@ void GLMainWindow::animateGL() {
     float elapsedTimeMs = _stopWatch.nsecsElapsed() / 1000000.0f;
     _stopWatch.restart();
 
-    // Calculate current model view matrix.
-   glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    
     // Update the window.
     update();
 }
