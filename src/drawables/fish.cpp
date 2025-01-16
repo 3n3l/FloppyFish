@@ -1,11 +1,9 @@
-#include "src/drawables/background.h"
+#include "src/drawables/fish.h"
 
-#include "glm/ext/vector_float2.hpp"
-#include "glm/ext/vector_float3.hpp"
+#include "glm/ext/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "src/config/config.h"
 #include "src/drawables/drawable.h"
-#include "src/utils/utils.h"
 
 #define GL_SILENCE_DEPRECATION
 
@@ -13,17 +11,14 @@
 #include <QFile>
 #include <QOpenGLShaderProgram>
 #include <QTextStream>
-#include <string>
 
-#include "glm/fwd.hpp"
-#include "src/utils/utils.h"
+Fish::Fish(std::string texturePath, float x, float y, float height, float width)
+    : Drawable(), _texturePath(texturePath), _x(x), _y(y), _height(height), _width(width) {}
+Fish::Fish(Fish const& f) : _texturePath(f._texturePath), _x(f._x), _y(f._y), _height(f._height), _width(f._width) {}
+Fish::~Fish() {}
 
-Background::Background(std::string texturePath) : Drawable(), _texturePath(texturePath) {}
-Background::Background(Background const &b) : Drawable(), _texturePath(b._texturePath) {}
-Background::~Background() {}
-
-void Background::init() {
-    // Initialize OpenGL funtions, replacing glewInit().
+void Fish::init() {
+    // Initialize OpenGL funtions.
     Drawable::init();
 
     // Create a program for this class.
@@ -33,8 +28,8 @@ void Background::init() {
     _textureHandle = loadTexture(_texturePath);
 
     // Compile shader.
-    GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/background.vs.glsl");
-    GLuint fs = compileShader(GL_FRAGMENT_SHADER, "src/shaders/background.fs.glsl");
+    GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/fish.vs.glsl");
+    GLuint fs = compileShader(GL_FRAGMENT_SHADER, "src/shaders/fish.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);
@@ -50,12 +45,11 @@ void Background::init() {
     glBindVertexArray(_vertexArrayObject);
 
     // Fill position buffer with data.
-    // TODO: I have no idea why 0.6?!
     std::vector<glm::vec3> positions = {
-        glm::vec3(-1, -0.6, 0),
-        glm::vec3(-1, 0.6, 0),
-        glm::vec3(1, 0.6, 0),
-        glm::vec3(1, -0.6, 0),
+        glm::vec3(-1, -1, 0),
+        glm::vec3(-1, 1, 0),
+        glm::vec3(1, 1, 0),
+        glm::vec3(1, -1, 0),
     };
     GLuint position_buffer;
     glGenBuffers(1, &position_buffer);
@@ -85,20 +79,22 @@ void Background::init() {
 
     // Unbind vertex array object.
     glBindVertexArray(0);
+
     // Delete buffers (the data is stored in the vertex array object).
     glDeleteBuffers(1, &position_buffer);
     glDeleteBuffers(1, &texture_coordinate_buffer);
 
     // Unbind vertex array object.
     glBindVertexArray(0);
-
-    // Check for an OpenGL error in this method.
-    glCheckError();
 }
 
-void Background::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) { _modelViewMatrix = modelViewMatrix; }
+void Fish::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
+    _y -= Config::gravity;  // Apply gravity.
+    _modelViewMatrix = glm::translate(modelViewMatrix, glm::vec3(_x, _y, 0));
+    _modelViewMatrix = glm::scale(_modelViewMatrix, glm::vec3(_width, _height, 1));
+}
 
-void Background::draw(glm::mat4 projectionMatrix) {
+void Fish::draw(glm::mat4 projectionMatrix) {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;
@@ -121,21 +117,16 @@ void Background::draw(glm::mat4 projectionMatrix) {
     glBindTexture(GL_TEXTURE_2D, _textureHandle);
     glUniform1i(glGetUniformLocation(_program, "backgroundTexture"), 0);
 
-    // Repeat the background texture horizontally.
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-
-    // Stretch the background texture vertically.
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    // Value that goes from 0.0 to 1.0 and resets again.
-    glUniform1f(glGetUniformLocation(_program, "animationLooper"), Config::animationLooper);
-
     // Call draw.
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 
     // Unbind vertex array object.
     glBindVertexArray(0);
+}
 
-    // Check for an OpenGL error in this method.
-    glCheckError();
+void Fish::getBounds(float& bx, float& by, float& bwidth, float& bheight) const {
+    bx = _x;
+    by = _y;
+    bwidth = _width;
+    bheight = _height;
 }

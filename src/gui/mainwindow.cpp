@@ -1,8 +1,10 @@
 #include "mainwindow.h"
+
 #include <cstddef>
 
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
+#include "src/drawables/fish.h"
 #include "src/drawables/obstacles/obstacle.h"
 
 #define GLM_FORCE_RADIANS
@@ -35,14 +37,15 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     _updateTimer.start(18);
     _stopWatch.start();
 
+    _billTheSalmon = std::make_shared<Fish>(Fish("res/fish.png", 0.0f, 0.0f, 0.05f, 0.05f));
+
     // Create all the drawables.
-    _drawables = {
-        // TODO: create the fish (character)
-        // std::make_shared<Fish>(Fish("res/fish.png")),
-        // TODO: create the fence (ground)
-        // std::make_shared<Ground>(Ground("res/ground.png")),
-        std::make_shared<Background>(Background("res/background.png"))
-    };
+    // NOTE: Order in list is important for culling.
+    _drawables = {// TODO: create the fence (ground)
+                  // std::make_shared<Ground>(Ground("res/ground.png")),
+                  std::make_shared<Background>(Background("res/background.png")),
+                  // Bill the Salmon.
+                  _billTheSalmon};
 
     // Create the in the Config specified amount of obstacles and add it to the drawables.
     float offset = Config::obstacleDistance;
@@ -167,8 +170,7 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
     const bool isFullscreen = visibility() == QWindow::FullScreen;
     // Pressing SPACE will make the fish flop or flop the fish idk.
     if (event->key() == Qt::Key_Space) {
-        // TODO: make the fish flop!
-        qDebug() << "FLOPPY FISH";
+        _billTheSalmon->flop();
     }
     // Pressing F in fullscreen mode will reset the window.
     else if (event->key() == Qt::Key_F && isFullscreen) {
