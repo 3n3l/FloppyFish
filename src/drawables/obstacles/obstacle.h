@@ -33,6 +33,16 @@ class Obstacle : public Drawable {
      */
     virtual void reset();
 
+     /**
+     * @brief Get the bounding box of the obstacle.
+     * This returns the coordinates and dimensions of the obstacle's parts.
+     * @param bx - the x-coordinate of the obstacle
+     * @param by - the y-coordinate of the obstacle
+     * @param bwidth - the width of the obstacle
+     * @param bheight - the height of the obstacle
+     */
+    void getBounds(float& bx, float& by, float& bwidth, float& bheight) const;
+
    private:
     unsigned int _textureHandle; /**< handle of the texture */
     std::string _texture;        /**< path of the texture */
