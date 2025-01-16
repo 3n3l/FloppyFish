@@ -127,43 +127,8 @@ void GLMainWindow::animateGL() {
     _stopWatch.restart();
 
     // Calculate current model view matrix.
-    glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-    // Increment the animation looper if the animation is running.
-    const float incrementedLooper = Config::animationLooper + Config::animationSpeed;
-    Config::animationLooper = incrementedLooper > 1.0f ? 0.0f : incrementedLooper;
-
-    // Update all drawables.
-    for (auto drawable : _drawables) {
-        drawable->update(elapsedTimeMs, modelViewMatrix);
-    }
-
-    // Iterate over all obstacles, reset if necessary, and update.
-    // TODO: this can probably be computed without the list, with
-    //       just the offset, width and number of obstacles.
-    for (auto it = _obstacles.begin(); it != _obstacles.end(); ++it) {
-        std::shared_ptr<Obstacle> obstacle = *it;
-        if (obstacle->isOutOfBounds()) {
-            // Reset the obstacle based on the last element of the list,
-            // which is the element that is the furthest to the right.
-            std::shared_ptr<Obstacle> furthest = _obstacles.back();
-            obstacle->reset(furthest->x() + Config::obstacleDistance);
-
-            // Move newly reset obstacle to the end of the list,
-            // this ensures that the last element in the list is
-            // always the furthest to the right.
-            _obstacles.splice(_obstacles.end(), _obstacles, it);
-        }
-        // Now the obstacle can be updated.
-        obstacle->update(elapsedTimeMs, modelViewMatrix);
-    }
-
-  /*  // check if collision is true
-    if (CollisionChecker::checkCollision(floppyfish, obstacle)) {
-        std::cout << "collision is true!" << std::endl;
-        // Stop the game and Game Over
-    } */
-
+   glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0), glm::vec3(0), glm::vec3(0, 1, 0));
+    
     // Update the window.
     update();
 }
