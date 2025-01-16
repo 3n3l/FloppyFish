@@ -11,8 +11,8 @@ bool CollisionChecker::checkCollision(const FloppyFish& fish, const Obstacle& ob
 
     // Check if the rectangles overlap (AABB - Axis-Aligned Bounding Box Kollision)
     if (fishX + fishWidth > obsX && fishX < obsX + obsWidth && fishY + fishHeight > obsY && fishY < obsY + obsHeight) {
-        return true;  // Kollision erkannt
+        return true;  // Collision detected
     }
 
-    return false;  // Keine Kollision
+    return false;  // No collision
 }
