@@ -1,7 +1,9 @@
 #include "mainwindow.h"
+#include <cstddef>
 
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
+#include "src/drawables/obstacles/obstacle.h"
 
 #define GLM_FORCE_RADIANS
 #define GLM_SWIZZLE
@@ -33,16 +35,19 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     _updateTimer.start(18);
     _stopWatch.start();
 
-    // Create the drawables.
-    // TODO: this might not be needed, as there are only two drawables besides the
-    // obstacles (fish + background) and the fish has to be accessed separately for
-    // checking the collisions against the obstacles anyway.
-    _drawables = {std::make_shared<Background>(Background("res/background.png"))};
+    // Create all the drawables.
+    _drawables = {
+        // TODO: create the fish (character)
+        // std::make_shared<Fish>(Fish("res/fish.png")),
+        // TODO: create the fence (ground)
+        // std::make_shared<Ground>(Ground("res/ground.png")),
+        std::make_shared<Background>(Background("res/background.png"))
+    };
 
-    // Create the obstacles.
+    // Create the in the Config specified amount of obstacles and add it to the drawables.
     float offset = Config::obstacleDistance;
-    for (unsigned int i = 0; i < Config::obstacleAmount; i++) {
-        _obstacles.push_back(std::make_shared<Obstacle>(Obstacle("res/background.png", i * offset)));
+    for (std::size_t i = 0; i < Config::obstacleAmount; i++) {
+        _drawables.push_back(std::make_shared<Obstacle>(Obstacle("res/background.png", i * offset)));
     }
 }
 
@@ -75,11 +80,6 @@ void GLMainWindow::initializeGL() {
     for (auto drawable : _drawables) {
         drawable->init();
     }
-
-    // Initialize all obstacles.
-    for (auto obstacle : _obstacles) {
-        obstacle->init();
-    }
 }
 
 void GLMainWindow::resizeGL(int width, int height) {
@@ -97,9 +97,9 @@ void GLMainWindow::paintGL() {
     glEnable(GL_DEPTH_TEST);
 
     // Set a background color.
-    glClearColor(0, 0, 0, 0.5f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-    // Calculate projection matrix from current resolution, this allows for resizing the window without distortion.
+    // TODO: projection computation is not working right now?!
     const float fovy = glm::radians(60.0f);
     const float aspect = float(Config::windowWidth) / float(Config::windowHeight);
     glm::mat4 projectionMatrix = glm::perspective(fovy, aspect, 0.1f, 100.0f);
@@ -110,11 +110,6 @@ void GLMainWindow::paintGL() {
     // Draw all drawables.
     for (auto drawable : _drawables) {
         drawable->draw(projectionMatrix);
-    }
-
-    // Draw all obstacles.
-    for (auto obstacle : _obstacles) {
-        obstacle->draw(projectionMatrix);
     }
 }
 

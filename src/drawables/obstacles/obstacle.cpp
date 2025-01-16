@@ -8,8 +8,6 @@
 
 #define GL_SILENCE_DEPRECATION
 
-
-
 #include <QDebug>
 #include <QFile>
 #include <QOpenGLShaderProgram>
@@ -45,16 +43,14 @@ void Obstacle::init() {
     _upperPart.init();
     _lowerPart.init();
 
-    // Place the obstacle to the right of the window,
-    // while taking the individual offset to the next
-    // obstacle to the left into account.
-    reset(1 + _offset + (_width / 2));
+    // Place the obstacle to the right of the window.
+    _x = 1 + _offset + (_width / 2);
+
+    // Reset the individual parts.
+    reset();
 }
 
-void Obstacle::reset(float x) {
-    // Reset the x-coordinate to be to the right of the window.
-    _x = x;
-
+void Obstacle::reset() {
     // Reset the properties of the lower part of this obstacle.
     float lower = Config::obstacleLowerBound;
     float upper = Config::obstacleUpperBound;
@@ -67,8 +63,17 @@ void Obstacle::reset(float x) {
 }
 
 void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
+    if (isOutOfBounds()) {
+        // Place the obstacle to the right of the other obstacles.
+        _x += (Config::obstacleAmount * Config::obstacleDistance);
+
+        // Reset the individual parts.
+        reset();
+    }
+
     // Scroll this obstacle.
     _x += Config::obstacleSpeed;
+
     _modelViewMatrix = glm::translate(modelViewMatrix, glm::vec3(_x, 0, 0));
 
     // Scale to width and depth, height is handled by the individual parts.

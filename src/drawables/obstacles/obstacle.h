@@ -1,7 +1,6 @@
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
-
 #include "src/drawables/drawable.h"
 #include "src/drawables/obstacles/part.h"
 
@@ -11,9 +10,7 @@ class Obstacle : public Drawable {
     ~Obstacle();
     Obstacle(const Obstacle&);
 
-    /*bool isOutOfBounds() const { return _x <= -((1 / _width) + 1); }*/
     bool isOutOfBounds() const { return _x < -1 - (_width / 2); }
-    float x() const { return _x; }
 
     /**
      * @brief initialize the obstacle.
@@ -32,10 +29,9 @@ class Obstacle : public Drawable {
     virtual void update(float elapsedTimeMs, glm::mat4 modelViewMatrix);
 
     /**
-     * @brief reset modelViewMatrix and position.
-     * @param nx - the new x-coordinate
+     * @brief reset child parts.
      */
-    virtual void reset(float nx);
+    virtual void reset();
 
      /**
      * @brief Get the bounding box of the obstacle.
