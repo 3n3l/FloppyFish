@@ -127,7 +127,7 @@ void GLMainWindow::animateGL() {
     _stopWatch.restart();
 
     // Calculate current model view matrix.
-   glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0), glm::vec3(0), glm::vec3(0, 1, 0));
+   glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     
     // Update the window.
     update();
