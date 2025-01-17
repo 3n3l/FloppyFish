@@ -89,14 +89,3 @@ void Obstacle::draw(glm::mat4 projectionMatrix) {
     _upperPart.draw(projectionMatrix);
     _lowerPart.draw(projectionMatrix);
 }
-
-
-void Obstacle::getBounds(float& bx, float& by, float& bwidth, float& bheight) const {
-    // Combine the bounding boxes of the two parts
-    bx = _x;
-    by = 0.0f;  // The lower part starts at y = 0 (with the upper part above it)
-    bwidth = _width;
-
-    // Calculate the height as the height of the lower and upper parts together
-    bheight = _lowerPart.height() + _upperPart.height();
-}

@@ -136,32 +136,6 @@ void GLMainWindow::animateGL() {
         drawable->update(elapsedTimeMs, modelViewMatrix);
     }
 
-    // Iterate over all obstacles, reset if necessary, and update.
-    // TODO: this can probably be computed without the list, with
-    //       just the offset, width and number of obstacles.
-    for (auto it = _obstacles.begin(); it != _obstacles.end(); ++it) {
-        std::shared_ptr<Obstacle> obstacle = *it;
-        if (obstacle->isOutOfBounds()) {
-            // Reset the obstacle based on the last element of the list,
-            // which is the element that is the furthest to the right.
-            std::shared_ptr<Obstacle> furthest = _obstacles.back();
-            obstacle->reset(furthest->x() + Config::obstacleDistance);
-
-            // Move newly reset obstacle to the end of the list,
-            // this ensures that the last element in the list is
-            // always the furthest to the right.
-            _obstacles.splice(_obstacles.end(), _obstacles, it);
-        }
-        // Now the obstacle can be updated.
-        obstacle->update(elapsedTimeMs, modelViewMatrix);
-    }
-
-  /*  // check if collision is true
-    if (CollisionChecker::checkCollision(floppyfish, obstacle)) {
-        std::cout << "collision is true!" << std::endl;
-        // Stop the game and Game Over
-    } */
-
     // Update the window.
     update();
 }
