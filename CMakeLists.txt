@@ -30,8 +30,6 @@ add_executable(
   # Project entry.
   src/main.cpp
   # Source files.
-  src/drawables/obstacles/collisionchecker.cpp
-  src/drawables/obstacles/collisionchekcer.h
   src/drawables/obstacles/obstacle.cpp
   src/drawables/obstacles/obstacle.h
   src/drawables/obstacles/part.cpp
