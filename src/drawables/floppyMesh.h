@@ -1,12 +1,11 @@
 #ifndef FLOPPY_MESH_H
 #define FLOPPY_MESH_H
 
-#include <QOpenGLFunctions_4_1_Core>
-
+#include "drawable.h"
 #include "glm/detail/type_mat4x4.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-class FloppyMesh : protected QOpenGLFunctions_4_1_Core {
+class FloppyMesh : public Drawable {
    public:
     /// Constructor for creating a mesh from an obj.
     FloppyMesh(std::string meshPath, glm::vec3 initialTranslation = glm::vec3(0.0f), float initialScale = 1.0f,
@@ -15,7 +14,7 @@ class FloppyMesh : protected QOpenGLFunctions_4_1_Core {
     /// Constructor for creating the next mesh part.
     FloppyMesh(std::string meshPath, uint meshIndex);
 
-    ~FloppyMesh();
+    ~FloppyMesh() override;
 
     // Enumerator to pass with textures.
     enum TextureType { RGB, SRGB, NormalMap, Monochrome };
@@ -23,19 +22,25 @@ class FloppyMesh : protected QOpenGLFunctions_4_1_Core {
     /**
      * @brief draw the mesh.
      */
-    virtual void draw(glm::mat4 projectionMatrix);
+    void draw(glm::mat4 projectionMatrix) override;
 
     /**
      * @brief initialize the mesh.
      */
-    virtual void init();
+    void init() override;
 
     /**
      * @brief update Updates the object's position, rotation etc.
      * @param elapsedTimeMs The elapsed time since the last update in ms
      * @param modelViewMatrix the mode view matrix of the parent object
      */
-    virtual void update(float elapsedTimeMs, glm::mat4 modelViewMatrix);
+    void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) override;
+
+    /**
+     *
+     * @param movement The translation that should be applied to the mesh.
+     */
+    void move(glm::vec3 movement) { _subsequentTranslation = movement; }
 
    protected:
     GLuint _program{};                         /**< The opengl program handling the shaders */

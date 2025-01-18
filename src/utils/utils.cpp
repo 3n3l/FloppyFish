@@ -6,8 +6,7 @@
 
 #include "glm/vec2.hpp"
 #include "glm/vec3.hpp"
-
-#include "src/utils/image.h"
+#include "src/utils/imageTexture.h"
 
 namespace Utils {
 
@@ -101,47 +100,43 @@ GLuint linkProgram(GLuint program) {
     return program;
 }
 
-void geom_cube(
-        std::vector<glm::vec3>& positions,
-        std::vector<glm::vec3>& normals,
-        std::vector<glm::vec2>& texcoords,
-        std::vector<unsigned int>& indices)
-{
+void geom_cube(std::vector<glm::vec3> &positions, std::vector<glm::vec3> &normals, std::vector<glm::vec2> &texcoords,
+               std::vector<unsigned int> &indices) {
     static const float p[] = {
-        -1.0f, +1.0f, +1.0f,   +1.0f, +1.0f, +1.0f,   +1.0f, -1.0f, +1.0f,   -1.0f, -1.0f, +1.0f, // front
-        -1.0f, +1.0f, -1.0f,   +1.0f, +1.0f, -1.0f,   +1.0f, -1.0f, -1.0f,   -1.0f, -1.0f, -1.0f, // back
-        +1.0f, +1.0f, -1.0f,   +1.0f, +1.0f, +1.0f,   +1.0f, -1.0f, +1.0f,   +1.0f, -1.0f, -1.0f, // right
-        -1.0f, +1.0f, -1.0f,   -1.0f, +1.0f, +1.0f,   -1.0f, -1.0f, +1.0f,   -1.0f, -1.0f, -1.0f, // left
-        -1.0f, +1.0f, +1.0f,   +1.0f, +1.0f, +1.0f,   +1.0f, +1.0f, -1.0f,   -1.0f, +1.0f, -1.0f, // top
-        -1.0f, -1.0f, +1.0f,   +1.0f, -1.0f, +1.0f,   +1.0f, -1.0f, -1.0f,   -1.0f, -1.0f, -1.0f  // bottom
+        -1.0f, +1.0f, +1.0f, +1.0f, +1.0f, +1.0f, +1.0f, -1.0f, +1.0f, -1.0f, -1.0f, +1.0f,  // front
+        -1.0f, +1.0f, -1.0f, +1.0f, +1.0f, -1.0f, +1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f,  // back
+        +1.0f, +1.0f, -1.0f, +1.0f, +1.0f, +1.0f, +1.0f, -1.0f, +1.0f, +1.0f, -1.0f, -1.0f,  // right
+        -1.0f, +1.0f, -1.0f, -1.0f, +1.0f, +1.0f, -1.0f, -1.0f, +1.0f, -1.0f, -1.0f, -1.0f,  // left
+        -1.0f, +1.0f, +1.0f, +1.0f, +1.0f, +1.0f, +1.0f, +1.0f, -1.0f, -1.0f, +1.0f, -1.0f,  // top
+        -1.0f, -1.0f, +1.0f, +1.0f, -1.0f, +1.0f, +1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f   // bottom
     };
     static const float n[] = {
-          0.0f, 0.0f, +1.0f,   0.0f, 0.0f, +1.0f,   0.0f, 0.0f, +1.0f,   0.0f, 0.0f, +1.0f, // front
-          0.0f, 0.0f, -1.0f,   0.0f, 0.0f, -1.0f,   0.0f, 0.0f, -1.0f,   0.0f, 0.0f, -1.0f, // back
-          +1.0f, 0.0f, 0.0f,   +1.0f, 0.0f, 0.0f,   +1.0f, 0.0f, 0.0f,   +1.0f, 0.0f, 0.0f, // right
-          -1.0f, 0.0f, 0.0f,   -1.0f, 0.0f, 0.0f,   -1.0f, 0.0f, 0.0f,   -1.0f, 0.0f, 0.0f, // left
-          0.0f, +1.0f, 0.0f,   0.0f, +1.0f, 0.0f,   0.0f, +1.0f, 0.0f,   0.0f, +1.0f, 0.0f, // top
-          0.0f, -1.0f, 0.0f,   0.0f, -1.0f, 0.0f,   0.0f, -1.0f, 0.0f,   0.0f, -1.0f, 0.0f  // bottom
+        0.0f,  0.0f,  +1.0f, 0.0f,  0.0f,  +1.0f, 0.0f,  0.0f,  +1.0f, 0.0f,  0.0f,  +1.0f,  // front
+        0.0f,  0.0f,  -1.0f, 0.0f,  0.0f,  -1.0f, 0.0f,  0.0f,  -1.0f, 0.0f,  0.0f,  -1.0f,  // back
+        +1.0f, 0.0f,  0.0f,  +1.0f, 0.0f,  0.0f,  +1.0f, 0.0f,  0.0f,  +1.0f, 0.0f,  0.0f,   // right
+        -1.0f, 0.0f,  0.0f,  -1.0f, 0.0f,  0.0f,  -1.0f, 0.0f,  0.0f,  -1.0f, 0.0f,  0.0f,   // left
+        0.0f,  +1.0f, 0.0f,  0.0f,  +1.0f, 0.0f,  0.0f,  +1.0f, 0.0f,  0.0f,  +1.0f, 0.0f,   // top
+        0.0f,  -1.0f, 0.0f,  0.0f,  -1.0f, 0.0f,  0.0f,  -1.0f, 0.0f,  0.0f,  -1.0f, 0.0f    // bottom
     };
     static const float t[] = {
-          0.0f, 1.0f,   1.0f, 1.0f,   1.0f, 0.0f,   0.0f, 0.0f, // front
-          1.0f, 1.0f,   0.0f, 1.0f,   0.0f, 0.0f,   1.0f, 0.0f, // back
-          1.0f, 1.0f,   0.0f, 1.0f,   0.0f, 0.0f,   1.0f, 0.0f, // right
-          0.0f, 1.0f,   1.0f, 1.0f,   1.0f, 0.0f,   0.0f, 0.0f, // left
-          0.0f, 0.0f,   1.0f, 0.0f,   1.0f, 1.0f,   0.0f, 1.0f, // top
-          0.0f, 1.0f,   1.0f, 1.0f,   1.0f, 0.0f,   0.0f, 0.0f, // bottom
+        0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f,  // front
+        1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,  // back
+        1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,  // right
+        0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f,  // left
+        0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,  // top
+        0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f,  // bottom
     };
     static const unsigned int i[] = {
-        0, 1, 3, 1, 2, 3, // front face
-        4, 5, 7, 5, 6, 7, // back face
-        8, 9, 11, 9, 10, 11, // right face
-        12, 13, 15, 13, 14, 15, // left face
-        16, 17, 19, 17, 18, 19, // top face
-        20, 21, 23, 21, 22, 23, // bottom face
+        0,  1,  3,  1,  2,  3,   // front face
+        4,  5,  7,  5,  6,  7,   // back face
+        8,  9,  11, 9,  10, 11,  // right face
+        12, 13, 15, 13, 14, 15,  // left face
+        16, 17, 19, 17, 18, 19,  // top face
+        20, 21, 23, 21, 22, 23,  // bottom face
     };
-    static const glm::vec3 *vp = reinterpret_cast<const glm::vec3*>(p);
-    static const glm::vec3 *vn = reinterpret_cast<const glm::vec3*>(n);
-    static const glm::vec2 *vt = reinterpret_cast<const glm::vec2*>(t);
+    static const glm::vec3 *vp = reinterpret_cast<const glm::vec3 *>(p);
+    static const glm::vec3 *vn = reinterpret_cast<const glm::vec3 *>(n);
+    static const glm::vec2 *vt = reinterpret_cast<const glm::vec2 *>(t);
     positions.assign(vp, vp + sizeof(p) / sizeof(glm::vec3));
     normals.assign(vn, vn + sizeof(n) / sizeof(glm::vec3));
     texcoords.assign(vt, vt + sizeof(t) / sizeof(glm::vec2));

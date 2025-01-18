@@ -9,7 +9,7 @@
 class Drawable : protected QOpenGLFunctions_4_1_Core {
    public:
     Drawable();
-    ~Drawable();
+    ~Drawable() override;
     Drawable(const Drawable&);
 
     /**
@@ -19,7 +19,7 @@ class Drawable : protected QOpenGLFunctions_4_1_Core {
 
     /**
      * @brief draw the drawable.
-     * @param projection_matrix The current projection matrix
+     * @param projectionMatrix The current projection matrix
      */
     virtual void draw(glm::mat4 projectionMatrix) {}
 

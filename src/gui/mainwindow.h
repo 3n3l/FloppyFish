@@ -6,7 +6,6 @@
 #include <QtMultimedia/qmediadevices.h>
 #include <QtMultimedia/qmediaplayer.h>
 #include <QtMultimedia/qsoundeffect.h>
-
 #include <src/drawables/drawable.h>
 
 #include <QElapsedTimer>
@@ -15,9 +14,9 @@
 #include <QTimer>
 #include <memory>
 
-#include "src/drawables/fish.h"
-#include "src/objects/floppyMesh.h"
-#include "src/objects/skybox.h"
+#include "src/drawables/fishController.h"
+#include "src/drawables/floppyMesh.h"
+#include "src/drawables/skybox.h"
 
 /**
  * @brief The GLWindow class handling the opengl window.
@@ -32,11 +31,11 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     QTimer _updateTimer;                        /**< Used for regular frame updates */
     QElapsedTimer _stopWatch;                   /**< Measures time between updates */
 
-    std::shared_ptr<FloppyMesh> _billTheSalmon; /**< Bill the salmon shown in the window */
+    std::shared_ptr<FloppyMesh> _billMesh; /**< Bill the salmon shown in the window */
     std::shared_ptr<FloppyMesh> _secondProp;    /**< A sign to test multi-parts objs */
     std::shared_ptr<Skybox> _skybox;            /**< A skybox */
 
-    std::shared_ptr<Fish> _billTheSalmonX; /**< Bill the Salmon */
+    std::shared_ptr<FishController> _billTheSalmon;             /**< Bill the Salmon */
     std::vector<std::shared_ptr<Drawable>> _drawables; /**< Vector holding pointers to the drawables */
 
    private slots:

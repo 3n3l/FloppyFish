@@ -1,4 +1,4 @@
-#include "image.h"
+#include "imageTexture.h"
 
 #include <QFile>
 

@@ -1,14 +1,7 @@
-#include "mainwindow.h"
-
-#include <cstddef>
-
-#include "glm/ext/matrix_clip_space.hpp"
-#include "glm/ext/matrix_float4x4.hpp"
-#include "src/drawables/fish.h"
-#include "src/drawables/obstacles/obstacle.h"
-
 #define GLM_FORCE_RADIANS
 #define GLM_SWIZZLE
+
+#include "mainwindow.h"
 
 #include <src/drawables/background.h>
 
@@ -16,10 +9,15 @@
 #include <QMouseEvent>
 #include <QOpenGLFunctions>
 #include <QOpenGLWindow>
+#include <cstddef>
 #include <glm/glm.hpp>
 
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "src/config/config.h"
+#include "src/drawables/fishController.h"
+#include "src/drawables/obstacles/obstacle.h"
 
 GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _updateTimer(this), _stopWatch() {
     // Set to the preconfigured size.
@@ -27,7 +25,7 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     setHeight(Config::windowHeight);
 
     // Set the title.
-    setTitle("Floppy Fish");
+    setTitle("Floppy FishController");
 
     setSurfaceType(OpenGLSurface);
 
@@ -36,26 +34,30 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     _updateTimer.start(18);
     _stopWatch.start();
 
-    _billTheSalmon =
-        std::make_shared<FloppyMesh>("res/BillDerLachs.obj", glm::vec3(0.0f, -0.3f, 0.0f), 0.1f, 90.0f, 0.05f);
-    _secondProp = std::make_shared<FloppyMesh>("res/Lamp.obj", glm::vec3(0.5f, 0.3f, 0.0f), 0.1f, 45.0f, 0.05f);
-    _billTheSalmonX = std::make_shared<Fish>(Fish("res/fish.png", 0.0f, 0.0f, 0.05f, 0.05f));
-
     // Create all the drawables.
     // NOTE: Order in list is important for culling.
-    _drawables = {// TODO: create the fence (ground)
-                  // std::make_shared<Ground>(Ground("res/ground.png")),
-                  std::make_shared<Background>(Background("res/background.png")),
-                  // Bill the Salmon.
-                  _billTheSalmonX};
+    _billMesh = std::make_shared<FloppyMesh>("res/BillDerLachs.obj", glm::vec3(0.0f, -0.1f, 0.0f), 0.1f, 90.0f,
+                                             Config::debugRotation),
+    _drawables = {
+        // TODO: create the fence (ground)
+        // std::make_shared<Ground>(Ground("res/ground.png")),
+        // std::make_shared<Background>(Background("res/background.png")),
+        // Bill the Salmon.
+        _billTheSalmon = std::make_shared<FishController>(_billMesh),
+    };
+    // Skybox.
+    _skybox = std::make_shared<Skybox>();
 
     // Create the in the Config specified amount of obstacles and add it to the drawables.
     float offset = Config::obstacleDistance;
     for (std::size_t i = 0; i < Config::obstacleAmount; i++) {
-        _drawables.push_back(std::make_shared<Obstacle>(Obstacle("res/background.png", i * offset)));
+        _drawables.push_back(std::make_shared<Obstacle>(
+            Obstacle(i * offset,
+                     std::make_shared<FloppyMesh>("res/Sign.obj", glm::vec3(0.5f, -1.4f, 0.0f), 0.1f, 45.0f,
+                                                  Config::debugRotation),
+                     std::make_shared<FloppyMesh>("res/Lamp.obj", glm::vec3(0.5f, -0.2f, 0.0f), 0.1f, 45.0f,
+                                                  Config::debugRotation))));
     }
-
-    _skybox = std::make_shared<Skybox>();
 
     // TODO: Initialize the media player.
     _mediaPlayer = std::make_shared<QMediaPlayer>();
@@ -102,10 +104,7 @@ void GLMainWindow::initializeGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-    _billTheSalmon->init();
-    _secondProp->init();
     _skybox->init();
-
     // Initialize all drawables.
     for (auto drawable : _drawables) {
         drawable->init();
@@ -139,10 +138,9 @@ void GLMainWindow::paintGL() {
     glDisable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
     _skybox->draw(_projectionMatrix);
+
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
-    _billTheSalmon->draw(_projectionMatrix);
-    _secondProp->draw(_projectionMatrix);
     // Draw all drawables.
     for (auto drawable : _drawables) {
         drawable->draw(_projectionMatrix);
@@ -158,15 +156,14 @@ void GLMainWindow::animateGL() {
     _stopWatch.restart();
 
     // Calculate current model view matrix.
-    glm::mat4 modelViewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 modelViewMatrix =
+        glm::lookAt(glm::vec3(0.0f, Config::lookAtHeight, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     // Increment the animation looper if the animation is running.
     const float incrementedLooper = Config::animationLooper + Config::animationSpeed;
     Config::animationLooper = incrementedLooper > 1.0f ? 0.0f : incrementedLooper;
 
     _skybox->update(elapsedTimeMs, modelViewMatrix);
-    _billTheSalmon->update(elapsedTimeMs, modelViewMatrix);
-    _secondProp->update(elapsedTimeMs, modelViewMatrix);
 
     // Update all drawables.
     for (auto drawable : _drawables) {
@@ -184,7 +181,7 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
         // TODO: make the fish flop!
         if (!_jumpSFX->isPlaying()) _jumpSFX->play();
         qDebug() << "FLOPPY FISH";
-        _billTheSalmonX->flop();
+        _billTheSalmon->flop();
     }
     // Pressing F in fullscreen mode will reset the window.
     else if (event->key() == Qt::Key_F && isFullscreen) {
@@ -193,6 +190,26 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
     // Pressing F in normal mode will go to fullscreen mode.
     else if (event->key() == Qt::Key_F && !isFullscreen) {
         showFullScreen();
+    }
+    // Pressing D will toggle debug mode on/off.
+    else if (event->key() == Qt::Key_D) {
+        Config::showHitbox = !Config::showHitbox;
+    }
+    // Pressing ARROW keys will move the camera or change FoV. 0 Resets it again.
+    else if (event->key() == Qt::Key_Up) {
+        Config::lookAtHeight += 0.01f;
+    } else if (event->key() == Qt::Key_Down) {
+        Config::lookAtHeight -= 0.01f;
+    } else if (event->key() == Qt::Key_Left) {
+        Config::fieldOfVision -= 5.0f;
+        this->resizeGL(Config::windowWidth, Config::windowHeight);
+    } else if (event->key() == Qt::Key_Right) {
+        Config::fieldOfVision += 5.0f;
+        this->resizeGL(Config::windowWidth, Config::windowHeight);
+    } else if (event->key() == Qt::Key_0) {
+        Config::lookAtHeight = 0.0f;
+        Config::fieldOfVision = 75.0f;
+        this->resizeGL(Config::windowWidth, Config::windowHeight);
     }
     // Pressing ESCAPE or Q will quit everything.
     else if (event->key() == Qt::Key_Escape || event->key() == Qt::Key_Q) {

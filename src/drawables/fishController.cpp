@@ -1,32 +1,30 @@
 #define GL_SILENCE_DEPRECATION
 
-#include "src/drawables/obstacles/part.h"
+#include "src/drawables/fishController.h"
 
 #include <QFile>
 #include <QOpenGLShaderProgram>
-#include <string>
 
-#include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/matrix_transform.hpp"
-#include "glm/ext/vector_float3.hpp"
-#include "glm/fwd.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "src/config/config.h"
 #include "src/drawables/drawable.h"
-#include "src/utils/utils.h"
 
-Part::Part(const std::shared_ptr<FloppyMesh>& partMesh) : _yCoordinate(0) { _partMesh = partMesh; }
-Part::Part(Part const& p) : _partMesh(p._partMesh), _yCoordinate(p._yCoordinate) {}
-Part::~Part() {}
+FishController::FishController(const std::shared_ptr<FloppyMesh>& billMesh) {
+    _width = 0.05f;
+    _height = 0.05f;
+    _hitboxColour = glm::vec3(0.1f, 0.4f, 0.9f);
+    _billMesh = billMesh;
+}
+FishController::~FishController() {}
 
-void Part::init() {
+void FishController::flop() { Config::fishFallingAcceleration = Config::flop; }
+
+void FishController::init() {
     // Initialize mesh.
-    _partMesh->init();
+    _billMesh->init();
 
-    // Set hitbox colour.
-    _hitboxColour = glm::vec3(0.1f, 0.7f, 0.3f);
-
-    // Initialize OpenGL functions, replacing glewInit().
+    // Initialize OpenGL functions.
     Drawable::init();
 
     // Create a program for this class.
@@ -56,7 +54,6 @@ void Part::init() {
         glm::vec3(1, 1, 0),
         glm::vec3(1, -1, 0),
     };
-
     GLuint position_buffer;
     glGenBuffers(1, &position_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
@@ -74,18 +71,24 @@ void Part::init() {
     glBindVertexArray(0);
 }
 
-void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
-    // TODO
-    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(0, _yCoordinate, 0));
+void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
+    // Slowly revert acceleration back to earth gravity.
+    if (Config::fishFallingAcceleration >= Config::gravity) Config::fishFallingAcceleration -= 0.001f;
+    // Apply gravitational velocity.
+    // if (Config::fishFallingAcceleration <= 0.0f && abs(Config::fishFallingVelocity) <= -Config::gravity * 1.0f)
+    //     Config::fishFallingVelocity += Config::fishFallingAcceleration * 1.0f;
+    Config::fishFallingVelocity = Config::fishFallingAcceleration * 1.0f;
+    _yCoordinate += Config::fishFallingVelocity;
+    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_xCoordinate, _yCoordinate, 0));
 
-    // Update mesh before scaling part hitbox.
-    _partMesh->update(elapsedTimeMs, _modelViewMatrix);
+    // Update mesh before scaling the hitbox.
+    _billMesh->update(elapsedTimeMs, _modelViewMatrix);
 
-    // TODO
-    _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(1, _height, 1));
+    // Apply the scaling of the hitbox quad.
+    _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(_width, _height, 1.0));
 }
 
-void Part::draw(glm::mat4 projectionMatrix) {
+void FishController::draw(glm::mat4 projectionMatrix) {
     // Only draw the hitbox quad if the debug-flag is enabled.
     if (Config::showHitbox) {
         if (_program == 0) {
@@ -95,13 +98,11 @@ void Part::draw(glm::mat4 projectionMatrix) {
 
         // Load program.
         glUseProgram(_program);
-        glCheckError();
 
         // Bind vertex array object.
         glBindVertexArray(_vertexArrayObject);
-        glCheckError();
 
-        // Set parameter.
+        // Set parameters.
         glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE,
                            glm::value_ptr(projectionMatrix));
         glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE,
@@ -110,15 +111,20 @@ void Part::draw(glm::mat4 projectionMatrix) {
 
         // Call draw.
         glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
-        glCheckError();
 
         // Unbind vertex array object.
         glBindVertexArray(0);
-        glCheckError();
     }
 
     // Draw the mesh.
-    if (_partMesh != nullptr) {
-        _partMesh->draw(projectionMatrix);
+    if (_billMesh != nullptr) {
+        _billMesh->draw(projectionMatrix);
     }
+}
+
+void FishController::getBounds(float& boundX, float& boundY, float& boundWidth, float& boundHeight) const {
+    boundX = _xCoordinate;
+    boundY = _yCoordinate;
+    boundWidth = _width;
+    boundHeight = _height;
 }

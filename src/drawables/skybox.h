@@ -1,31 +1,30 @@
 #ifndef SKYBOX_H
 #define SKYBOX_H
 
-#include <QOpenGLFunctions_4_1_Core>
-
+#include "drawable.h"
 #include "glm/detail/type_mat4x4.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-class Skybox {
+class Skybox : public Drawable {
    public:
     Skybox();
 
     /**
      * @brief draw the skybox.
      */
-    virtual void draw(glm::mat4 projectionMatrix);
+    void draw(glm::mat4 projectionMatrix) override;
 
     /**
      * @brief initialize the skybox.
      */
-    virtual void init();
+    void init() override;
 
     /**
      * @brief update Updates the object's position, rotation etc.
      * @param elapsedTimeMs The elapsed time since the last update in ms
      * @param modelViewMatrix the mode view matrix of the parent object
      */
-    virtual void update(float elapsedTimeMs, glm::mat4 modelViewMatrix);
+    void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) override;
 
    protected:
     GLuint _program;            /**< The opengl program handling the shaders */

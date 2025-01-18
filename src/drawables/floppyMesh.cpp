@@ -1,7 +1,7 @@
 #define GL_SILENCE_DEPRECATION
 #define GLM_ENABLE_EXPERIMENTAL
 
-#include "src/objects/floppyMesh.h"
+#include "src/drawables/floppyMesh.h"
 
 #include <QFile>
 #include <QOpenGLShaderProgram>
@@ -14,7 +14,7 @@
 #include "glm/gtx/rotate_vector.hpp"
 #include "lib/tinyobj/tiny_obj_loader.h"
 #include "src/config/config.h"
-#include "src/utils/image.h"
+#include "src/utils/imageTexture.h"
 #include "src/utils/utils.h"
 
 // Main constructor.
@@ -44,15 +44,15 @@ void FloppyMesh::init() {
     _program = glCreateProgram();
 
     // Compile shader.
-    GLuint vs = Utils::compileShader(GL_VERTEX_SHADER, "src/shaders/common.vs.glsl");
-    GLuint fs = Utils::compileShader(GL_FRAGMENT_SHADER, "src/shaders/cookTorrance.fs.glsl");
+    GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/common.vs.glsl");
+    GLuint fs = compileShader(GL_FRAGMENT_SHADER, "src/shaders/cookTorrance.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);
     glAttachShader(_program, fs);
 
     // Link program.
-    _program = Utils::linkProgram(_program);
+    _program = linkProgram(_program);
 
     // Create mesh vectors (dynamic arrays).
     std::vector<glm::vec3> positions;
@@ -258,7 +258,7 @@ bool FloppyMesh::loadObj(const std::string& filename, uint partIndex, std::vecto
 }
 
 GLuint FloppyMesh::loadTexture(std::string path, TextureType type) {
-    Image image(path);
+    ImageTexture image(path);
 
     GLuint textureID;
 

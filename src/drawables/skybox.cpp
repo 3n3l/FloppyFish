@@ -3,6 +3,8 @@
 
 #include "skybox.h"
 
+#include <src/drawables/drawable.h>
+
 #include <QFile>
 #include <QOpenGLShaderProgram>
 #include <string>
@@ -12,25 +14,29 @@
 #include "glm/ext/vector_float3.hpp"
 #include "glm/fwd.hpp"
 #include "glm/gtx/rotate_vector.hpp"
-#include "src/utils/image.h"
+#include "src/config/config.h"
+#include "src/utils/imageTexture.h"
 #include "src/utils/utils.h"
 
-Skybox::Skybox() { _subsequentRotationSpeed = 0.0125f; }
+Skybox::Skybox() { _subsequentRotationSpeed = Config::skyRotation; }
 
 void Skybox::init() {
+    // Initialize OpenGL functions.
+    Drawable::init();
+
     // Create a program for this class.
     _program = glCreateProgram();
 
     // Compile shader.
-    GLuint vs = Utils::compileShader(GL_VERTEX_SHADER, "src/shaders/skybox.vs.glsl");
-    GLuint fs = Utils::compileShader(GL_FRAGMENT_SHADER, "src/shaders/skybox.fs.glsl");
+    GLuint vs = Drawable::compileShader(GL_VERTEX_SHADER, "src/shaders/skybox.vs.glsl");
+    GLuint fs = Drawable::compileShader(GL_FRAGMENT_SHADER, "src/shaders/skybox.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);
     glAttachShader(_program, fs);
 
     // Link program.
-    _program = Utils::linkProgram(_program);
+    _program = Drawable::linkProgram(_program);
 
     // Create vectors (dynamic arrays).
     std::vector<glm::vec3> positions;
@@ -164,7 +170,7 @@ void Skybox::loadTexture() {
     // Assign image data.
     for (int i = 0; i < 6; i++) {
         // Iterate throughout the 6 sides of the cubemap.
-        Image image(star_images[i]);
+        ImageTexture image(star_images[i]);
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA,
                      GL_UNSIGNED_BYTE, image.getData());
     }
