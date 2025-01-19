@@ -1,8 +1,10 @@
-#ifndef IMAGE_H
-#define IMAGE_H
+#ifndef BITMAP_H
+#define BITMAP_H
+
+
+#include <string>
 
 #include <QImage>
-#include <string>
 
 /**
  * @brief The Image class is a wrapper to use images as textures
@@ -11,13 +13,18 @@
  * to your shader. The image will be present in
  * 32-bit RGBA format (4 * 8 bit)
  */
-class ImageTexture {
-   public:
+class Image
+{
+public:
+
     /**
      * @brief Image constructor
      * @param path The path of the image
+     *
+     * You can use the Qt Ressource system for the path,
+     * e.g. ":/res/images/earth.bmp"
      */
-    ImageTexture(std::string path);
+    Image(std::string path);
 
     /**
      * @brief getWidth Getter for the image width
@@ -39,7 +46,7 @@ class ImageTexture {
      */
     uchar *getData();
 
-   private:
+private:
     /**
      * @brief load Loads the image
      * @param path the path to the image
@@ -49,4 +56,4 @@ class ImageTexture {
     QImage _image; /**< The image in the QImage format */
 };
 
-#endif  // IMAGE_H
+#endif // BITMAP_H

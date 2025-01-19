@@ -6,27 +6,35 @@
 
 class Obstacle : public Drawable {
    public:
-    Obstacle(std::string texture = "/res/background.png", float offset = 0.0f);
-    ~Obstacle();
+    /**
+     *
+     * @param offset The offset applied to the obstacle.
+     * @param upperPartMesh The mesh for the upper part of the obstacle.
+     * @param lowerPartMesh The mesh for the lower part of the obstacle.
+     */
+    Obstacle(float offset = 0.0f, const std::shared_ptr<FloppyMesh>& upperPartMesh = nullptr,
+             const std::shared_ptr<FloppyMesh>& lowerPartMesh = nullptr);
+    ~Obstacle() override;
     Obstacle(const Obstacle&);
 
-    bool isOutOfBounds() const { return _x < -1 - (_width / 2); }
+    bool isOutOfBounds() const { return _xCoordinate < -1 - (_width / 2); }
 
     /**
      * @brief initialize the obstacle.
      */
-    virtual void init();
+    void init() override;
 
     /**
      * @brief draw the obstacle.
      */
-    virtual void draw(glm::mat4 projection_matrix);
+    void draw(glm::mat4 projection_matrix) override;
 
     /**
      * @brief update the obstacle.
      * @param elapsedTimeMs The elapsed time since the last update in ms
+     * @param modelViewMatrix The model view matrix to use for drawing.
      */
-    virtual void update(float elapsedTimeMs, glm::mat4 modelViewMatrix);
+    void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) override;
 
     /**
      * @brief reset child parts.
@@ -34,15 +42,13 @@ class Obstacle : public Drawable {
     virtual void reset();
 
    private:
-    unsigned int _textureHandle; /**< handle of the texture */
-    std::string _texture;        /**< path of the texture */
-    Part _upperPart;             /**< lower part of the Obstacle */
-    Part _lowerPart;             /**< upper part of the Obstacle */
-    float _offset;               /**< x-offset from the origin */
-    float _height;               /**< height of the obstacle */
-    float _width;                /**< width of the obstacle */
-    float _depth;                /**< depth of the obstacle */
-    float _x;                    /**< current x position */
+    Part _upperPart;    /**< Lower part of the Obstacle. */
+    Part _lowerPart;    /**< Upper part of the Obstacle. */
+    float _offset;      /**< X-offset from the origin. */
+    float _height;      /**< Height of the obstacle. */
+    float _width;       /**< Width of the obstacle. */
+    float _depth;       /**< Depth of the obstacle. */
+    float _xCoordinate; /**< Current x position. */
 };
 
 #endif  // OBSTACLE_H

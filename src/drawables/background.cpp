@@ -1,21 +1,17 @@
+#define GL_SILENCE_DEPRECATION
+
 #include "src/drawables/background.h"
+
+#include <QFile>
+#include <QOpenGLShaderProgram>
+#include <string>
 
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
+#include "glm/fwd.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "src/config/config.h"
 #include "src/drawables/drawable.h"
-#include "src/utils/utils.h"
-
-#define GL_SILENCE_DEPRECATION
-
-#include <QDebug>
-#include <QFile>
-#include <QOpenGLShaderProgram>
-#include <QTextStream>
-#include <string>
-
-#include "glm/fwd.hpp"
 #include "src/utils/utils.h"
 
 Background::Background(std::string texturePath) : Drawable(), _texturePath(texturePath) {}

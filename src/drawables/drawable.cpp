@@ -1,20 +1,18 @@
-#include "src/drawables/drawable.h"
-
-#include "src/utils/image.h"
-
 #define GL_SILENCE_DEPRECATION
 
-#include <QDebug>
+#include "src/drawables/drawable.h"
+
 #include <QFile>
 #include <QOpenGLShaderProgram>
-#include <QTextStream>
 
-Drawable::Drawable() : _vertexArrayObject(0), _modelViewMatrix(1.0f) {}
-Drawable::Drawable(Drawable const &d) : _vertexArrayObject(0), _modelViewMatrix(1.0f) {}
+#include "src/utils/imageTexture.h"
+
+Drawable::Drawable() : _modelViewMatrix(1.0f), _vertexArrayObject(0) {}
+Drawable::Drawable(Drawable const &d) : _modelViewMatrix(1.0f), _vertexArrayObject(0) {}
 Drawable::~Drawable() {}
 
 void Drawable::init() {
-    // Initialize OpenGL funtions, replacing glewInit().
+    // Initialize OpenGL functions, replacing glewInit().
     initializeOpenGLFunctions();
 }
 
@@ -97,7 +95,7 @@ GLuint Drawable::loadTexture(std::string path) {
 
     // Assign image data.
     glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                     image.getData());
+                 image.getData());
 
     // Set texture parameters.
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

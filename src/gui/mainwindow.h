@@ -1,6 +1,11 @@
 #ifndef GLMAINWINDOW_H
 #define GLMAINWINDOW_H
 
+#include <QtMultimedia/qaudiodevice.h>
+#include <QtMultimedia/qaudiooutput.h>
+#include <QtMultimedia/qmediadevices.h>
+#include <QtMultimedia/qmediaplayer.h>
+#include <QtMultimedia/qsoundeffect.h>
 #include <src/drawables/drawable.h>
 
 #include <QElapsedTimer>
@@ -9,7 +14,9 @@
 #include <QTimer>
 #include <memory>
 
-#include "src/drawables/fish.h"
+#include "src/drawables/fishController.h"
+#include "src/drawables/floppyMesh.h"
+#include "src/drawables/skybox.h"
 
 /**
  * @brief The GLWindow class handling the opengl window.
@@ -18,9 +25,17 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     Q_OBJECT
 
    private:
-    std::shared_ptr<Fish> _billTheSalmon;              /**< Bill the Salmon */
-    QTimer _updateTimer;                               /**< Used for regular frame updates */
-    QElapsedTimer _stopWatch;                          /**< Measures time between updates */
+    std::shared_ptr<QSoundEffect> _jumpSFX;     /**< Jump SFX */
+    std::shared_ptr<QMediaPlayer> _mediaPlayer; /**< Media Player used for SFX */
+    std::shared_ptr<QAudioOutput> _audioOutput; /**< AudioOutput used for Sound */
+    QTimer _updateTimer;                        /**< Used for regular frame updates */
+    QElapsedTimer _stopWatch;                   /**< Measures time between updates */
+
+    std::shared_ptr<FloppyMesh> _billMesh; /**< Bill the salmon shown in the window */
+    std::shared_ptr<FloppyMesh> _secondProp;    /**< A sign to test multi-parts objs */
+    std::shared_ptr<Skybox> _skybox;            /**< A skybox */
+
+    std::shared_ptr<FishController> _billTheSalmon;             /**< Bill the Salmon */
     std::vector<std::shared_ptr<Drawable>> _drawables; /**< Vector holding pointers to the drawables */
 
    private slots:
@@ -71,6 +86,9 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
      * @param event the QWheelEvent containing all relevant data
      */
     virtual void keyPressEvent(QKeyEvent* event) override;
+
+   private:
+    glm::mat4 _projectionMatrix; /* Projection Matrix */
 };
 
 #endif  // GLMAINWINDOW_H

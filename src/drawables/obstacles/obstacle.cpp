@@ -1,41 +1,34 @@
+#define GL_SILENCE_DEPRECATION
+
 #include "src/drawables/obstacles/obstacle.h"
+
+#include <QFile>
+#include <QOpenGLShaderProgram>
 
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/ext/vector_float3.hpp"
+#include "glm/fwd.hpp"
 #include "src/config/config.h"
 #include "src/drawables/drawable.h"
 
-#define GL_SILENCE_DEPRECATION
-
-#include <QDebug>
-#include <QFile>
-#include <QOpenGLShaderProgram>
-#include <QTextStream>
-#include <string>
-
-#include "glm/fwd.hpp"
-
-Obstacle::Obstacle(std::string texture, float offset)
-    : Drawable(),
-      _upperPart(Part("/res/sign.png")),
-      _lowerPart(Part("/res/lamp.png")),
+Obstacle::Obstacle(float offset, const std::shared_ptr<FloppyMesh>& upperPartMesh,
+                   const std::shared_ptr<FloppyMesh>& lowerPartMesh)
+    : _upperPart(Part(upperPartMesh)),
+      _lowerPart(Part(lowerPartMesh)),
+      _offset(offset),
       _height(Config::obstacleGapHeight),
       _width(Config::obstacleWidth),
       _depth(Config::obstacleDepth),
-      _texture(texture),
-      _offset(offset),
-      _x(0) {}
-Obstacle::Obstacle(Obstacle const &o)
-    : Drawable(),
-      _upperPart(o._upperPart),
+      _xCoordinate(0) {}
+Obstacle::Obstacle(Obstacle const& o)
+    : _upperPart(o._upperPart),
       _lowerPart(o._lowerPart),
       _height(o._height),
       _width(o._width),
       _depth(o._depth),
-      _texture(o._texture),
       _offset(o._offset),
-      _x(o._x) {}
+      _xCoordinate(o._xCoordinate) {}
 Obstacle::~Obstacle() {}
 
 void Obstacle::init() {
@@ -44,7 +37,7 @@ void Obstacle::init() {
     _lowerPart.init();
 
     // Place the obstacle to the right of the window.
-    _x = 1 + _offset + (_width / 2);
+    _xCoordinate = 1 + _offset + (_width / 2);
 
     // Reset the individual parts.
     reset();
@@ -65,19 +58,19 @@ void Obstacle::reset() {
 void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     if (isOutOfBounds()) {
         // Place the obstacle to the right of the other obstacles.
-        _x += (Config::obstacleAmount * Config::obstacleDistance);
+        _xCoordinate += static_cast<float>(Config::obstacleAmount) * Config::obstacleDistance;
 
         // Reset the individual parts.
         reset();
     }
 
     // Scroll this obstacle.
-    _x += Config::obstacleSpeed;
+    _xCoordinate += Config::obstacleSpeed;
 
-    _modelViewMatrix = glm::translate(modelViewMatrix, glm::vec3(_x, 0, 0));
+    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_xCoordinate, 0, 0));
 
     // Scale to width and depth, height is handled by the individual parts.
-    _modelViewMatrix = glm::scale(_modelViewMatrix, glm::vec3(_width, 1, _depth));
+    _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(_width, 1, _depth));
 
     // Update the individual parts.
     _upperPart.update(elapsedTimeMs, _modelViewMatrix);
