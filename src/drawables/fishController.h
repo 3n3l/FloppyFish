@@ -11,7 +11,7 @@ class FishController : public Drawable {
     FishController(const std::shared_ptr<FloppyMesh>& billMesh);
     ~FishController() override;
 
-    void flop() { _verticalVelocity = Config::upwardVelocity; }
+    void flop() { _verticalVelocity = Config::verticalVelocity; }
     float height() { return _height; }
     float width() { return _width; }
     float x() { return _x; }
