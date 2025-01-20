@@ -138,9 +138,9 @@ void GLMainWindow::paintGL() {
     glDepthFunc(GL_LEQUAL);
     _skybox->draw(_projectionMatrix);
 
-    // glEnable(GL_CULL_FACE);
-    glDepthFunc(GL_LESS);
     // Draw all drawables.
+    glEnable(GL_CULL_FACE);
+    glDepthFunc(GL_LESS);
     for (auto drawable : _drawables) {
         drawable->draw(_projectionMatrix);
     }

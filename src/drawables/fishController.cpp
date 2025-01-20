@@ -49,9 +49,11 @@ void FishController::init() {
     // Fill position buffer with data.
     std::vector<glm::vec3> positions = {
         glm::vec3(-1, -1, 0),
-        glm::vec3(-1, 1, 0),
         glm::vec3(1, 1, 0),
+        glm::vec3(-1, 1, 0),
+        glm::vec3(-1, -1, 0),
         glm::vec3(1, -1, 0),
+        glm::vec3(1, 1, 0),
     };
     GLuint position_buffer;
     glGenBuffers(1, &position_buffer);
@@ -90,6 +92,11 @@ void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
 }
 
 void FishController::draw(glm::mat4 projectionMatrix) {
+    // Draw the mesh.
+    if (_billMesh != nullptr) {
+        _billMesh->draw(projectionMatrix);
+    }
+
     // Only draw the hitbox quad if the debug-flag is enabled.
     if (Config::showHitbox) {
         if (_program == 0) {
@@ -115,11 +122,6 @@ void FishController::draw(glm::mat4 projectionMatrix) {
 
         // Unbind vertex array object.
         glBindVertexArray(0);
-    }
-
-    // Draw the mesh.
-    if (_billMesh != nullptr) {
-        _billMesh->draw(projectionMatrix);
     }
 }
 
