@@ -15,7 +15,7 @@ FishController::FishController(const std::shared_ptr<FloppyMesh>& billMesh) {
     _height = 0.05f;
     _hitboxColour = glm::vec3(0.1f, 0.4f, 0.9f);
     _billMesh = billMesh;
-    _velocity = 0.0f;
+    _verticalVelocity = 0.0f;
 }
 FishController::~FishController() {}
 
@@ -72,12 +72,12 @@ void FishController::init() {
 
 void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // Slowly revert velocity back to lower velocity bound.
-    if (_velocity >= Config::velocityBound) {
-        _velocity += Config::verticalAcceleration;
+    if (_verticalVelocity >= Config::velocityBound) {
+        _verticalVelocity += Config::verticalAcceleration;
     }
 
     // Update y-coordinate with the current velocity.
-    _y += _velocity;
+    _y += _verticalVelocity;
 
     // Translate to the updated y-coordinate.
     _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_x, _y, 0));
