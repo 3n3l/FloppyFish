@@ -24,7 +24,7 @@ float Config::obstacleDistance = 0.66f;
 float Config::obstacleWidth = 0.1f;
 float Config::obstacleDepth = 1.0f;
 float Config::obstacleSpeed = -0.01f;
-bool Config::showHitbox = false;
+bool Config::showHitbox = true;
 
 // Animations.
 float Config::animationSpeed = 0.0f;
