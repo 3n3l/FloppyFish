@@ -1,20 +1,18 @@
-#include "src/drawables/drawable.h"
-
-#include "src/utils/image.h"
-
 #define GL_SILENCE_DEPRECATION
 
-#include <QDebug>
+#include "src/drawables/drawable.h"
+
 #include <QFile>
 #include <QOpenGLShaderProgram>
-#include <QTextStream>
 
-Drawable::Drawable() : _vertexArrayObject(0), _modelViewMatrix(1.0f) {}
-Drawable::Drawable(Drawable const &d) : _vertexArrayObject(0), _modelViewMatrix(1.0f) {}
+#include "src/utils/imageTexture.h"
+
+Drawable::Drawable() : _modelViewMatrix(1.0f), _vertexArrayObject(0) {}
+Drawable::Drawable(Drawable const &d) : _modelViewMatrix(1.0f), _vertexArrayObject(0) {}
 Drawable::~Drawable() {}
 
 void Drawable::init() {
-    // Initialize OpenGL funtions, replacing glewInit().
+    // Initialize OpenGL functions, replacing glewInit().
     initializeOpenGLFunctions();
 }
 
@@ -81,7 +79,7 @@ GLuint Drawable::linkProgram(GLuint program) {
     return program;
 }
 
-GLuint Drawable::loadTexture(std::string path) {
+GLuint Drawable::loadTexture(std::string path, TextureType type) {
     ImageTexture image(path);
 
     GLuint textureID;
@@ -91,18 +89,38 @@ GLuint Drawable::loadTexture(std::string path) {
     // Generate and bind texture.
     // Allocate one texture, and assign the openGL handle (akin to a pointer).
     glGenTextures(1, &textureID);
-
     // Makes all following texture methods work on the bound texture.
     glBindTexture(GL_TEXTURE_2D, textureID);
 
     // Assign image data.
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                     image.getData());
+    switch (type) {
+        case Monochrome:
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                         image.getData());
+            break;
+
+        case RGB:
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                         image.getData());
+            break;
+
+        case NormalMap:
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                         image.getData());
+            break;
+
+        case SRGB:
+        default:
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, image.getWidth(), image.getHeight(), 0, GL_RGBA,
+                         GL_UNSIGNED_BYTE, image.getData());
+            break;
+    }
 
     // Set texture parameters.
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    // Make magnification use nearest, in order to preserve pixel look.
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glGenerateMipmap(GL_TEXTURE_2D);
 

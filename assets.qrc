@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>BillAlbedo.png</file>
+        <file>BillDerLachs.mtl</file>
+        <file>BillDerLachs.obj</file>
+        <file>Lamp.mtl</file>
+        <file>Lamp.obj</file>
+        <file>LampTexture.png</file>
+        <file>Sign.mtl</file>
+        <file>Sign.obj</file>
+        <file>SignTexture.png</file>
+
+        <file>starsNX.png</file>
+        <file>starsPX.png</file>
+        <file>starsNY.png</file>
+        <file>starsPY.png</file>
+        <file>starsNZ.png</file>
+        <file>starsPZ.png</file>
+
+        <file>FloppyJumpOST_v1.wav</file>
+        <file>FloppyJumpSFX.wav</file>
+    </qresource>
+</RCC>
