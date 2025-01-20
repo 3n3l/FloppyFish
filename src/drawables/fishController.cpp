@@ -75,8 +75,8 @@ void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // if (Config::fishFallingAcceleration <= 0.0f && abs(Config::fishFallingVelocity) <= -Config::gravity * 1.0f)
     //     Config::fishFallingVelocity += Config::fishFallingAcceleration * 1.0f;
     Config::fishFallingVelocity = Config::fishFallingAcceleration * 1.0f;
-    _yCoordinate += Config::fishFallingVelocity;
-    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_xCoordinate, _yCoordinate, 0));
+    _y += Config::fishFallingVelocity;
+    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_x, _y, 0));
 
     // Update mesh before scaling the hitbox.
     _billMesh->update(elapsedTimeMs, _modelViewMatrix);
@@ -120,8 +120,8 @@ void FishController::draw(glm::mat4 projectionMatrix) {
 }
 
 void FishController::getBounds(float& boundX, float& boundY, float& boundWidth, float& boundHeight) const {
-    boundX = _xCoordinate;
-    boundY = _yCoordinate;
+    boundX = _x;
+    boundY = _y;
     boundWidth = _width;
     boundHeight = _height;
 }
