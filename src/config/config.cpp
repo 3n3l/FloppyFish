@@ -1,18 +1,17 @@
 #include "config.h"
 
-#include <__system_error/errc.h>
-
-// Game variables.
+// State.
 unsigned int Config::currentScore = 0;
 
-// Window state.
-// NOTE: arbitrary values, feel free to change.
+// Window.
 unsigned int Config::windowWidth = 1440;
 unsigned int Config::windowHeight = 1080;
+
+// Camera.
 float Config::fieldOfVision = 90.0f;
 float Config::lookAtHeight = 0.0f;
 
-// PBR Cook-Torrance parameters.
+// Lighting.
 float Config::indexOfRefraction = 1.2f;
 float Config::roughness = 0.4f;
 
@@ -36,5 +35,5 @@ float Config::skyRotation = 1.0f / 2400.0f;
 
 // Bill the Salmon.
 const float Config::velocityBound = -9.8f / 1000.0f;
-const float Config::upwardVelocity = 0.02f;
 const float Config::downwardAcceleration = -0.001f;
+const float Config::upwardVelocity = 0.02f;

@@ -7,36 +7,29 @@
  */
 class Config {
    public:
-    static unsigned int currentScore; /**< Current score of the player. */
-
-    static unsigned int windowWidth;  /**< Current width of the window. */
-    static unsigned int windowHeight; /**< Current height of the window. */
-    static float fieldOfVision;       /**< Field of vision. */
-
-    static float indexOfRefraction; /**< The eta value for cook torrance. */
-    static float roughness;         /**< The roughness for cook torrance. */
-
-    // Debug values.
-    static float debugRotation; /**< Amount of debug rotation to apply (used in debug mode). */
-    static bool showHitbox;     /**< Whether to show the collision-hit-boxes. */
-
-    static unsigned int obstacleAmount; /**< Number of obstacles to spawn. */
-    static float obstacleLowerBound;    /**< Lower bound of the height of the obstacle. */
-    static float obstacleUpperBound;    /**< Upper bound of the height of the obstacle. */
-    static float obstacleGapHeight;     /**< Height of the gap of the obstacle. */
-    static float obstacleDistance;      /**< Distance between obstacle. */
-    static float obstacleWidth;         /**< Width of the obstacle. */
-    static float obstacleDepth;         /**< Depth of the obstacle. */
-    static float obstacleSpeed;         /**< Distance scrolled per frame. */
-    static float animationLooper;       /**< A float that loops through [0, 1] for animation purposes. */
-    static float animationSpeed;        /**< The number of steps per ms. */
-
+    static unsigned int currentScore;        /**< Current score of the player. */
+    static unsigned int windowWidth;         /**< Current width of the window. */
+    static unsigned int windowHeight;        /**< Current height of the window. */
+    static float fieldOfVision;              /**< Field of vision. */
+    static float indexOfRefraction;          /**< The eta value for cook torrance. */
+    static float roughness;                  /**< The roughness for cook torrance. */
+    static float debugRotation;              /**< Amount of debug rotation to apply (used in debug mode). */
+    static bool showHitbox;                  /**< Whether to show the collision-hit-boxes. */
+    static unsigned int obstacleAmount;      /**< Number of obstacles to spawn. */
+    static float obstacleLowerBound;         /**< Lower bound of the height of the obstacle. */
+    static float obstacleUpperBound;         /**< Upper bound of the height of the obstacle. */
+    static float obstacleGapHeight;          /**< Height of the gap of the obstacle. */
+    static float obstacleDistance;           /**< Distance between obstacle. */
+    static float obstacleWidth;              /**< Width of the obstacle. */
+    static float obstacleDepth;              /**< Depth of the obstacle. */
+    static float obstacleSpeed;              /**< Distance scrolled per frame. */
+    static float animationLooper;            /**< A float that loops through [0, 1] for animation purposes. */
+    static float animationSpeed;             /**< The number of steps per ms. */
     static const float downwardAcceleration; /**< Downward acceleration of the fish, will be added to the velocity. */
     static const float velocityBound;        /**< Lower bound for the downward velocity of the fish. */
     static const float upwardVelocity;       /**< Upward velocity for the flop motion of the fish. */
-
-    static float skyRotation;  /**< Speed at which the skybox rotates. */
-    static float lookAtHeight; /**< Height of the camera. */
+    static float skyRotation;                /**< Speed at which the skybox rotates. */
+    static float lookAtHeight;               /**< Height of the camera. */
 };
 
 #endif  // CONFIG_H
