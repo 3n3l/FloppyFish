@@ -10,11 +10,10 @@ smooth in vec3 vView;
 smooth in vec3 vLightDir[NUM_LIGHTS];
 smooth in float vLightDistance[NUM_LIGHTS];
 
-// The texture of the current planetoid.
 // Primary texture mostly used for albedo.
 uniform sampler2D albedo;
 
-// Components for Cook-Toorance.
+// Components for Cook-Torrance.
 uniform float kdMaterialDiffuse;
 uniform float roughness;
 uniform float transparency;

@@ -167,7 +167,6 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix) {
 
     // Call draw.
     glDrawElements(GL_TRIANGLES, _verticeAmount, GL_UNSIGNED_INT, 0);
-    // glDrawArrays(GL_TRIANGLES, 0, _verticeAmount);
     glCheckError();
 
     // Unbind vertex array object.
