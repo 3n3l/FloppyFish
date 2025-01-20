@@ -25,7 +25,7 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     setHeight(Config::windowHeight);
 
     // Set the title.
-    setTitle("Floppy FishController");
+    setTitle("Floppy Fish");
 
     setSurfaceType(OpenGLSurface);
 
@@ -178,9 +178,7 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
     const bool isFullscreen = visibility() == QWindow::FullScreen;
     // Pressing SPACE will make the fish flop or flop the fish idk.
     if (event->key() == Qt::Key_Space) {
-        // TODO: make the fish flop!
         if (!_jumpSFX->isPlaying()) _jumpSFX->play();
-        qDebug() << "FLOPPY FISH";
         _billTheSalmon->flop();
     }
     // Pressing F in fullscreen mode will reset the window.
