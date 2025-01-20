@@ -2,7 +2,7 @@
 
 uniform samplerCube skyboxTexture;
 
-// Send color to screen.
+// Send colour to screen.
 layout (location = 0) out vec4 fcolour;
 
 smooth in vec3 direction;
@@ -14,9 +14,9 @@ void main(void)
     // Modifier to make the stars darker.
     float factor = 1.0f;
 
-    vec4 texColor = texture(skyboxTexture, direction);
-    fcolour = vec4(pow(texColor.r, modifier) * factor,
-    pow(texColor.g, modifier) * factor,
-    pow(texColor.b, modifier) * factor,
-    texColor.a);
+    vec4 texColour = texture(skyboxTexture, direction);
+    fcolour = vec4(pow(texColour.r, modifier) * factor,
+    pow(texColour.g, modifier) * factor,
+    pow(texColour.b, modifier) * factor,
+    texColour.a);
 }

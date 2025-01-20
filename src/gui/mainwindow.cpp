@@ -128,7 +128,7 @@ void GLMainWindow::paintGL() {
     // Set up view.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Set a background color.
+    // Set a background colour.
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     // Draw filled polygons.

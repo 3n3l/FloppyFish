@@ -24,7 +24,7 @@ uniform vec3 materialSpecularColour = vec3(1.0f, 1.0f, 1.0f);
 
 const float pi = 3.14159265358979323846f;
 
-// Send color to screen.
+// Send colour to screen.
 layout (location = 0) out vec4 fColour;
 
 vec3 cook_torrance(vec3 materialDiffuseColour,
