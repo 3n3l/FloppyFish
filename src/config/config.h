@@ -17,7 +17,9 @@ class Config {
     static float roughness;         /**< The roughness for cook torrance. */
 
     // Debug values.
-    static float debugRotation;         /**< Amount of debug rotation to apply (used in debug mode). */
+    static float debugRotation; /**< Amount of debug rotation to apply (used in debug mode). */
+    static bool showHitbox;     /**< Whether to show the collision-hit-boxes. */
+
     static unsigned int obstacleAmount; /**< Number of obstacles to spawn. */
     static float obstacleLowerBound;    /**< Lower bound of the height of the obstacle. */
     static float obstacleUpperBound;    /**< Upper bound of the height of the obstacle. */
@@ -28,14 +30,13 @@ class Config {
     static float obstacleSpeed;         /**< Distance scrolled per frame. */
     static float animationLooper;       /**< A float that loops through [0, 1] for animation purposes. */
     static float animationSpeed;        /**< The number of steps per ms. */
-    static bool showHitbox;             /**< Whether to show the collision-hit-boxes. */
 
-    static float fishFallingAcceleration; /**< Current downward acceleration of fish. */
-    static float fishFallingVelocity;     /**< Current vertical velocity of fish. */
-    static float gravity;                 /**< Gravity constant for the fish. */
-    static float flop;                    /**< The upward acceleration of the flop. */
-    static float skyRotation;             /**< The speed at which the skybox rotates. */
-    static float lookAtHeight;            /**< Height of the camera. */
+    static const float gravityConstant;      /**< Gravity constant, acts as lower bound of the acceleration for the fish. */
+    static const float downwardAcceleration; /**< Downward acceleration of the fish, bounded by gravity. */
+    static const float upwardVelocity;       /**< Upward velocity of the flop for the fish. */
+
+    static float skyRotation;  /**< Speed at which the skybox rotates. */
+    static float lookAtHeight; /**< Height of the camera. */
 };
 
 #endif  // CONFIG_H

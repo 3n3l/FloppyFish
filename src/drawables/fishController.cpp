@@ -1,3 +1,4 @@
+#include "src/config/config.h"
 #define GL_SILENCE_DEPRECATION
 
 #include "src/drawables/fishController.h"
@@ -14,6 +15,7 @@ FishController::FishController(const std::shared_ptr<FloppyMesh>& billMesh) {
     _height = 0.05f;
     _hitboxColour = glm::vec3(0.1f, 0.4f, 0.9f);
     _billMesh = billMesh;
+    _velocity = 0.0f;
 }
 FishController::~FishController() {}
 
@@ -69,13 +71,15 @@ void FishController::init() {
 }
 
 void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
-    // Slowly revert acceleration back to earth gravity.
-    if (Config::fishFallingAcceleration >= Config::gravity) Config::fishFallingAcceleration -= 0.001f;
-    // Apply gravitational velocity.
-    // if (Config::fishFallingAcceleration <= 0.0f && abs(Config::fishFallingVelocity) <= -Config::gravity * 1.0f)
-    //     Config::fishFallingVelocity += Config::fishFallingAcceleration * 1.0f;
-    Config::fishFallingVelocity = Config::fishFallingAcceleration * 1.0f;
-    _y += Config::fishFallingVelocity;
+    // Slowly revert velocity back to earth gravity.
+    if (_velocity >= Config::gravityConstant) {
+        _velocity += Config::downwardAcceleration;
+    }
+
+    // Update y-coordinate with the current velocity.
+    _y += _velocity;
+
+    // Translate to the updated y-coordinate.
     _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_x, _y, 0));
 
     // Update mesh before scaling the hitbox.
