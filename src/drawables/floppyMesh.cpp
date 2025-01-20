@@ -1,7 +1,6 @@
+#include "glm/gtc/type_ptr.hpp"
 #define GL_SILENCE_DEPRECATION
 #define GLM_ENABLE_EXPERIMENTAL
-
-#include "src/drawables/floppyMesh.h"
 
 #include <QFile>
 #include <QOpenGLShaderProgram>
@@ -14,6 +13,7 @@
 #include "glm/gtx/rotate_vector.hpp"
 #include "lib/tinyobj/tiny_obj_loader.h"
 #include "src/config/config.h"
+#include "src/drawables/floppyMesh.h"
 #include "src/utils/utils.h"
 
 // Main constructor.

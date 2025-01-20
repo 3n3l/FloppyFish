@@ -11,7 +11,7 @@ class FishController : public Drawable {
     FishController(const std::shared_ptr<FloppyMesh>& billMesh);
     ~FishController() override;
 
-    void flop() { Config::fishFallingAcceleration = Config::flop; }
+    void flop() { _verticalVelocity = Config::verticalVelocity; }
     float height() { return _height; }
     float width() { return _width; }
     float x() { return _x; }
@@ -46,12 +46,12 @@ class FishController : public Drawable {
     void getBounds(float& boundX, float& boundY, float& boundWidth, float& boundHeight) const;
 
    private:
-    float _height{};           /**< Height of the fish. */
-    float _width{};            /**< Width of the fish. */
-    float _y{};                /**< Y-coordinate of the fish. */
-    float _x{};                /**< X-coordinate of the fish. */
-    glm::vec3 _hitboxColour{}; /**< The colour of the hitbox. */
-
+    float _height{};                       /**< Height of the fish. */
+    float _width{};                        /**< Width of the fish. */
+    float _y{};                            /**< Y-coordinate of the fish. */
+    float _x{};                            /**< X-coordinate of the fish. */
+    float _verticalVelocity;               /**< The current velocity of the fish. */
+    glm::vec3 _hitboxColour{};             /**< The colour of the hitbox. */
     std::shared_ptr<FloppyMesh> _billMesh; /**< Pointer to the mesh of Bill */
 };
 
