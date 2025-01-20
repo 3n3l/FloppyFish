@@ -1,6 +1,5 @@
 #ifndef CONFIG_H
 #define CONFIG_H
-#include "src/drawables/skybox.h"
 
 /**
  * The global configuration, containing global configuration
