@@ -7,7 +7,6 @@
 
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "src/config/config.h"
 #include "src/drawables/drawable.h"
 
 FishController::FishController(const std::shared_ptr<FloppyMesh>& billMesh) {
@@ -17,8 +16,6 @@ FishController::FishController(const std::shared_ptr<FloppyMesh>& billMesh) {
     _billMesh = billMesh;
 }
 FishController::~FishController() {}
-
-void FishController::flop() { Config::fishFallingAcceleration = Config::flop; }
 
 void FishController::init() {
     // Initialize mesh.

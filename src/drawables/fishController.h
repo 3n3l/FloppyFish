@@ -3,6 +3,7 @@
 
 #include "floppyMesh.h"
 #include "glm/ext/matrix_float4x4.hpp"
+#include "src/config/config.h"
 #include "src/drawables/drawable.h"
 
 class FishController : public Drawable {
@@ -14,7 +15,7 @@ class FishController : public Drawable {
     float yCoordinate() { return _yCoordinate; }
     float width() { return _width; }
     float height() { return _height; }
-    static void flop();
+    void flop() { Config::fishFallingAcceleration = Config::flop; }
 
     /**
      * Initialize the fish.
@@ -45,10 +46,10 @@ class FishController : public Drawable {
     void getBounds(float& boundX, float& boundY, float& boundWidth, float& boundHeight) const;
 
    private:
-    float _height{};         /**< Height of the fish. */
-    float _width{};          /**< Width of the fish. */
-    float _yCoordinate{};    /**< Y-coordinate of the fish. */
-    float _xCoordinate{};    /**< X-coordinate of the fish. */
+    float _height{};           /**< Height of the fish. */
+    float _width{};            /**< Width of the fish. */
+    float _yCoordinate{};      /**< Y-coordinate of the fish. */
+    float _xCoordinate{};      /**< X-coordinate of the fish. */
     glm::vec3 _hitboxColour{}; /**< The colour of the hitbox. */
 
     std::shared_ptr<FloppyMesh> _billMesh; /**< Pointer to the mesh of the bill */
