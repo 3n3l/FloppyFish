@@ -12,6 +12,9 @@ class Drawable : protected QOpenGLFunctions_4_1_Core {
     ~Drawable() override;
     Drawable(const Drawable&);
 
+    // Enumerator to pass with textures.
+    enum TextureType { RGB, SRGB, NormalMap, Monochrome };
+
     /**
      * @brief initialize the drawable.
      */
@@ -46,9 +49,11 @@ class Drawable : protected QOpenGLFunctions_4_1_Core {
 
     /**
      * @brief Loads an image as a texture from a given path.
-     * @param path - the path to the image file.
+     * @param path the path to the texture.
+     * @param type the way the texture shall be parsed
+     * @return the GLuint pointing to the texture.
      */
-    virtual GLuint loadTexture(std::string path);
+    GLuint loadTexture(std::string path, TextureType type = SRGB);
 
    protected:
     glm::mat4 _modelViewMatrix;  /**< The model view matrix to get the object into model view space */

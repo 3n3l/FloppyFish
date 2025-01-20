@@ -3,7 +3,6 @@
 
 #include "floppyMesh.h"
 #include "glm/ext/matrix_float4x4.hpp"
-#include "src/config/config.h"
 #include "src/drawables/drawable.h"
 
 class FishController : public Drawable {

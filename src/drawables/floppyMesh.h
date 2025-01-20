@@ -2,8 +2,6 @@
 #define FLOPPY_MESH_H
 
 #include "drawable.h"
-#include "glm/detail/type_mat4x4.hpp"
-#include "glm/gtc/type_ptr.hpp"
 
 class FloppyMesh : public Drawable {
    public:
@@ -15,9 +13,6 @@ class FloppyMesh : public Drawable {
     FloppyMesh(std::string meshPath, uint meshIndex);
 
     ~FloppyMesh() override;
-
-    // Enumerator to pass with textures.
-    enum TextureType { RGB, SRGB, NormalMap, Monochrome };
 
     /**
      * @brief draw the mesh.
@@ -86,14 +81,6 @@ class FloppyMesh : public Drawable {
                  std::vector<glm::vec3>& normals, std::vector<glm::vec2>& textureCoordinates,
                  std::vector<unsigned int>& indices, std::string& textureName, float& shininess, float& transparency,
                  glm::vec3& emissiveColour, uint& amountMeshParts);
-
-    /**
-     * @brief loadTexture loads a texture from a given path.
-     * @param path the path to the texture.
-     * @param type the way the texture shall be parsed
-     * @return the GLuint pointing to the texture.
-     */
-    GLuint loadTexture(std::string path, TextureType type = SRGB);
 };
 
 #endif  // FLOPPY_MESH_H
