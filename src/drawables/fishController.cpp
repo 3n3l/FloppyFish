@@ -72,7 +72,7 @@ void FishController::init() {
 
 void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // Slowly revert velocity back to earth gravity.
-    if (_velocity >= Config::gravityConstant) {
+    if (_velocity >= Config::velocityBound) {
         _velocity += Config::downwardAcceleration;
     }
 

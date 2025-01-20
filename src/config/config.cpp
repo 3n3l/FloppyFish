@@ -35,6 +35,6 @@ float Config::debugRotation = 0.05f;
 float Config::skyRotation = 1.0f / 2400.0f;
 
 // Bill the Salmon.
-const float Config::gravityConstant = -9.8f / 1000.0f;
+const float Config::velocityBound = -9.8f / 1000.0f;
 const float Config::upwardVelocity = 0.02f;
 const float Config::downwardAcceleration = -0.001f;
