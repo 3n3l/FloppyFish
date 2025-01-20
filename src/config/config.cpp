@@ -11,7 +11,7 @@ unsigned int Config::windowHeight = 1080;
 float Config::fieldOfVision = 90.0f;
 float Config::lookAtHeight = 0.0f;
 
-// Lighting.
+// PBR-Parameters.
 float Config::indexOfRefraction = 1.2f;
 float Config::roughness = 0.4f;
 
