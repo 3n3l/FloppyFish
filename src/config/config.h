@@ -25,9 +25,9 @@ class Config {
     static float obstacleSpeed;              /**< Distance scrolled per frame. */
     static float animationLooper;            /**< A float that loops through [0, 1] for animation purposes. */
     static float animationSpeed;             /**< The number of steps per ms. */
-    static const float downwardAcceleration; /**< Downward acceleration of the fish, will be added to the velocity. */
+    static const float verticalAcceleration; /**< Downward acceleration of the fish, will be added to the velocity. */
     static const float velocityBound;        /**< Lower bound for the downward velocity of the fish. */
-    static const float upwardVelocity;       /**< Upward velocity for the flop motion of the fish. */
+    static const float verticalVelocity;       /**< Upward velocity for the flop motion of the fish. */
     static float skyRotation;                /**< Speed at which the skybox rotates. */
     static float lookAtHeight;               /**< Height of the camera. */
 };

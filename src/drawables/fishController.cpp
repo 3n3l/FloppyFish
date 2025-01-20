@@ -73,7 +73,7 @@ void FishController::init() {
 void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // Slowly revert velocity back to lower velocity bound.
     if (_velocity >= Config::velocityBound) {
-        _velocity += Config::downwardAcceleration;
+        _velocity += Config::verticalAcceleration;
     }
 
     // Update y-coordinate with the current velocity.
