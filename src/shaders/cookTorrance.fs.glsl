@@ -19,7 +19,7 @@ uniform float transparency;
 uniform vec3 emissiveColour;
 uniform float eta;
 
-uniform vec3 lightColour = vec3(10.0f, 10.0f, 10.0f);
+uniform vec3 lightColour = vec3(1.0f, 1.0f, 1.0f) * 18.0f;
 uniform vec3 materialSpecularColour = vec3(1.0f, 1.0f, 1.0f);
 
 const float pi = 3.14159265358979323846f;
@@ -68,9 +68,19 @@ vec3 cook_torrance(vec3 materialDiffuseColour,
     float denominatorCT = 4.0 * dotNL * dotNV;
     factorCookTorranceSpec = numeratorCT / denominatorCT;
 
-    // Combine lambertian diffuse with cook-torrance specular.
-    return materialDiffuseColour * lightColour * dotNL
-    + materialSpecularColour * lightColour * factorCookTorranceSpec;
+    // Oren Nayar.
+    float dotVL = dot(lightDir, viewDir);
+    float s = dotVL - dotNL * dotNV;
+    float t = mix(1.0, max(dotNL, dotNV), step(0.0, s));
+
+    // The m_sqrd is the squared roughness.
+    vec3 A = 1.0 + m_sqrd * (materialDiffuseColour / (m_sqrd + 0.13) + 0.5 / (m_sqrd + 0.33));
+    float B = 0.45 * m_sqrd / (m_sqrd + 0.09);
+
+    vec3 orenNayarDiffuse = materialDiffuseColour * lightColour * max(0.0, dotNL) * (A + B * s / t) / pi;
+
+    // Combine oren-nayar diffuse with cook-torrance specular.
+    return orenNayarDiffuse + materialSpecularColour * lightColour * factorCookTorranceSpec;
 }
 
 void main(void)
