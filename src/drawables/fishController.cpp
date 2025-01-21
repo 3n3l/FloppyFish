@@ -1,3 +1,4 @@
+#include "src/config/config.h"
 #define GL_SILENCE_DEPRECATION
 
 #include "src/drawables/fishController.h"
@@ -14,6 +15,7 @@ FishController::FishController(const std::shared_ptr<FloppyMesh>& billMesh) {
     _height = 0.05f;
     _hitboxColour = glm::vec3(0.1f, 0.4f, 0.9f);
     _billMesh = billMesh;
+    _verticalVelocity = 0.0f;
 }
 FishController::~FishController() {}
 
@@ -47,9 +49,11 @@ void FishController::init() {
     // Fill position buffer with data.
     std::vector<glm::vec3> positions = {
         glm::vec3(-1, -1, 0),
-        glm::vec3(-1, 1, 0),
         glm::vec3(1, 1, 0),
+        glm::vec3(-1, 1, 0),
+        glm::vec3(-1, -1, 0),
         glm::vec3(1, -1, 0),
+        glm::vec3(1, 1, 0),
     };
     GLuint position_buffer;
     glGenBuffers(1, &position_buffer);
@@ -69,13 +73,15 @@ void FishController::init() {
 }
 
 void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
-    // Slowly revert acceleration back to earth gravity.
-    if (Config::fishFallingAcceleration >= Config::gravity) Config::fishFallingAcceleration -= 0.001f;
-    // Apply gravitational velocity.
-    // if (Config::fishFallingAcceleration <= 0.0f && abs(Config::fishFallingVelocity) <= -Config::gravity * 1.0f)
-    //     Config::fishFallingVelocity += Config::fishFallingAcceleration * 1.0f;
-    Config::fishFallingVelocity = Config::fishFallingAcceleration * 1.0f;
-    _y += Config::fishFallingVelocity;
+    // Slowly revert velocity back to lower velocity bound.
+    if (_verticalVelocity >= Config::velocityBound) {
+        _verticalVelocity += Config::verticalAcceleration;
+    }
+
+    // Update y-coordinate with the current velocity.
+    _y += _verticalVelocity;
+
+    // Translate to the updated y-coordinate.
     _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_x, _y, 0));
 
     // Update mesh before scaling the hitbox.
@@ -86,6 +92,11 @@ void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
 }
 
 void FishController::draw(glm::mat4 projectionMatrix) {
+    // Draw the mesh.
+    if (_billMesh != nullptr) {
+        _billMesh->draw(projectionMatrix);
+    }
+
     // Only draw the hitbox quad if the debug-flag is enabled.
     if (Config::showHitbox) {
         if (_program == 0) {
@@ -111,11 +122,6 @@ void FishController::draw(glm::mat4 projectionMatrix) {
 
         // Unbind vertex array object.
         glBindVertexArray(0);
-    }
-
-    // Draw the mesh.
-    if (_billMesh != nullptr) {
-        _billMesh->draw(projectionMatrix);
     }
 }
 
