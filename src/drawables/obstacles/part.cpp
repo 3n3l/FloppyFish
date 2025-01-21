@@ -20,9 +20,6 @@ Part::Part(Part const& p) : _partMesh(p._partMesh), _yCoordinate(p._yCoordinate)
 Part::~Part() {}
 
 void Part::init() {
-    // Initialize mesh.
-    _partMesh->init();
-
     // Set hitbox colour.
     _hitboxColour = glm::vec3(0.1f, 0.7f, 0.3f);
 
@@ -52,9 +49,11 @@ void Part::init() {
     // Fill position buffer with data.
     std::vector<glm::vec3> positions = {
         glm::vec3(-1, -1, 0),
-        glm::vec3(-1, 1, 0),
         glm::vec3(1, 1, 0),
+        glm::vec3(-1, 1, 0),
+        glm::vec3(-1, -1, 0),
         glm::vec3(1, -1, 0),
+        glm::vec3(1, 1, 0),
     };
 
     GLuint position_buffer;
@@ -72,16 +71,19 @@ void Part::init() {
 
     // Unbind vertex array object.
     glBindVertexArray(0);
+
+    // Initialize mesh.
+    _partMesh->init();
 }
 
 void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
-    // TODO
+    // Move on y-axis.
     _modelViewMatrix = translate(modelViewMatrix, glm::vec3(0, _yCoordinate, 0));
 
     // Update mesh before scaling part hitbox.
     _partMesh->update(elapsedTimeMs, _modelViewMatrix);
 
-    // TODO
+    // Scale to height.
     _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(1, _height, 1));
 }
 
