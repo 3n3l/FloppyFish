@@ -13,6 +13,7 @@
 #include <QOpenGLWindow>
 #include <QTimer>
 #include <memory>
+#include <thread>
 
 #include "src/drawables/fishController.h"
 #include "src/drawables/floppyMesh.h"
@@ -25,17 +26,18 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     Q_OBJECT
 
    private:
+    std::shared_ptr<std::thread> _audioThread;  /**< Audio thread used for playing SFX */
     std::shared_ptr<QSoundEffect> _jumpSFX;     /**< Jump SFX */
     std::shared_ptr<QMediaPlayer> _mediaPlayer; /**< Media Player used for SFX */
     std::shared_ptr<QAudioOutput> _audioOutput; /**< AudioOutput used for Sound */
     QTimer _updateTimer;                        /**< Used for regular frame updates */
     QElapsedTimer _stopWatch;                   /**< Measures time between updates */
 
-    std::shared_ptr<FloppyMesh> _billMesh; /**< Bill the salmon shown in the window */
-    std::shared_ptr<FloppyMesh> _secondProp;    /**< A sign to test multi-parts objs */
-    std::shared_ptr<Skybox> _skybox;            /**< A skybox */
+    std::shared_ptr<FloppyMesh> _billMesh;   /**< Bill the salmon shown in the window */
+    std::shared_ptr<FloppyMesh> _secondProp; /**< A sign to test multi-parts objs */
+    std::shared_ptr<Skybox> _skybox;         /**< A skybox */
 
-    std::shared_ptr<FishController> _billTheSalmon;             /**< Bill the Salmon */
+    std::shared_ptr<FishController> _billTheSalmon;    /**< Bill the Salmon */
     std::vector<std::shared_ptr<Drawable>> _drawables; /**< Vector holding pointers to the drawables */
 
    private slots:

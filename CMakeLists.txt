@@ -65,6 +65,8 @@ add_executable(
         # Mini library.
         lib/tinyobj/tiny_obj_loader.h
         lib/tinyobj/tiny_obj_loader.cc
+        src/utils/soundEffectPlayer.cpp
+        src/utils/soundEffectPlayer.h
 )
 
 # Libraries.

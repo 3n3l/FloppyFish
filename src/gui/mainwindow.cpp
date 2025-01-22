@@ -72,6 +72,7 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     _jumpSFX = std::make_shared<QSoundEffect>();
     _jumpSFX->setSource(QUrl::fromLocalFile("res/FloppyJumpSFX.wav"));
     _jumpSFX->setVolume(100);
+    _audioThread = std::make_shared<std::thread>();
 }
 
 void GLMainWindow::show() {
@@ -177,7 +178,7 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
     const bool isFullscreen = visibility() == QWindow::FullScreen;
     // Pressing SPACE will make the fish flop or flop the fish idk.
     if (event->key() == Qt::Key_Space) {
-        if (!_jumpSFX->isPlaying()) _jumpSFX->play();
+        // TODO: play sfx concurrently
         _billTheSalmon->flop();
     }
     // Pressing F in fullscreen mode will reset the window.
