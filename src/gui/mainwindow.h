@@ -18,7 +18,7 @@
 #include "src/drawables/fishController.h"
 #include "src/drawables/floppyMesh.h"
 #include "src/drawables/obstacles/obstacle.h"
-#include "src/drawables/skybox.h"
+#include "src/drawables/scene/skybox.h"
 
 /**
  * @brief The GLWindow class handling the opengl window.

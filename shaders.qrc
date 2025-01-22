@@ -11,5 +11,7 @@
         <file>background.fs.glsl</file>
         <file>hitbox.vs.glsl</file>
         <file>hitbox.fs.glsl</file>
+        <file>ocean.vs.glsl</file>
+        <file>ocean.fs.glsl</file>
     </qresource>
 </RCC>

@@ -3,7 +3,7 @@
 
 #include "mainwindow.h"
 
-#include <src/drawables/background.h>
+#include <src/drawables/scene/background.h>
 
 #include <QMessageBox>
 #include <QMouseEvent>

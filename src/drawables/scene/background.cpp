@@ -1,6 +1,6 @@
 #define GL_SILENCE_DEPRECATION
 
-#include "src/drawables/background.h"
+#include "src/drawables/scene/background.h"
 
 #include <QFile>
 #include <QOpenGLShaderProgram>

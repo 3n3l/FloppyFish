@@ -1,19 +1,19 @@
-#ifndef SKYBOX_H
-#define SKYBOX_H
+#ifndef OCEAN_H
+#define OCEAN_H
 
-#include "drawable.h"
+#include "src/drawables/drawable.h"
 
-class Skybox : public Drawable {
+class Ocean : public Drawable {
    public:
-    Skybox();
+    Ocean();
 
     /**
-     * @brief draw the skybox.
+     * @brief draw the ocean.
      */
-    void draw(glm::mat4 projectionMatrix);
+    void draw(glm::mat4 projectionMatrix) override;
 
     /**
-     * @brief initialize the skybox.
+     * @brief initialize the ocean.
      */
     void init() override;
 
@@ -36,9 +36,9 @@ class Skybox : public Drawable {
     float _subsequentRotationSpeed; /**< The subsequent rotation speed around the Y-axis applied to the mesh. */
 
     /**
-     * @brief loadTexture loads the textures for the skybox
+     * @brief loadTexture loads the textures for the ocean
      */
     void loadTexture();
 };
 
-#endif  // SKYBOX_H
+#endif  // OCEAN_H
