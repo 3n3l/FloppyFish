@@ -1,3 +1,7 @@
+#include <OpenGL/gltypes.h>
+
+#include <cstddef>
+
 #include "glm/gtc/type_ptr.hpp"
 #define GL_SILENCE_DEPRECATION
 #define GLM_ENABLE_EXPERIMENTAL
@@ -18,12 +22,13 @@
 
 // Main constructor.
 FloppyMesh::FloppyMesh(std::string meshPath, glm::vec3 initialTranslation, float initialScale, float initialRotation,
-                       float subsequentRotationSpeed) {
+                       float subsequentRotationSpeed, std::vector<std::shared_ptr<glm::vec3>>& lightPositions) {
     _meshPath = std::move(meshPath);
     _initialTranslation = initialTranslation;
     _initialScale = initialScale;
     _initialRotation = initialRotation;
     _subsequentRotationSpeed = subsequentRotationSpeed;
+    _lightPositions = lightPositions;
 }
 FloppyMesh::~FloppyMesh() = default;
 
@@ -43,7 +48,7 @@ void FloppyMesh::init() {
     _program = glCreateProgram();
 
     // Compile shader.
-    GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/common.vs.glsl");
+    GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/cookTorrance.vs.glsl");
     GLuint fs = compileShader(GL_FRAGMENT_SHADER, "src/shaders/cookTorrance.fs.glsl");
 
     // Attach shader to the program.
@@ -156,9 +161,20 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix) {
     glUniform1f(glGetUniformLocation(_program, "roughness"), roughness);
     glUniform1f(glGetUniformLocation(_program, "transparency"), _transparency);
     glUniform3fv(glGetUniformLocation(_program, "emissiveColour"), 1, value_ptr(_emissiveColour));
-    // TODO: Replace this light position in the future.
-    glm::vec3 lightPosition = glm::vec3(-2.0f, 2.0f, 2.0f);
-    glUniform3fv(glGetUniformLocation(_program, "light_position"), 1, value_ptr(lightPosition));
+
+    // Pass the light positions to the vertex shader.
+    qDebug() << _lightPositions.size();
+    // for (std::size_t i = 0; i < Config::obstacleAmount; i++) {
+    for (std::size_t i = 0; i < _lightPositions.size(); i++) {
+        // glm::vec3 lightPosition = glm::vec3(0);
+        glm::vec3 lightPosition = *(_lightPositions.at(i));  // FIXME: Segfault here
+        // Oh boy: We need to pass this values as "light_position[0], light_position[1], ..."
+        // to the vertex shader. See: https://learnopengl.com/Lighting/Multiple-lights
+        std::string name_str = "light_position[" + std::to_string(i) + "]";
+        // But glGetUniformLocation only accepts const GLchar*, no string.
+        const GLchar* name_char = (const GLchar*)name_str.c_str();
+        glUniform3fv(glGetUniformLocation(_program, name_char), 1, value_ptr(lightPosition));
+    }
 
     // Set the background texture.
     glActiveTexture(GL_TEXTURE0);

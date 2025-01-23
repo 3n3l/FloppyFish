@@ -1,13 +1,18 @@
 #ifndef FLOPPY_MESH_H
 #define FLOPPY_MESH_H
 
+#include <memory>
+
 #include "drawable.h"
+#include "glm/ext/vector_float3.hpp"
 
 class FloppyMesh : public Drawable {
    public:
     /// Constructor for creating a mesh from an obj.
-    FloppyMesh(std::string meshPath, glm::vec3 initialTranslation = glm::vec3(0.0f), float initialScale = 1.0f,
-               float initialRotation = 0.0f, float subsequentRotationSpeed = 0.0f);
+    FloppyMesh(
+        std::string meshPath, glm::vec3 initialTranslation = glm::vec3(0.0f), float initialScale = 1.0f,
+        float initialRotation = 0.0f, float subsequentRotationSpeed = 0.0f,
+        const std::vector<std::shared_ptr<glm::vec3>>& lightPositions = std::vector<std::shared_ptr<glm::vec3>>());
 
     /// Constructor for creating the next mesh part.
     FloppyMesh(std::string meshPath, uint meshIndex);
@@ -58,10 +63,12 @@ class FloppyMesh : public Drawable {
     glm::vec3 _subsequentTranslation{}; /**< The subsequent translation applied to the mesh */
     float _initialScale;                /**< The initial scaling applied as a baseline to the mesh */
     float _initialRotation;             /**< The initial rotation around the Y-axis applied as a baseline to the mesh */
-    float
-        _subsequentRotation; /**< The subsequent rotation around the Y-axis applied to the mesh. Mostly for debugging */
-    float _subsequentRotationSpeed; /**< The subsequent rotation speed around the Y-axis applied to the mesh. Mostly for
-                                       debugging */
+    /**< The subsequent rotation around the Y-axis applied to the mesh. Mostly for debugging */
+    float _subsequentRotation;
+    /**< The subsequent rotation speed around the Y-axis applied to the mesh. Mostly for debugging */
+    float _subsequentRotationSpeed;
+
+    std::vector<std::shared_ptr<glm::vec3>> _lightPositions; /**< Vector holding pointers to the light positions. */
 
     /**
      * @brief loadObj loads a mesh from a given path.
