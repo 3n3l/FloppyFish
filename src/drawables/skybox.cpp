@@ -8,7 +8,6 @@
 #include <QFile>
 #include <QOpenGLShaderProgram>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "glm/ext/vector_float3.hpp"
