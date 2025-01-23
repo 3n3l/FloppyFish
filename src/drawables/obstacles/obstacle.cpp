@@ -21,7 +21,7 @@ Obstacle::Obstacle(float offset, const std::shared_ptr<FloppyMesh>& upperPartMes
       _width(Config::obstacleWidth),
       _depth(Config::obstacleDepth),
       _lightPosition(glm::vec3(0.0f)),
-      _xCoordinate(0) {}
+      _x(0) {}
 Obstacle::Obstacle(Obstacle const& o)
     : _upperPart(o._upperPart),
       _lowerPart(o._lowerPart),
@@ -30,7 +30,7 @@ Obstacle::Obstacle(Obstacle const& o)
       _depth(o._depth),
       _offset(o._offset),
       _lightPosition(o._lightPosition),
-      _xCoordinate(o._xCoordinate) {}
+      _x(o._x) {}
 Obstacle::~Obstacle() {}
 
 void Obstacle::init() {
@@ -39,7 +39,7 @@ void Obstacle::init() {
     _lowerPart.init();
 
     // Place the obstacle to the right of the window.
-    _xCoordinate = 1 + _offset + (_width / 2);
+    _x = 1 + _offset + (_width / 2);
 
     // Reset the individual parts.
     reset();
@@ -63,16 +63,16 @@ void Obstacle::reset() {
 void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     if (isOutOfBounds()) {
         // Place the obstacle to the right of the other obstacles.
-        _xCoordinate += static_cast<float>(Config::obstacleAmount) * Config::obstacleDistance;
+        _x += static_cast<float>(Config::obstacleAmount) * Config::obstacleDistance;
 
         // Reset the individual parts.
         reset();
     }
 
     // Scroll this obstacle.
-    _xCoordinate += Config::obstacleSpeed;
+    _x += Config::obstacleSpeed;
 
-    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_xCoordinate, 0, 0));
+    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_x, 0, 0));
 
     // Scale to width and depth, height is handled by the individual parts.
     _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(_width, 1, _depth));
@@ -82,7 +82,7 @@ void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _lowerPart.update(elapsedTimeMs, _modelViewMatrix);
 
     // Update the light position.
-    _lightPosition.x = _xCoordinate;
+    _lightPosition.x = _x;
 }
 
 void Obstacle::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) {

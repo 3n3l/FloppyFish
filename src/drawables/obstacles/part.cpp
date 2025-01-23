@@ -17,8 +17,8 @@
 #include "src/drawables/drawable.h"
 #include "src/utils/utils.h"
 
-Part::Part(const std::shared_ptr<FloppyMesh>& partMesh) : _yCoordinate(0) { _partMesh = partMesh; }
-Part::Part(Part const& p) : _partMesh(p._partMesh), _yCoordinate(p._yCoordinate) {}
+Part::Part(const std::shared_ptr<FloppyMesh>& partMesh) : _y(0) { _partMesh = partMesh; }
+Part::Part(Part const& p) : _partMesh(p._partMesh), _y(p._y) {}
 Part::~Part() {}
 
 void Part::init() {
@@ -80,7 +80,7 @@ void Part::init() {
 
 void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // Move on y-axis.
-    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(0, _yCoordinate, 0));
+    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(0, _y, 0));
 
     // Update mesh before scaling part hitbox.
     _partMesh->update(elapsedTimeMs, _modelViewMatrix);
