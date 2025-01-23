@@ -53,7 +53,6 @@ void Obstacle::reset() {
     _lowerPart.setY((0.5 * _lowerPart.height()) - 1);
 
     // Set the light position depending on the height of the lower part.
-    // TODO: There is some sort of offset needed?
     _lightPosition = glm::vec3(_xCoordinate, _lowerPart.height(), Config::obstacleDepth / 2);
 
     // Reset the properties of the upper part of this obstacle.
@@ -81,6 +80,9 @@ void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // Update the individual parts.
     _upperPart.update(elapsedTimeMs, _modelViewMatrix);
     _lowerPart.update(elapsedTimeMs, _modelViewMatrix);
+
+    // Update the light position.
+    _lightPosition.x = _xCoordinate;
 }
 
 void Obstacle::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) {
