@@ -17,6 +17,7 @@
 #include "glm/ext/vector_float3.hpp"
 #include "src/drawables/fishController.h"
 #include "src/drawables/floppyMesh.h"
+#include "src/drawables/obstacles/obstacle.h"
 #include "src/drawables/skybox.h"
 
 /**
@@ -84,6 +85,7 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     std::shared_ptr<Skybox> _skybox;                        /**< A skybox */
     std::shared_ptr<FishController> _billTheSalmon;         /**< Bill the Salmon */
     std::vector<std::shared_ptr<Drawable>> _drawables;      /**< Vector holding pointers to the drawables */
+    std::vector<std::shared_ptr<Obstacle>> _obstacles;      /**< Vector holding pointers to the obstacles */
     std::vector<std::shared_ptr<glm::vec3>> _lighPositions; /**< Vector holding pointers to the light positions */
     QTimer _updateTimer;                                    /**< Used for regular frame updates */
     QElapsedTimer _stopWatch;                               /**< Measures time between updates */

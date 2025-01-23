@@ -21,7 +21,7 @@ class FloppyMesh : public Drawable {
     /**
      * @brief draw the mesh.
      */
-    void draw(glm::mat4 projectionMatrix, std::vector<std::shared_ptr<glm::vec3>> lightPositions) override;
+    void draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) override;
 
     /**
      * @brief initialize the mesh.

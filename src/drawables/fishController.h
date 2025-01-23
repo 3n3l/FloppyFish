@@ -3,6 +3,7 @@
 
 #include "floppyMesh.h"
 #include "glm/ext/matrix_float4x4.hpp"
+#include "glm/ext/vector_float3.hpp"
 #include "src/config/config.h"
 #include "src/drawables/drawable.h"
 
@@ -33,7 +34,7 @@ class FishController : public Drawable {
      * Draw the fish.
      * @param projectionMatrix - transformation into NDC.
      */
-    void draw(glm::mat4 projectionMatrix, std::vector<std::shared_ptr<glm::vec3>> lightPositions) override;
+    void draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) override;
 
     /**
      * @brief Get the bounding box of the fish.

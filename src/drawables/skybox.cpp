@@ -104,7 +104,7 @@ void Skybox::init() {
     this->loadTexture();
 }
 
-void Skybox::draw(glm::mat4 projection_matrix, std::vector<std::shared_ptr<glm::vec3>> lightPositions) {
+void Skybox::draw(glm::mat4 projection_matrix) {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;

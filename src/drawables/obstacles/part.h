@@ -1,6 +1,7 @@
 #ifndef PART_H
 #define PART_H
 
+#include "glm/ext/vector_float3.hpp"
 #include "src/drawables/drawable.h"
 #include "src/drawables/floppyMesh.h"
 
@@ -22,7 +23,7 @@ class Part : public Drawable {
     /**
      * @brief Draw the sign.
      */
-    void draw(glm::mat4 projection_matrix, std::vector<std::shared_ptr<glm::vec3>>) override;
+    void draw(glm::mat4 projection_matrix, std::vector<glm::vec3> lightPositions) override;
 
     /**
      * @brief Update the sign.

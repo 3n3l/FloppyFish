@@ -9,6 +9,7 @@
 
 class Obstacle : public Drawable {
    public:
+    glm::vec3 _lightPosition; /**< Position of the light source. */
     /**
      *
      * @param offset The offset applied to the obstacle.
@@ -31,7 +32,7 @@ class Obstacle : public Drawable {
     /**
      * @brief draw the obstacle.
      */
-    void draw(glm::mat4 projection_matrix, std::vector<std::shared_ptr<glm::vec3>>) override;
+    void draw(glm::mat4 projection_matrix, std::vector<glm::vec3> lightPositions) override;
 
     /**
      * @brief update the obstacle.
@@ -53,7 +54,6 @@ class Obstacle : public Drawable {
     float _width;             /**< Width of the obstacle. */
     float _depth;             /**< Depth of the obstacle. */
     float _xCoordinate;       /**< Current x position. */
-    glm::vec3 _lightPosition; /**< Position of the light source. */
 };
 
 #endif  // OBSTACLE_H

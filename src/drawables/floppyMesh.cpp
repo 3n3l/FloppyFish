@@ -127,7 +127,7 @@ void FloppyMesh::init() {
     _textureHandle = loadTexture("res/" + _textureName);
 }
 
-void FloppyMesh::draw(glm::mat4 projectionMatrix, std::vector<std::shared_ptr<glm::vec3>> lightPositions) {
+void FloppyMesh::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;
@@ -163,13 +163,11 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix, std::vector<std::shared_ptr<gl
 
     // Pass the light positions to the vertex shader.
     for (std::size_t i = 0; i < lightPositions.size(); i++) {
-        glm::vec3 lightPosition = *(lightPositions.at(i));
         // Oh boy: We need to pass this values as "light_position[0], light_position[1], ..."
         // to the vertex shader. See: https://learnopengl.com/Lighting/Multiple-lights
-        std::string name_str = "light_position[" + std::to_string(i) + "]";
+        std::string uniform = "light_position[" + std::to_string(i) + "]";
         // But glGetUniformLocation only accepts const GLchar*, no string.
-        const GLchar* name_char = (const GLchar*)name_str.c_str();
-        glUniform3fv(glGetUniformLocation(_program, name_char), 1, value_ptr(lightPosition));
+        glUniform3fv(glGetUniformLocation(_program, uniform.c_str()), 1, value_ptr(lightPositions.at(i)));
     }
 
     // Set the background texture.

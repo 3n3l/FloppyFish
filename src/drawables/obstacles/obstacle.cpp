@@ -2,8 +2,6 @@
 #include <vector>
 #define GL_SILENCE_DEPRECATION
 
-#include "src/drawables/obstacles/obstacle.h"
-
 #include <QFile>
 #include <QOpenGLShaderProgram>
 
@@ -12,6 +10,7 @@
 #include "glm/ext/vector_float3.hpp"
 #include "glm/fwd.hpp"
 #include "src/config/config.h"
+#include "src/drawables/obstacles/obstacle.h"
 
 Obstacle::Obstacle(float offset, const std::shared_ptr<FloppyMesh>& upperPartMesh,
                    const std::shared_ptr<FloppyMesh>& lowerPartMesh)
@@ -21,6 +20,7 @@ Obstacle::Obstacle(float offset, const std::shared_ptr<FloppyMesh>& upperPartMes
       _height(Config::obstacleGapHeight),
       _width(Config::obstacleWidth),
       _depth(Config::obstacleDepth),
+      _lightPosition(glm::vec3(0.0f)),
       _xCoordinate(0) {}
 Obstacle::Obstacle(Obstacle const& o)
     : _upperPart(o._upperPart),
@@ -29,6 +29,7 @@ Obstacle::Obstacle(Obstacle const& o)
       _width(o._width),
       _depth(o._depth),
       _offset(o._offset),
+      _lightPosition(o._lightPosition),
       _xCoordinate(o._xCoordinate) {}
 Obstacle::~Obstacle() {}
 
@@ -82,7 +83,7 @@ void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _lowerPart.update(elapsedTimeMs, _modelViewMatrix);
 }
 
-void Obstacle::draw(glm::mat4 projectionMatrix, std::vector<std::shared_ptr<glm::vec3>> lightPositions) {
+void Obstacle::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) {
     // Draw the individual parts.
     _upperPart.draw(projectionMatrix, lightPositions);
     _lowerPart.draw(projectionMatrix, lightPositions);

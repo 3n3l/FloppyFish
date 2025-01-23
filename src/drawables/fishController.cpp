@@ -90,7 +90,7 @@ void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(_width, _height, 1.0));
 }
 
-void FishController::draw(glm::mat4 projectionMatrix, std::vector<std::shared_ptr<glm::vec3>> lightPositions) {
+void FishController::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) {
     // Draw the mesh.
     if (_billMesh != nullptr) {
         _billMesh->draw(projectionMatrix, lightPositions);

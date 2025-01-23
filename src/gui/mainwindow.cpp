@@ -1,4 +1,5 @@
 #include <memory>
+#include <vector>
 
 #include "glm/ext/vector_float3.hpp"
 #define GLM_FORCE_RADIANS
@@ -62,11 +63,12 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
                                                       Config::debugRotation);
         // Create the obstacle itself.
         auto obstacle = std::make_shared<Obstacle>(i * offset, upperMesh, lowerMesh);
+
+        // Push this into _drawables to init, update, draw.
         _drawables.push_back(obstacle);
 
-        // Get a pointer to the light position of the obstacle, push it in the corresponding vector.
-        auto position = std::make_shared<glm::vec3>(obstacle->lightPosition());
-        _lighPositions.push_back(position);
+        // Push this into _obstacles to process lighting and collision.
+        _obstacles.push_back(obstacle);
     }
 
     // TODO: Initialize the media player.
@@ -147,13 +149,19 @@ void GLMainWindow::paintGL() {
     // Disable culling and set a less strict depth function.
     glDisable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
-    _skybox->draw(_projectionMatrix, _lighPositions);
+    _skybox->draw(_projectionMatrix);
+
+    // Get the current light positions from the obstacles.
+    std::vector<glm::vec3> lightPositions;
+    for (auto obstacle : _obstacles) {
+        lightPositions.push_back(obstacle->lightPosition());
+    }
 
     // Draw all drawables.
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
     for (auto drawable : _drawables) {
-        drawable->draw(_projectionMatrix, _lighPositions);
+        drawable->draw(_projectionMatrix, lightPositions);
     }
 }
 

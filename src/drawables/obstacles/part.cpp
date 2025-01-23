@@ -89,7 +89,7 @@ void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(1, _height, 1));
 }
 
-void Part::draw(glm::mat4 projectionMatrix, std::vector<std::shared_ptr<glm::vec3>> lightPositions) {
+void Part::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) {
     // Draw the mesh.
     if (_partMesh != nullptr) {
         _partMesh->draw(projectionMatrix, lightPositions);
