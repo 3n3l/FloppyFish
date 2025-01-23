@@ -72,7 +72,6 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     _jumpSFX = std::make_shared<QSoundEffect>();
     _jumpSFX->setSource(QUrl::fromLocalFile("res/FloppyJumpSFX.wav"));
     _jumpSFX->setVolume(100);
-    _audioThread = std::make_shared<std::thread>();
 }
 
 void GLMainWindow::show() {
@@ -155,6 +154,9 @@ void GLMainWindow::animateGL() {
     float elapsedTimeMs = _stopWatch.nsecsElapsed() / 1000000.0f;
     _stopWatch.restart();
 
+    // Count the sfx timer down.
+    Config::sfxTimer = Config::sfxTimer == 0 ? 0 : Config::sfxTimer - 1;
+
     // Calculate current model view matrix.
     glm::mat4 modelViewMatrix =
         glm::lookAt(glm::vec3(0.0f, Config::lookAtHeight, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -178,7 +180,14 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
     const bool isFullscreen = visibility() == QWindow::FullScreen;
     // Pressing SPACE will make the fish flop or flop the fish idk.
     if (event->key() == Qt::Key_Space) {
-        // TODO: play sfx concurrently
+        // TODO: play sfx concurrently.
+        if (Config::sfxTimer == 0) {
+            if (_jumpSFX->isPlaying()) _jumpSFX->stop();
+            QThread thread = new();
+            _jumpSFX->moveToThread()
+            _jumpSFX->play();
+            Config::sfxTimer = 20;
+        }
         _billTheSalmon->flop();
     }
     // Pressing F in fullscreen mode will reset the window.

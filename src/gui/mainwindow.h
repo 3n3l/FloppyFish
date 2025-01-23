@@ -26,7 +26,6 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     Q_OBJECT
 
    private:
-    std::shared_ptr<std::thread> _audioThread;  /**< Audio thread used for playing SFX */
     std::shared_ptr<QSoundEffect> _jumpSFX;     /**< Jump SFX */
     std::shared_ptr<QMediaPlayer> _mediaPlayer; /**< Media Player used for SFX */
     std::shared_ptr<QAudioOutput> _audioOutput; /**< AudioOutput used for Sound */
