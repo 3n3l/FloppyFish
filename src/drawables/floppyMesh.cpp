@@ -166,7 +166,6 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPo
         // Oh boy: We need to pass this values as "light_position[0], light_position[1], ..."
         // to the vertex shader. See: https://learnopengl.com/Lighting/Multiple-lights
         std::string uniform = "light_position[" + std::to_string(i) + "]";
-        // But glGetUniformLocation only accepts const GLchar*, no string.
         glUniform3fv(glGetUniformLocation(_program, uniform.c_str()), 1, value_ptr(lightPositions.at(i)));
     }
 
