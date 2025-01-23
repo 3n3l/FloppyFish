@@ -1,6 +1,7 @@
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
+#include "glm/ext/vector_float3.hpp"
 #include "src/drawables/drawable.h"
 #include "src/drawables/obstacles/part.h"
 
@@ -18,6 +19,7 @@ class Obstacle : public Drawable {
     Obstacle(const Obstacle&);
 
     bool isOutOfBounds() const { return _xCoordinate < -1 - (_width / 2); }
+    glm::vec3 lightPosition() const { return _lightPosition; }
 
     /**
      * @brief initialize the obstacle.
@@ -42,13 +44,14 @@ class Obstacle : public Drawable {
     virtual void reset();
 
    private:
-    Part _upperPart;    /**< Lower part of the Obstacle. */
-    Part _lowerPart;    /**< Upper part of the Obstacle. */
-    float _offset;      /**< X-offset from the origin. */
-    float _height;      /**< Height of the obstacle. */
-    float _width;       /**< Width of the obstacle. */
-    float _depth;       /**< Depth of the obstacle. */
-    float _xCoordinate; /**< Current x position. */
+    Part _upperPart;          /**< Lower part of the Obstacle. */
+    Part _lowerPart;          /**< Upper part of the Obstacle. */
+    float _offset;            /**< X-offset from the origin. */
+    float _height;            /**< Height of the obstacle. */
+    float _width;             /**< Width of the obstacle. */
+    float _depth;             /**< Depth of the obstacle. */
+    float _xCoordinate;       /**< Current x position. */
+    glm::vec3 _lightPosition; /**< Position of the light source. */
 };
 
 #endif  // OBSTACLE_H

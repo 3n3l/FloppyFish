@@ -10,7 +10,6 @@
 #include "glm/ext/vector_float3.hpp"
 #include "glm/fwd.hpp"
 #include "src/config/config.h"
-#include "src/drawables/drawable.h"
 
 Obstacle::Obstacle(float offset, const std::shared_ptr<FloppyMesh>& upperPartMesh,
                    const std::shared_ptr<FloppyMesh>& lowerPartMesh)
@@ -49,6 +48,10 @@ void Obstacle::reset() {
     float upper = Config::obstacleUpperBound;
     _lowerPart.setHeight(lower + float(std::rand()) / float(RAND_MAX / (upper - lower)));
     _lowerPart.setY((0.5 * _lowerPart.height()) - 1);
+
+    // Set the light position depending on the height of the lower part.
+    // TODO: There is some sort of offset needed?
+    _lightPosition = glm::vec3(_xCoordinate, _lowerPart.height(), Config::obstacleDepth / 2);
 
     // Reset the properties of the upper part of this obstacle.
     _upperPart.setHeight(2 - (_lowerPart.height() + Config::obstacleGapHeight));
