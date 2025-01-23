@@ -16,7 +16,7 @@ float Config::indexOfRefraction = 1.2f;
 float Config::roughness = 0.4f;
 
 // Obstacles.
-unsigned int Config::obstacleAmount = 5;
+unsigned int Config::obstacleAmount = 6;
 float Config::obstacleLeftOverhang = 0.5;
 float Config::obstacleLowerBound = 0.33f;
 float Config::obstacleUpperBound = 0.66f;

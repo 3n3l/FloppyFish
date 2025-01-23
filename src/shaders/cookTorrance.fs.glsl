@@ -1,7 +1,7 @@
 #version 410 core
 
 // NOTE: this must be the same as Config::obstacleAmount
-#define NUM_LIGHTS 5
+#define NUM_LIGHTS 6
 
 // Get values from vertex shader.
 smooth in vec2 vTexCoords;
