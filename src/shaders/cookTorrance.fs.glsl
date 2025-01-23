@@ -111,15 +111,12 @@ void main(void)
         // Attenuate the light source.
         float a_quadratic_attenuation_term = 0.03f;
         float b_linear_attenuation_term = 0.6f;
-        float intensity_attenuation_factor = 1.0f / (a_quadratic_attenuation_term * vLightDistance[i] * vLightDistance[i] + b_linear_attenuation_term * vLightDistance[i] + 1.0f);
+        float attenuation = b_linear_attenuation_term * vLightDistance[i] + 1.0f;
+        attenuation += a_quadratic_attenuation_term * vLightDistance[i] * vLightDistance[i];
+        vec3 attenuated_light = lightColour / attenuation;
 
         // Incorporate illumination from the light.
-        vec3 colourCookTorrance = cook_torrance(textureColour.rgb,
-                materialSpecularColour,
-                normal,
-                light_vec,
-                view_vec,
-                lightColour * intensity_attenuation_factor);
+        vec3 colourCookTorrance = cook_torrance(textureColour.rgb, materialSpecularColour, normal, light_vec, view_vec, attenuated_light);
         fColour += vec4(colourCookTorrance, transparency);
     }
 }
