@@ -1,3 +1,4 @@
+#include "glm/gtc/type_ptr.hpp"
 #define GL_SILENCE_DEPRECATION
 #define GLM_ENABLE_EXPERIMENTAL
 
@@ -103,7 +104,7 @@ void Skybox::init() {
     this->loadTexture();
 }
 
-void Skybox::draw(glm::mat4 projection_matrix) {
+void Skybox::draw(glm::mat4 projection_matrix, std::vector<std::shared_ptr<glm::vec3>> lightPositions) {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;

@@ -2,9 +2,12 @@
 #define DRAWABLE_H
 
 #include <QOpenGLFunctions_4_1_Core>
+#include <memory>
 #include <string>
+#include <vector>
 
 #include "glm/ext/matrix_float4x4.hpp"
+#include "glm/ext/vector_float3.hpp"
 
 class Drawable : protected QOpenGLFunctions_4_1_Core {
    public:
@@ -24,7 +27,7 @@ class Drawable : protected QOpenGLFunctions_4_1_Core {
      * @brief draw the drawable.
      * @param projectionMatrix The current projection matrix
      */
-    virtual void draw(glm::mat4 projectionMatrix) {}
+    virtual void draw(glm::mat4 projectionMatrix, std::vector<std::shared_ptr<glm::vec3>>) {}
 
     /**
      * @brief update the drawable.

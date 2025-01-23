@@ -1,3 +1,5 @@
+#include <memory>
+#include <vector>
 #define GL_SILENCE_DEPRECATION
 
 #include "src/drawables/obstacles/obstacle.h"
@@ -80,8 +82,8 @@ void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _lowerPart.update(elapsedTimeMs, _modelViewMatrix);
 }
 
-void Obstacle::draw(glm::mat4 projectionMatrix) {
+void Obstacle::draw(glm::mat4 projectionMatrix, std::vector<std::shared_ptr<glm::vec3>> lightPositions) {
     // Draw the individual parts.
-    _upperPart.draw(projectionMatrix);
-    _lowerPart.draw(projectionMatrix);
+    _upperPart.draw(projectionMatrix, lightPositions);
+    _lowerPart.draw(projectionMatrix, lightPositions);
 }

@@ -1,3 +1,5 @@
+#include <memory>
+#include <vector>
 #define GL_SILENCE_DEPRECATION
 
 #include "src/drawables/obstacles/part.h"
@@ -87,7 +89,12 @@ void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(1, _height, 1));
 }
 
-void Part::draw(glm::mat4 projectionMatrix) {
+void Part::draw(glm::mat4 projectionMatrix, std::vector<std::shared_ptr<glm::vec3>> lightPositions) {
+    // Draw the mesh.
+    if (_partMesh != nullptr) {
+        _partMesh->draw(projectionMatrix, lightPositions);
+    }
+
     // Only draw the hitbox quad if the debug-flag is enabled.
     if (Config::showHitbox) {
         if (_program == 0) {
@@ -117,10 +124,5 @@ void Part::draw(glm::mat4 projectionMatrix) {
         // Unbind vertex array object.
         glBindVertexArray(0);
         glCheckError();
-    }
-
-    // Draw the mesh.
-    if (_partMesh != nullptr) {
-        _partMesh->draw(projectionMatrix);
     }
 }

@@ -2,6 +2,7 @@
 #define FLOPPY_MESH_H
 
 #include <memory>
+#include <vector>
 
 #include "drawable.h"
 #include "glm/ext/vector_float3.hpp"
@@ -9,10 +10,8 @@
 class FloppyMesh : public Drawable {
    public:
     /// Constructor for creating a mesh from an obj.
-    FloppyMesh(
-        std::string meshPath, glm::vec3 initialTranslation = glm::vec3(0.0f), float initialScale = 1.0f,
-        float initialRotation = 0.0f, float subsequentRotationSpeed = 0.0f,
-        const std::vector<std::shared_ptr<glm::vec3>>& lightPositions = std::vector<std::shared_ptr<glm::vec3>>());
+    FloppyMesh(std::string meshPath, glm::vec3 initialTranslation = glm::vec3(0.0f), float initialScale = 1.0f,
+               float initialRotation = 0.0f, float subsequentRotationSpeed = 0.0f);
 
     /// Constructor for creating the next mesh part.
     FloppyMesh(std::string meshPath, uint meshIndex);
@@ -22,7 +21,7 @@ class FloppyMesh : public Drawable {
     /**
      * @brief draw the mesh.
      */
-    void draw(glm::mat4 projectionMatrix) override;
+    void draw(glm::mat4 projectionMatrix, std::vector<std::shared_ptr<glm::vec3>> lightPositions) override;
 
     /**
      * @brief initialize the mesh.
@@ -67,8 +66,6 @@ class FloppyMesh : public Drawable {
     float _subsequentRotation;
     /**< The subsequent rotation speed around the Y-axis applied to the mesh. Mostly for debugging */
     float _subsequentRotationSpeed;
-
-    std::vector<std::shared_ptr<glm::vec3>> _lightPositions; /**< Vector holding pointers to the light positions. */
 
     /**
      * @brief loadObj loads a mesh from a given path.

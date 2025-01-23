@@ -1,6 +1,8 @@
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
+#include <memory>
+#include <vector>
 #include "glm/ext/vector_float3.hpp"
 #include "src/drawables/drawable.h"
 #include "src/drawables/obstacles/part.h"
@@ -29,7 +31,7 @@ class Obstacle : public Drawable {
     /**
      * @brief draw the obstacle.
      */
-    void draw(glm::mat4 projection_matrix) override;
+    void draw(glm::mat4 projection_matrix, std::vector<std::shared_ptr<glm::vec3>>) override;
 
     /**
      * @brief update the obstacle.

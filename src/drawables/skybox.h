@@ -1,9 +1,8 @@
 #ifndef SKYBOX_H
 #define SKYBOX_H
 
+#include <vector>
 #include "drawable.h"
-#include "glm/detail/type_mat4x4.hpp"
-#include "glm/gtc/type_ptr.hpp"
 
 class Skybox : public Drawable {
    public:
@@ -12,7 +11,7 @@ class Skybox : public Drawable {
     /**
      * @brief draw the skybox.
      */
-    void draw(glm::mat4 projectionMatrix) override;
+    void draw(glm::mat4 projectionMatrix, std::vector<std::shared_ptr<glm::vec3>> lightPositions) override;
 
     /**
      * @brief initialize the skybox.

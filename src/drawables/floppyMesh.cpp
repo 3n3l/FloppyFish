@@ -22,13 +22,12 @@
 
 // Main constructor.
 FloppyMesh::FloppyMesh(std::string meshPath, glm::vec3 initialTranslation, float initialScale, float initialRotation,
-                       float subsequentRotationSpeed, std::vector<std::shared_ptr<glm::vec3>>& lightPositions) {
+                       float subsequentRotationSpeed) {
     _meshPath = std::move(meshPath);
     _initialTranslation = initialTranslation;
     _initialScale = initialScale;
     _initialRotation = initialRotation;
     _subsequentRotationSpeed = subsequentRotationSpeed;
-    _lightPositions = lightPositions;
 }
 FloppyMesh::~FloppyMesh() = default;
 
@@ -128,7 +127,7 @@ void FloppyMesh::init() {
     _textureHandle = loadTexture("res/" + _textureName);
 }
 
-void FloppyMesh::draw(glm::mat4 projectionMatrix) {
+void FloppyMesh::draw(glm::mat4 projectionMatrix, std::vector<std::shared_ptr<glm::vec3>> lightPositions) {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;
@@ -136,7 +135,7 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix) {
 
     // Draw next mesh part first if it exists.
     if (_nextMeshPart != nullptr) {
-        _nextMeshPart->draw(projectionMatrix);
+        _nextMeshPart->draw(projectionMatrix, lightPositions);
     }
 
     // Load program.
@@ -163,11 +162,8 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix) {
     glUniform3fv(glGetUniformLocation(_program, "emissiveColour"), 1, value_ptr(_emissiveColour));
 
     // Pass the light positions to the vertex shader.
-    qDebug() << _lightPositions.size();
-    // for (std::size_t i = 0; i < Config::obstacleAmount; i++) {
-    for (std::size_t i = 0; i < _lightPositions.size(); i++) {
-        // glm::vec3 lightPosition = glm::vec3(0);
-        glm::vec3 lightPosition = *(_lightPositions.at(i));  // FIXME: Segfault here
+    for (std::size_t i = 0; i < lightPositions.size(); i++) {
+        glm::vec3 lightPosition = *(lightPositions.at(i));
         // Oh boy: We need to pass this values as "light_position[0], light_position[1], ..."
         // to the vertex shader. See: https://learnopengl.com/Lighting/Multiple-lights
         std::string name_str = "light_position[" + std::to_string(i) + "]";

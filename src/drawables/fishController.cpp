@@ -1,7 +1,9 @@
+#include <memory>
+#include <vector>
+
+#include "glm/ext/vector_float3.hpp"
 #include "src/config/config.h"
 #define GL_SILENCE_DEPRECATION
-
-#include "src/drawables/fishController.h"
 
 #include <QFile>
 #include <QOpenGLShaderProgram>
@@ -9,6 +11,7 @@
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "src/drawables/drawable.h"
+#include "src/drawables/fishController.h"
 
 FishController::FishController(const std::shared_ptr<FloppyMesh>& billMesh) {
     _width = 0.05f;
@@ -48,12 +51,8 @@ void FishController::init() {
 
     // Fill position buffer with data.
     std::vector<glm::vec3> positions = {
-        glm::vec3(-1, -1, 0),
-        glm::vec3(1, 1, 0),
-        glm::vec3(-1, 1, 0),
-        glm::vec3(-1, -1, 0),
-        glm::vec3(1, -1, 0),
-        glm::vec3(1, 1, 0),
+        glm::vec3(-1, -1, 0), glm::vec3(1, 1, 0),  glm::vec3(-1, 1, 0),
+        glm::vec3(-1, -1, 0), glm::vec3(1, -1, 0), glm::vec3(1, 1, 0),
     };
     GLuint position_buffer;
     glGenBuffers(1, &position_buffer);
@@ -91,10 +90,10 @@ void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(_width, _height, 1.0));
 }
 
-void FishController::draw(glm::mat4 projectionMatrix) {
+void FishController::draw(glm::mat4 projectionMatrix, std::vector<std::shared_ptr<glm::vec3>> lightPositions) {
     // Draw the mesh.
     if (_billMesh != nullptr) {
-        _billMesh->draw(projectionMatrix);
+        _billMesh->draw(projectionMatrix, lightPositions);
     }
 
     // Only draw the hitbox quad if the debug-flag is enabled.

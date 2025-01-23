@@ -22,7 +22,7 @@ class Part : public Drawable {
     /**
      * @brief Draw the sign.
      */
-    void draw(glm::mat4 projection_matrix) override;
+    void draw(glm::mat4 projection_matrix, std::vector<std::shared_ptr<glm::vec3>>) override;
 
     /**
      * @brief Update the sign.
