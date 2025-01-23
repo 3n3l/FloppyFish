@@ -103,6 +103,7 @@ void main(void)
     // Viewing direction, aka. Omega_out.
     vec3 view_vec = normalize(vView);
 
+    fColour = vec4(0.0f);
     for (int i = 0; i < NUM_LIGHTS; i++) {
         // Direction towards the light, aka. -Omega_in.
         vec3 light_vec = normalize(vLightDir[i]);
