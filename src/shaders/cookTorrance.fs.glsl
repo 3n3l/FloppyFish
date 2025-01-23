@@ -1,14 +1,15 @@
 #version 410 core
 
-#define NUM_LIGHTS 6
+// NOTE: this must be the same as Config::obstacleAmount
+#define NUM_LIGHTS 5
 
 // Get values from vertex shader.
 smooth in vec2 vTexCoords;
 smooth in vec3 vNormal;
 smooth in vec3 vView;
 
-smooth in vec3 vLightDir[NUM_LIGHTS];
 smooth in float vLightDistance[NUM_LIGHTS];
+smooth in vec3 vLightDir[NUM_LIGHTS];
 
 // Primary texture mostly used for albedo.
 uniform sampler2D albedo;
@@ -26,14 +27,14 @@ uniform vec3 materialSpecularColour = vec3(1.0f, 1.0f, 1.0f);
 const float pi = 3.14159265358979323846f;
 
 // Send colour to screen.
-layout (location = 0) out vec4 fColour;
+layout(location = 0) out vec4 fColour;
 
 vec3 cook_torrance(vec3 materialDiffuseColour,
-                   vec3 materialSpecularColour,
-                   vec3 normal,
-                   vec3 lightDir,
-                   vec3 viewDir,
-                   vec3 lightColour)
+    vec3 materialSpecularColour,
+    vec3 normal,
+    vec3 lightDir,
+    vec3 viewDir,
+    vec3 lightColour)
 {
     // Dot pre-calculation one, sometimes called theta.
     float dotNL = max(0.00000001f, dot(normal, lightDir));
@@ -102,8 +103,7 @@ void main(void)
     // Viewing direction, aka. Omega_out.
     vec3 view_vec = normalize(vView);
 
-    for (int i = 0; i < NUM_LIGHTS; i++)
-    {
+    for (int i = 0; i < NUM_LIGHTS; i++) {
         // Direction towards the light, aka. -Omega_in.
         vec3 light_vec = normalize(vLightDir[i]);
 
@@ -114,11 +114,11 @@ void main(void)
 
         // Incorporate illumination from the light.
         vec3 colourCookTorrance = cook_torrance(textureColour.rgb,
-                                                materialSpecularColour,
-                                                normal,
-                                                light_vec,
-                                                view_vec,
-                                                lightColour * intensity_attenuation_factor);
+                materialSpecularColour,
+                normal,
+                light_vec,
+                view_vec,
+                lightColour * intensity_attenuation_factor);
         fColour += vec4(colourCookTorrance, transparency);
     }
 }
