@@ -17,6 +17,7 @@ float Config::roughness = 0.4f;
 
 // Obstacles.
 unsigned int Config::obstacleAmount = 5;
+float Config::obstacleLeftOverhang = 0.5;
 float Config::obstacleLowerBound = 0.33f;
 float Config::obstacleUpperBound = 0.66f;
 float Config::obstacleGapHeight = 0.2f;
