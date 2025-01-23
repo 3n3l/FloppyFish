@@ -48,6 +48,7 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
         // Bill the Salmon.
         _billTheSalmon = std::make_shared<FishController>(_billMesh),
     };
+
     // Skybox.
     _skybox = std::make_shared<Skybox>();
 
@@ -64,8 +65,7 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
         _drawables.push_back(obstacle);
 
         // Get a pointer to the light position of the obstacle, push it in the corresponding vector.
-        // auto position = std::make_shared<glm::vec3>(obstacle->lightPosition());
-        auto position = std::make_shared<glm::vec3>(glm::vec3(0.5, 0.5, 0.0));
+        auto position = std::make_shared<glm::vec3>(obstacle->lightPosition());
         _lighPositions.push_back(position);
     }
 
