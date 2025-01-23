@@ -53,7 +53,9 @@ void Obstacle::reset() {
     _lowerPart.setY((0.5 * _lowerPart.height()) - 1);
 
     // Set the light position depending on the height of the lower part.
-    _lightPosition = glm::vec3(_xCoordinate, _lowerPart.height(), Config::obstacleDepth / 2);
+    float y = _lowerPart.y() + _lowerPart.height();
+    float z = Config::obstacleDepth / 2;
+    _lightPosition = glm::vec3(_x, y, z);
 
     // Reset the properties of the upper part of this obstacle.
     _upperPart.setHeight(2 - (_lowerPart.height() + Config::obstacleGapHeight));
