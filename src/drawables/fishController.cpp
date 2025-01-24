@@ -1,18 +1,17 @@
 #include "src/config/config.h"
 #define GL_SILENCE_DEPRECATION
 
-#include "src/drawables/fishController.h"
-
 #include <QFile>
 #include <QOpenGLShaderProgram>
 
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "src/drawables/drawable.h"
+#include "src/drawables/fishController.h"
 
 FishController::FishController(const std::shared_ptr<FloppyMesh>& billMesh) {
-    _width = 0.05f;
-    _height = 0.05f;
+    _width = 0.25f;
+    _height = 0.08f;
     _hitboxColour = glm::vec3(0.1f, 0.4f, 0.9f);
     _billMesh = billMesh;
     _verticalVelocity = 0.0f;
@@ -48,12 +47,8 @@ void FishController::init() {
 
     // Fill position buffer with data.
     std::vector<glm::vec3> positions = {
-        glm::vec3(-1, -1, 0),
-        glm::vec3(1, 1, 0),
-        glm::vec3(-1, 1, 0),
-        glm::vec3(-1, -1, 0),
-        glm::vec3(1, -1, 0),
-        glm::vec3(1, 1, 0),
+        glm::vec3(-1, -1, 0), glm::vec3(1, 1, 0),  glm::vec3(-1, 1, 0),
+        glm::vec3(-1, -1, 0), glm::vec3(1, -1, 0), glm::vec3(1, 1, 0),
     };
     GLuint position_buffer;
     glGenBuffers(1, &position_buffer);
