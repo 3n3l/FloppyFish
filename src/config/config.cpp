@@ -29,7 +29,7 @@ bool Config::showHitbox = false;
 // Animations.
 float Config::animationSpeed = 0.0f;
 float Config::animationLooper = 0.0f;
-float Config::debugRotation = 0.05f;
+float Config::debugRotation = 0.0f;
 // Realistic rotation would be following: skyRotation = 1.0f / 240000.0f;
 float Config::skyRotation = 1.0f / 2400.0f;
 

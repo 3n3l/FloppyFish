@@ -1,7 +1,7 @@
+#include "glm/fwd.hpp"
+#include "glm/trigonometric.hpp"
 #include "src/config/config.h"
 #define GL_SILENCE_DEPRECATION
-
-#include "src/drawables/fishController.h"
 
 #include <QFile>
 #include <QOpenGLShaderProgram>
@@ -9,6 +9,7 @@
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "src/drawables/drawable.h"
+#include "src/drawables/fishController.h"
 
 FishController::FishController(const std::shared_ptr<FloppyMesh>& billMesh) {
     _width = 0.05f;
@@ -48,12 +49,8 @@ void FishController::init() {
 
     // Fill position buffer with data.
     std::vector<glm::vec3> positions = {
-        glm::vec3(-1, -1, 0),
-        glm::vec3(1, 1, 0),
-        glm::vec3(-1, 1, 0),
-        glm::vec3(-1, -1, 0),
-        glm::vec3(1, -1, 0),
-        glm::vec3(1, 1, 0),
+        glm::vec3(-1, -1, 0), glm::vec3(1, 1, 0),  glm::vec3(-1, 1, 0),
+        glm::vec3(-1, -1, 0), glm::vec3(1, -1, 0), glm::vec3(1, 1, 0),
     };
     GLuint position_buffer;
     glGenBuffers(1, &position_buffer);
@@ -73,16 +70,26 @@ void FishController::init() {
 }
 
 void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
+    _modelViewMatrix = modelViewMatrix; // FIXME: get this under control
+
     // Slowly revert velocity back to lower velocity bound.
+    float rotation = 0.0f;
     if (_verticalVelocity >= Config::velocityBound) {
         _verticalVelocity += Config::verticalAcceleration;
+        rotation = -35.0f;
+    } else {
+        // TODO: replace with config variables
+        // TODO: ease the transition between both values
+        rotation = 80.0f;
     }
 
     // Update y-coordinate with the current velocity.
     _y += _verticalVelocity;
 
     // Translate to the updated y-coordinate.
-    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_x, _y, 0));
+    _modelViewMatrix = translate(_modelViewMatrix, glm::vec3(_x, _y, 0));
+
+    _modelViewMatrix = glm::rotate(_modelViewMatrix, glm::radians(rotation), glm::vec3(0, 0, 1));
 
     // Update mesh before scaling the hitbox.
     _billMesh->update(elapsedTimeMs, _modelViewMatrix);
