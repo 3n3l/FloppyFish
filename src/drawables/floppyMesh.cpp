@@ -180,15 +180,18 @@ bool FloppyMesh::loadObj(const std::string& filename, uint partIndex, std::vecto
     tinyobj::attrib_t attributes = objReader.GetAttrib();
     std::vector<tinyobj::material_t> materials = objReader.GetMaterials();
 
-    bool have_normals = (attributes.normals.size() / 3 == attributes.vertices.size() / 3);
-    bool have_texcoords = (attributes.texcoords.size() / 2 == attributes.vertices.size());
-
     // Validate.
-    if (attributes.vertices.empty() || attributes.vertices.size() % 3 != 0 || attributes.normals.size() % 3 != 0 ||
-        (have_normals && attributes.normals.size() / 3 != attributes.vertices.size() / 3) ||
-        attributes.texcoords.size() % 2 != 0 ||
-        (have_texcoords && attributes.texcoords.size() / 2 != attributes.vertices.size()) ||
-        shapes[partIndex].mesh.indices.empty() || shapes[partIndex].mesh.indices.size() % 3 != 0) {
+    bool hasNormals = (attributes.normals.size() / 3 == attributes.vertices.size() / 3);
+    bool hasTexture = (attributes.texcoords.size() / 2 == attributes.vertices.size());
+    bool dataIsNotUnderstood = attributes.vertices.empty();
+    dataIsNotUnderstood |= (hasTexture && attributes.texcoords.size() / 2 != attributes.vertices.size());
+    dataIsNotUnderstood |= (hasNormals && attributes.normals.size() / 3 != attributes.vertices.size() / 3);
+    dataIsNotUnderstood |= shapes[partIndex].mesh.indices.size() % 3 != 0;
+    dataIsNotUnderstood |= shapes[partIndex].mesh.indices.empty();
+    dataIsNotUnderstood |= attributes.texcoords.size() % 2 != 0;
+    dataIsNotUnderstood |= attributes.vertices.size() % 3 != 0;
+    dataIsNotUnderstood |= attributes.normals.size() % 3 != 0;
+    if (dataIsNotUnderstood) {
         positions.clear();
         normals.clear();
         textureCoordinates.clear();
