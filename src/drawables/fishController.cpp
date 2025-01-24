@@ -1,14 +1,13 @@
 #include "src/config/config.h"
 #define GL_SILENCE_DEPRECATION
 
-#include "src/drawables/fishController.h"
-
 #include <QFile>
 #include <QOpenGLShaderProgram>
 
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "src/drawables/drawable.h"
+#include "src/drawables/fishController.h"
 
 FishController::FishController(const std::shared_ptr<FloppyMesh>& billMesh) {
     _width = 0.05f;
@@ -41,35 +40,20 @@ void FishController::init() {
     _program = linkProgram(_program);
 
     // Set up a vertex array object for the geometry.
-    if (_vertexArrayObject == 0) {
-        glGenVertexArrays(1, &_vertexArrayObject);
-    }
-    glBindVertexArray(_vertexArrayObject);
+    bindVertexArrayObject();
 
     // Fill position buffer with data.
     std::vector<glm::vec3> positions = {
-        glm::vec3(-1, -1, 0),
-        glm::vec3(1, 1, 0),
-        glm::vec3(-1, 1, 0),
-        glm::vec3(-1, -1, 0),
-        glm::vec3(1, -1, 0),
-        glm::vec3(1, 1, 0),
+        glm::vec3(-1, -1, 0), glm::vec3(1, 1, 0),  glm::vec3(-1, 1, 0),
+        glm::vec3(-1, -1, 0), glm::vec3(1, -1, 0), glm::vec3(1, 1, 0),
     };
-    GLuint position_buffer;
-    glGenBuffers(1, &position_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
-    glBufferData(GL_ARRAY_BUFFER, positions.size() * 3 * sizeof(float), positions.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(0);
+    GLuint position_buffer = loadPositions(positions);
 
     // Unbind vertex array object.
     glBindVertexArray(0);
 
     // Delete buffers (the data is stored in the vertex array object).
     glDeleteBuffers(1, &position_buffer);
-
-    // Unbind vertex array object.
-    glBindVertexArray(0);
 }
 
 void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {

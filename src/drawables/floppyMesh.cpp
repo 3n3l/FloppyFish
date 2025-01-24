@@ -72,43 +72,17 @@ void FloppyMesh::init() {
         _nextMeshPart->init();
     }
 
+    // Set up a vertex array object for the geometry.
+    // NOTE: This needs to be called after loadObj().
+    bindVertexArrayObject();
+
     _verticeAmount = indices.size();
 
-    // Set up a vertex array object for the geometry.
-    if (_vertexArrayObject == 0) {
-        glGenVertexArrays(1, &_vertexArrayObject);
-    }
-    glBindVertexArray(_vertexArrayObject);
-
     // Fill vertex array object with data.
-    GLuint positionBuffer;
-    glGenBuffers(1, &positionBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, positionBuffer);
-    glBufferData(GL_ARRAY_BUFFER, positions.size() * 3 * sizeof(float), positions.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    glEnableVertexAttribArray(0);
-
-    GLuint normalBuffer;
-    glGenBuffers(1, &normalBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-    glBufferData(GL_ARRAY_BUFFER, normals.size() * 3 * sizeof(float), normals.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    glEnableVertexAttribArray(1);
-
-    GLuint textureCoordinateBuffer;
-    glGenBuffers(1, &textureCoordinateBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, textureCoordinateBuffer);
-    // Multiply with 2, as it is only vec2.
-    glBufferData(GL_ARRAY_BUFFER, textureCoordinates.size() * 2 * sizeof(float), textureCoordinates.data(),
-                 GL_STATIC_DRAW);
-    // Use indices of 2.
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-    glEnableVertexAttribArray(2);
-
-    GLuint indexBuffer;
-    glGenBuffers(1, &indexBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
+    GLuint textureCoordinateBuffer = loadTextureCoordinates(textureCoordinates);
+    GLuint positionBuffer = loadPositions(positions);
+    GLuint normalBuffer = loadNormals(normals);
+    GLuint indexBuffer = loadIndices(indices);
 
     // Unbind vertex array object.
     glBindVertexArray(0);
@@ -167,7 +141,6 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix) {
 
     // Call draw.
     glDrawElements(GL_TRIANGLES, _verticeAmount, GL_UNSIGNED_INT, 0);
-    // glDrawArrays(GL_TRIANGLES, 0, _verticeAmount);
     glCheckError();
 
     // Unbind vertex array object.

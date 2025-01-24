@@ -38,67 +38,37 @@ void Skybox::init() {
     // Link program.
     _program = Drawable::linkProgram(_program);
 
+    // Set up a vertex array object for the geometry.
+    bindVertexArrayObject();
+
     // Create vectors (dynamic arrays).
+    std::vector<glm::vec2> textureCoordinates;
     std::vector<glm::vec3> positions;
     std::vector<glm::vec3> normals;
-    std::vector<glm::vec2> texcoords;
     std::vector<unsigned int> indices;
 
     // Create cube.
-    Utils::geom_cube(positions, normals, texcoords, indices);
-    _verticeAmount = indices.size();
+    Utils::geom_cube(positions, normals, textureCoordinates, indices);
 
-    // Set up a vertex array object for the geometry.
-    if (_vertexArrayObject == 0) {
-        glGenVertexArrays(1, &_vertexArrayObject);
-    }
-    glBindVertexArray(_vertexArrayObject);
+    // Save the number of vertices for drawing, times because every index is used thrice.
+    _verticeAmount = indices.size() * 3;
 
-    // Fill vertex array object with position data.
-    GLuint position_buffer;
-    glGenBuffers(1, &position_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
-    glBufferData(GL_ARRAY_BUFFER, positions.size() * 3 * sizeof(float), positions.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(0);
-
-    // Fill vertex array object with normal data.
-    GLuint normal_buffer;
-    glGenBuffers(1, &normal_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
-    glBufferData(GL_ARRAY_BUFFER, normals.size() * 3 * sizeof(float), normals.data(), GL_STATIC_DRAW);
-    // Use index '1'.
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(1);
-
-    // Fill the texture coordinates buffer with data.
-    GLuint texture_coordinate_buffer;
-    glGenBuffers(1, &texture_coordinate_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, texture_coordinate_buffer);
-    // Size of two, due to coordinates s and t.
-    glBufferData(GL_ARRAY_BUFFER, texcoords.size() * 2 * sizeof(float), texcoords.data(), GL_STATIC_DRAW);
-    // Use index '2', and size of two again.
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(2);
-
-    GLuint index_buffer;
-    glGenBuffers(1, &index_buffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+    // Fill vertex array object with data.
+    GLuint textureCoordinateBuffer = loadTextureCoordinates(textureCoordinates);
+    GLuint positionBuffer = loadPositions(positions);
+    GLuint normalBuffer = loadNormals(normals);
+    GLuint indexBuffer = loadIndices(indices);
 
     // Unbind vertex array object.
     glBindVertexArray(0);
+
     // Delete buffers (the data is stored in the vertex array object).
-    glDeleteBuffers(1, &position_buffer);
-    glDeleteBuffers(1, &texture_coordinate_buffer);
-    glDeleteBuffers(1, &index_buffer);
+    glDeleteBuffers(1, &positionBuffer);
+    glDeleteBuffers(1, &textureCoordinateBuffer);
+    glDeleteBuffers(1, &indexBuffer);
 
     // Check for errors.
     glCheckError();
-
-    // Save the number of vertices for drawing.
-    // Multiplied by because every index will be used thrice.
-    _verticeAmount = indices.size() * 3;
 
     // Load texture.
     this->loadTexture();

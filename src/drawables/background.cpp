@@ -1,6 +1,5 @@
+#include <OpenGL/gltypes.h>
 #define GL_SILENCE_DEPRECATION
-
-#include "src/drawables/background.h"
 
 #include <QFile>
 #include <QOpenGLShaderProgram>
@@ -11,6 +10,7 @@
 #include "glm/fwd.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "src/config/config.h"
+#include "src/drawables/background.h"
 #include "src/drawables/drawable.h"
 #include "src/utils/utils.h"
 
@@ -53,12 +53,7 @@ void Background::init() {
         glm::vec3(1, 0.6, 0),
         glm::vec3(1, -0.6, 0),
     };
-    GLuint position_buffer;
-    glGenBuffers(1, &position_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
-    glBufferData(GL_ARRAY_BUFFER, positions.size() * 3 * sizeof(float), positions.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(0);
+    GLuint position_buffer = loadPositions(positions);
 
     // Fill the texture coordinates buffer with data.
     std::vector<glm::vec2> texcoords = {
@@ -67,17 +62,7 @@ void Background::init() {
         glm::vec2(1, 1),
         glm::vec2(1, -1),
     };
-    GLuint texture_coordinate_buffer;
-    glGenBuffers(1, &texture_coordinate_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, texture_coordinate_buffer);
-    // Size of two, due to coordinates s and t.
-    glBufferData(GL_ARRAY_BUFFER, texcoords.size() * 2 * sizeof(float), texcoords.data(), GL_STATIC_DRAW);
-    // Use index '2', and size of two again.
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(2);
-    // Use index '2', and size of two again.
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(2);
+    GLuint texture_coordinate_buffer = loadTextureCoordinates(texcoords);
 
     // Unbind vertex array object.
     glBindVertexArray(0);

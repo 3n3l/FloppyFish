@@ -3,8 +3,10 @@
 
 #include <QOpenGLFunctions_4_1_Core>
 #include <string>
+#include <vector>
 
 #include "glm/ext/matrix_float4x4.hpp"
+#include "glm/ext/vector_float3.hpp"
 
 class Drawable : protected QOpenGLFunctions_4_1_Core {
    public:
@@ -55,12 +57,45 @@ class Drawable : protected QOpenGLFunctions_4_1_Core {
      */
     GLuint loadTexture(std::string path, TextureType type = SRGB);
 
+    /**
+     * Loads a given positions vector as a VBO into the VAO.
+     * @param vector holding the positions.
+     * @return the GLuint pointing to the position buffer.
+     */
+    GLuint loadPositions(std::vector<glm::vec3> positions);
+
+    /**
+     * Loads a given texture coordinate vector as a VBO into the VAO.
+     * @param vector holding the coordinates.
+     * @return the GLuint pointing to the texture coordinate buffer.
+     */
+    GLuint loadTextureCoordinates(std::vector<glm::vec2> coordinates);
+
+    /**
+     * Loads a given normals vector as a VBO into the VAO.
+     * @param vector holding the normals.
+     * @return the GLuint pointing to the normals buffer.
+     */
+    GLuint loadNormals(std::vector<glm::vec3> normals);
+
+    /**
+     * Loads a given indices vector as a VBO into the VAO.
+     * @param vector holding the indices.
+     * @return the GLuint pointing to the indices buffer.
+     */
+    GLuint loadIndices(std::vector<unsigned int> indices);
+
+    /**
+     * Binds this VAO to the program.
+     */
+    void bindVertexArrayObject();
+
    protected:
-    glm::mat4 _modelViewMatrix;  /**< The model view matrix to get the object into model view space */
     GLuint _program;             /**< The opengl program handling the shaders */
     GLuint _vertexArrayObject;   /**< The vertex array object containing the vertices */
-    std::string _texturePath;    /**< Path to the texture */
+    glm::mat4 _modelViewMatrix;  /**< The model view matrix to get the object into model view space */
     unsigned int _textureHandle; /**< Handle of the texture */
+    std::string _texturePath;    /**< Path to the texture */
 };
 
 #endif  // DRAWABLE_H

@@ -38,9 +38,7 @@ class FloppyMesh : public Drawable {
     void move(glm::vec3 movement) { _subsequentTranslation = movement; }
 
    protected:
-    GLuint _program{};                         /**< The opengl program handling the shaders */
-    GLuint _vertexArrayObject{};               /**< The vertex array object containing the vertices */
-    GLuint _verticeAmount{};                   /**< The amount of vertices used to draw bill */
+    GLuint _verticeAmount;                     /**< The amount of vertices used to draw bill */
     std::shared_ptr<FloppyMesh> _nextMeshPart; /**< The subsequent part of the mesh if it exists */
 
     // Mesh and material.

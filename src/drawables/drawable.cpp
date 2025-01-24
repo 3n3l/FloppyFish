@@ -1,10 +1,10 @@
+#include <OpenGL/gltypes.h>
 #define GL_SILENCE_DEPRECATION
-
-#include "src/drawables/drawable.h"
 
 #include <QFile>
 #include <QOpenGLShaderProgram>
 
+#include "src/drawables/drawable.h"
 #include "src/utils/imageTexture.h"
 
 Drawable::Drawable() : _modelViewMatrix(1.0f), _vertexArrayObject(0) {}
@@ -130,4 +130,51 @@ GLuint Drawable::loadTexture(std::string path, TextureType type) {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
 
     return textureID;
+}
+
+GLuint Drawable::loadPositions(std::vector<glm::vec3> positions) {
+    GLuint positionBuffer;
+    glGenBuffers(1, &positionBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, positionBuffer);
+    glBufferData(GL_ARRAY_BUFFER, positions.size() * 3 * sizeof(float), positions.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+    return positionBuffer;
+}
+
+GLuint Drawable::loadTextureCoordinates(std::vector<glm::vec2> coordinates) {
+    GLuint textureCoordinateBuffer;
+    glGenBuffers(1, &textureCoordinateBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, textureCoordinateBuffer);
+    // Multiply with 2, as it is only vec2.
+    glBufferData(GL_ARRAY_BUFFER, coordinates.size() * 2 * sizeof(float), coordinates.data(), GL_STATIC_DRAW);
+    // Use indices of 2.
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glEnableVertexAttribArray(2);
+    return textureCoordinateBuffer;
+}
+
+GLuint Drawable::loadNormals(std::vector<glm::vec3> normals) {
+    GLuint normalBuffer;
+    glGenBuffers(1, &normalBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+    glBufferData(GL_ARRAY_BUFFER, normals.size() * 3 * sizeof(float), normals.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glEnableVertexAttribArray(1);
+    return normalBuffer;
+}
+
+GLuint Drawable::loadIndices(std::vector<unsigned int> indices) {
+    GLuint indexBuffer;
+    glGenBuffers(1, &indexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
+    return indexBuffer;
+}
+
+void Drawable::bindVertexArrayObject() {
+    if (_vertexArrayObject == 0) {
+        glGenVertexArrays(1, &_vertexArrayObject);
+    }
+    glBindVertexArray(_vertexArrayObject);
 }
