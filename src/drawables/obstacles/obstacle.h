@@ -41,6 +41,8 @@ class Obstacle : public Drawable {
      */
     virtual void reset();
 
+    void getBounds(float& bx, float& by, float& bwidth, float& bheight) const;
+
    private:
     Part _upperPart;    /**< Lower part of the Obstacle. */
     Part _lowerPart;    /**< Upper part of the Obstacle. */

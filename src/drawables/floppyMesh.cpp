@@ -18,7 +18,7 @@
 
 // Main constructor.
 FloppyMesh::FloppyMesh(std::string meshPath, glm::vec3 initialTranslation, float initialScale, float initialRotation,
-                       float subsequentRotationSpeed) {
+                       float subsequentRotationSpeed) : _meshIndex(0) {
     _meshPath = std::move(meshPath);
     _initialTranslation = initialTranslation;
     _initialScale = initialScale;

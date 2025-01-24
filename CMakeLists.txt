@@ -46,6 +46,8 @@ add_executable(
         src/drawables/drawable.h
         src/drawables/fishController.cpp
         src/drawables/fishController.h
+	    src/drawables/collisionchecker.h
+	    src/drawables/collisionchecker.cpp
         src/gui/mainwindow.cpp
         src/gui/mainwindow.h
         src/config/config.cpp

@@ -18,7 +18,7 @@
 #include "src/utils/imageTexture.h"
 #include "src/utils/utils.h"
 
-Skybox::Skybox() { _subsequentRotationSpeed = Config::skyRotation; }
+Skybox::Skybox(): _vertexArrayObject(0) { _subsequentRotationSpeed = Config::skyRotation; }
 
 void Skybox::init() {
     // Initialize OpenGL functions.
@@ -94,7 +94,7 @@ void Skybox::init() {
     glDeleteBuffers(1, &index_buffer);
 
     // Check for errors.
-    glCheckError();
+   // glCheckError();
 
     // Save the number of vertices for drawing.
     // Multiplied by because every index will be used thrice.

@@ -54,6 +54,8 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
      */
     GLMainWindow();
 
+    bool isGameFrozen = false;
+
     /**
      * @brief show opens the widget
      *

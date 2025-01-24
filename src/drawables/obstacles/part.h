@@ -11,7 +11,7 @@ class Part : public Drawable {
     Part(const Part& p);
 
     void setHeight(float height) { _height = height; }
-    float height() { return _height; }
+    float height() const { return _height; }
     void setY(float y) { _yCoordinate = y; }
 
     /**

@@ -18,6 +18,8 @@
 #include "src/config/config.h"
 #include "src/drawables/fishController.h"
 #include "src/drawables/obstacles/obstacle.h"
+#include <src/drawables/collisionchecker.h>
+#include <iostream>
 
 GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _updateTimer(this), _stopWatch() {
     // Set to the preconfigured size.
@@ -151,6 +153,13 @@ void GLMainWindow::animateGL() {
     // Make the context current in case there are glFunctions called.
     makeCurrent();
 
+    // If the game is frozen, skip updates and do not animate.
+    if (isGameFrozen) {
+        // Optionally render a "Game Over" or frozen state message here
+        std::cout << "Game is frozen!" << std::endl;
+        return;  // Skip the rest of the function, effectively freezing the game.
+    }
+
     // Get the time delta and restart the stopwatch.
     float elapsedTimeMs = _stopWatch.nsecsElapsed() / 1000000.0f;
     _stopWatch.restart();
@@ -165,11 +174,18 @@ void GLMainWindow::animateGL() {
 
     _skybox->update(elapsedTimeMs, modelViewMatrix);
 
-    // Update all drawables.
-    for (auto drawable : _drawables) {
+    // Update all drawables and check for collision
+     for (auto drawable : _drawables) {
         drawable->update(elapsedTimeMs, modelViewMatrix);
+         // check if collision is true
+        auto draw = dynamic_cast<Obstacle *>(drawable.get());
+         if (draw != nullptr && CollisionChecker::checkCollision(_billTheSalmon.get(), draw)) {
+             std::cout << "collision is true!" << std::endl;
+             // Stop the game and Game Over
+             isGameFrozen = true;  // Freeze the game on collision
+             break;                // No need to check further once the game is frozen
+         } 
     }
-
     // Update the window.
     update();
 }

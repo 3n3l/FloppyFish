@@ -12,10 +12,10 @@ class FishController : public Drawable {
     ~FishController() override;
 
     void flop() { _verticalVelocity = Config::verticalVelocity; }
-    float height() { return _height; }
-    float width() { return _width; }
-    float x() { return _x; }
-    float y() { return _y; }
+    float height() const { return _height; }
+    float width() const { return _width; }
+    float x() const { return _x; }
+    float y() const { return _y; }
 
     /**
      * Initialize the fish.
