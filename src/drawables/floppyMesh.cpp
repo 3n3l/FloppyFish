@@ -227,13 +227,18 @@ bool FloppyMesh::loadObj(const std::string& filename, uint partIndex, std::vecto
     // Set material properties.
     // Assume each mesh part has a distinct material, i.e. no other face has a different material.
     int materialIndex = shapes[partIndex].mesh.material_ids[0];
-    textureName = materialIndex >= 0 ? materials[materialIndex].diffuse_texname : "";
-    shininess = materialIndex >= 0 ? materials[materialIndex].shininess : 0.5f;
-    transparency = materialIndex >= 0 ? materials[materialIndex].dissolve : 1.0f;
-    emissiveColour = materialIndex >= 0
-                         ? glm::vec3(materials[materialIndex].emission[0], materials[materialIndex].emission[1],
-                                     materials[materialIndex].emission[2])
-                         : glm::vec3(0.0f);
+    tinyobj::material_t material = materials[materialIndex];
+    if (materialIndex >= 0) {
+        emissiveColour = glm::vec3(material.emission[0], material.emission[1], material.emission[2]);
+        textureName = material.diffuse_texname;
+        transparency = material.dissolve;
+        shininess = material.shininess;
+    } else {
+        emissiveColour = glm::vec3(0.0f);
+        textureName = "";
+        transparency = 1.0f;
+        shininess = 0.5f;
+    }
 
     return true;
 }
