@@ -106,3 +106,13 @@ void Obstacle::draw(glm::mat4 projectionMatrix, GLfloat lightPositions[], glm::v
     _upperPart.draw(projectionMatrix, lightPositions, moonDirection);
     _lowerPart.draw(projectionMatrix, lightPositions, moonDirection);
 }
+
+void Obstacle::getBounds(float& bx, float& by, float& bwidth, float& bheight) const {
+    // Combine the bounding boxes of the two parts
+    bx = _xCoordinate;
+    by = 0.0f;  // The lower part starts at y = 0 (with the upper part above it)
+    bwidth = _width;
+
+    // Calculate the height as the height of the lower and upper parts together
+    bheight = _lowerPart.height() + _upperPart.height();
+}
