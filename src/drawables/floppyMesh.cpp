@@ -206,15 +206,21 @@ bool FloppyMesh::loadObj(const std::string& filename, uint partIndex, std::vecto
     uint vertTexCoord = 0;
 
     for (size_t i = 0; i < shapes[partIndex].mesh.indices.size(); i++) {
-        vertPosition = shapes[partIndex].mesh.indices[i].vertex_index;
-        vertNormal = shapes[partIndex].mesh.indices[i].normal_index;
-        vertTexCoord = shapes[partIndex].mesh.indices[i].texcoord_index;
-        positions.emplace_back(attributes.vertices[3 * vertPosition + 0], attributes.vertices[3 * vertPosition + 1],
-                               attributes.vertices[3 * vertPosition + 2]);
-        normals.emplace_back(attributes.normals[3 * vertNormal + 0], attributes.normals[3 * vertNormal + 1],
-                             attributes.normals[3 * vertNormal + 2]);
-        textureCoordinates.emplace_back(attributes.texcoords[2 * vertTexCoord + 0],
-                                        attributes.texcoords[2 * vertTexCoord + 1]);
+        tinyobj::shape_t shape = shapes[partIndex];
+        vertPosition = shape.mesh.indices[i].vertex_index;
+        vertNormal = shape.mesh.indices[i].normal_index;
+        vertTexCoord = shape.mesh.indices[i].texcoord_index;
+        float px = attributes.vertices[3 * vertPosition + 0];
+        float py = attributes.vertices[3 * vertPosition + 1];
+        float pz = attributes.vertices[3 * vertPosition + 2];
+        positions.emplace_back(px, py, pz);
+        float nx = attributes.normals[3 * vertNormal + 0];
+        float ny = attributes.normals[3 * vertNormal + 1];
+        float nz = attributes.normals[3 * vertNormal + 2];
+        normals.emplace_back(nx, ny, nz);
+        float tx = attributes.texcoords[2 * vertTexCoord + 0];
+        float tz = attributes.texcoords[2 * vertTexCoord + 1];
+        textureCoordinates.emplace_back(tx, tz);
         indices.push_back(i);
     }
 
