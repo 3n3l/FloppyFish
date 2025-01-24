@@ -10,9 +10,11 @@ class Part : public Drawable {
     ~Part() override;
     Part(const Part& p);
 
+    void setMeshOffset(float offset) { _meshOffset = offset; }
     void setHeight(float height) { _height = height; }
-    float height() { return _height; }
     void setY(float y) { _yCoordinate = y; }
+
+    float height() { return _height; }
 
     /**
      * @brief Initialize the sign.
@@ -31,9 +33,10 @@ class Part : public Drawable {
     void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) override;
 
    private:
-    float _height;           /**< height of the sign */
+    float _height;           /**< Height of the sign */
     float _yCoordinate;      /**< y-coordinate of the sign */
-    glm::vec3 _hitboxColour; /**< The colour of the hitbox. */
+    glm::vec3 _hitboxColour; /**< Colour of the hitbox. */
+    float _meshOffset;       /**< y-Offset of the mesh, used to center this in the hitbox. */
 
     std::shared_ptr<FloppyMesh> _partMesh; /**< Pointer to the mesh of the part */
 };

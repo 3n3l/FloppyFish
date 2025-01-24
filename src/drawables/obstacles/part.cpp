@@ -81,7 +81,7 @@ void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _modelViewMatrix = translate(modelViewMatrix, glm::vec3(0, _yCoordinate, 0));
 
     // Update mesh before scaling part hitbox.
-    _partMesh->update(elapsedTimeMs, _modelViewMatrix);
+    _partMesh->update(elapsedTimeMs, glm::translate(_modelViewMatrix, glm::vec3(0, _meshOffset, 0)));
 
     // Scale to height.
     _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(1, _height, 1));
