@@ -63,22 +63,15 @@ class FloppyMesh : public Drawable {
 
     /**
      * @brief loadObj loads a mesh from a given path.
-     * @param filename the path to the obj.
      * @param positions of the vertices.
      * @param normals of said vertices.
      * @param textureCoordinates of said vertices.
      * @param indices of the vertices.
-     * @param textureName the name of the texture.
-     * @param shininess of the object.
-     * @param transparency of the object applied globally.
-     * @param emissiveColour of the object.
      * @param amountMeshParts the amount of parts the mesh has.
-     * @return true if it was successful.
+     * @return whether it was successful or not.
      */
-    bool loadObj(const std::string& filename, uint partIndex, std::vector<glm::vec3>& positions,
-                 std::vector<glm::vec3>& normals, std::vector<glm::vec2>& textureCoordinates,
-                 std::vector<unsigned int>& indices, std::string& textureName, float& shininess, float& transparency,
-                 glm::vec3& emissiveColour, uint& amountMeshParts);
+    bool loadObj(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals,
+                 std::vector<glm::vec2>& textureCoordinates, std::vector<unsigned int>& indices, uint& amountMeshParts);
 };
 
 #endif  // FLOPPY_MESH_H

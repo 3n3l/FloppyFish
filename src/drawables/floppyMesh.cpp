@@ -62,8 +62,7 @@ void FloppyMesh::init() {
     uint amountMeshParts = 0;
 
     // Load mesh.
-    loadObj(_meshPath, _meshIndex, positions, normals, textureCoordinates, indices, _textureName, _shininess,
-            _transparency, _emissiveColour, amountMeshParts);
+    loadObj(positions, normals, textureCoordinates, indices, amountMeshParts);
 
     // If the current index is lower than the maximum, attach and initialize a child / subsequent mesh part.
     if (_meshIndex < amountMeshParts - 1) {
@@ -148,10 +147,9 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix) {
     glCheckError();
 }
 
-bool FloppyMesh::loadObj(const std::string& filename, uint partIndex, std::vector<glm::vec3>& positions,
-                         std::vector<glm::vec3>& normals, std::vector<glm::vec2>& textureCoordinates,
-                         std::vector<unsigned int>& indices, std::string& textureName, float& shininess,
-                         float& transparency, glm::vec3& emissiveColour, uint& amountMeshParts) {
+bool FloppyMesh::loadObj(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals,
+                         std::vector<glm::vec2>& textureCoordinates, std::vector<unsigned int>& indices,
+                         uint& amountMeshParts) {
     positions.clear();
     normals.clear();
     textureCoordinates.clear();
@@ -165,7 +163,7 @@ bool FloppyMesh::loadObj(const std::string& filename, uint partIndex, std::vecto
 
     // Parse the file.
     auto objReader = tinyobj::ObjReader();
-    if (!objReader.ParseFromFile(filename, objReaderConfig)) {
+    if (!objReader.ParseFromFile(_meshPath, objReaderConfig)) {
         fprintf(stderr, "%s\n", objReader.Error().c_str());
         return false;
     }
@@ -173,7 +171,7 @@ bool FloppyMesh::loadObj(const std::string& filename, uint partIndex, std::vecto
     // Retrieve vectors from mesh.
     std::vector<tinyobj::shape_t> shapes = objReader.GetShapes();
     if (objReader.GetShapes().empty()) {
-        fprintf(stderr, "%s: cannot understand data\n", filename.c_str());
+        fprintf(stderr, "%s: cannot understand data\n", _meshPath.c_str());
         return false;
     }
     amountMeshParts = shapes.size();
@@ -183,20 +181,20 @@ bool FloppyMesh::loadObj(const std::string& filename, uint partIndex, std::vecto
     // Validate.
     bool hasNormals = (attributes.normals.size() / 3 == attributes.vertices.size() / 3);
     bool hasTexture = (attributes.texcoords.size() / 2 == attributes.vertices.size());
-    bool dataIsNotUnderstood = attributes.vertices.empty();
-    dataIsNotUnderstood |= (hasTexture && attributes.texcoords.size() / 2 != attributes.vertices.size());
+    bool dataIsNotUnderstood = (hasTexture && attributes.texcoords.size() / 2 != attributes.vertices.size());
     dataIsNotUnderstood |= (hasNormals && attributes.normals.size() / 3 != attributes.vertices.size() / 3);
-    dataIsNotUnderstood |= shapes[partIndex].mesh.indices.size() % 3 != 0;
-    dataIsNotUnderstood |= shapes[partIndex].mesh.indices.empty();
+    dataIsNotUnderstood |= shapes[_meshIndex].mesh.indices.size() % 3 != 0;
+    dataIsNotUnderstood |= shapes[_meshIndex].mesh.indices.empty();
     dataIsNotUnderstood |= attributes.texcoords.size() % 2 != 0;
     dataIsNotUnderstood |= attributes.vertices.size() % 3 != 0;
     dataIsNotUnderstood |= attributes.normals.size() % 3 != 0;
+    dataIsNotUnderstood = attributes.vertices.empty();
     if (dataIsNotUnderstood) {
         positions.clear();
         normals.clear();
         textureCoordinates.clear();
         indices.clear();
-        fprintf(stderr, "%s: cannot understand data\n", filename.c_str());
+        fprintf(stderr, "%s: cannot understand data\n", _meshPath.c_str());
         return false;
     }
 
@@ -205,8 +203,8 @@ bool FloppyMesh::loadObj(const std::string& filename, uint partIndex, std::vecto
     uint vertNormal = 0;
     uint vertTexCoord = 0;
 
-    for (size_t i = 0; i < shapes[partIndex].mesh.indices.size(); i++) {
-        tinyobj::shape_t shape = shapes[partIndex];
+    for (size_t i = 0; i < shapes[_meshIndex].mesh.indices.size(); i++) {
+        tinyobj::shape_t shape = shapes[_meshIndex];
         vertPosition = shape.mesh.indices[i].vertex_index;
         vertNormal = shape.mesh.indices[i].normal_index;
         vertTexCoord = shape.mesh.indices[i].texcoord_index;
@@ -226,18 +224,18 @@ bool FloppyMesh::loadObj(const std::string& filename, uint partIndex, std::vecto
 
     // Set material properties.
     // Assume each mesh part has a distinct material, i.e. no other face has a different material.
-    int materialIndex = shapes[partIndex].mesh.material_ids[0];
+    int materialIndex = shapes[_meshIndex].mesh.material_ids[0];
     tinyobj::material_t material = materials[materialIndex];
     if (materialIndex >= 0) {
-        emissiveColour = glm::vec3(material.emission[0], material.emission[1], material.emission[2]);
-        textureName = material.diffuse_texname;
-        transparency = material.dissolve;
-        shininess = material.shininess;
+        _emissiveColour = glm::vec3(material.emission[0], material.emission[1], material.emission[2]);
+        _textureName = material.diffuse_texname;
+        _transparency = material.dissolve;
+        _shininess = material.shininess;
     } else {
-        emissiveColour = glm::vec3(0.0f);
-        textureName = "";
-        transparency = 1.0f;
-        shininess = 0.5f;
+        _emissiveColour = glm::vec3(0.0f);
+        _textureName = "";
+        _transparency = 1.0f;
+        _shininess = 0.5f;
     }
 
     return true;
