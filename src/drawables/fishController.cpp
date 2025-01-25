@@ -78,10 +78,10 @@ void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     }
 
     // Update y-coordinate with the current velocity.
-    _y += _verticalVelocity;
+    _position.y += _verticalVelocity;
 
     // Translate to the updated y-coordinate.
-    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_x, _y, 0));
+    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_position.x, _position.y, 0));
 
     // Update mesh before scaling the hitbox.
     _billMesh->update(elapsedTimeMs, _modelViewMatrix);
@@ -125,8 +125,8 @@ void FishController::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lig
 }
 
 void FishController::getBounds(float& boundX, float& boundY, float& boundWidth, float& boundHeight) const {
-    boundX = _x;
-    boundY = _y;
+    boundX = _position.x;
+    boundY = _position.y;
     boundWidth = _width;
     boundHeight = _height;
 }

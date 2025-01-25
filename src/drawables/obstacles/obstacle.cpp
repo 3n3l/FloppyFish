@@ -21,7 +21,7 @@ Obstacle::Obstacle(float offset, const std::shared_ptr<FloppyMesh>& upperPartMes
       _width(Config::obstacleWidth),
       _depth(Config::obstacleDepth),
       _lightPosition(glm::vec3(0.0f)),
-      _x(0) {}
+      _position(0) {}
 Obstacle::Obstacle(Obstacle const& o)
     : _upperPart(o._upperPart),
       _lowerPart(o._lowerPart),
@@ -30,7 +30,7 @@ Obstacle::Obstacle(Obstacle const& o)
       _depth(o._depth),
       _offset(o._offset),
       _lightPosition(o._lightPosition),
-      _x(o._x) {}
+      _position(o._position) {}
 Obstacle::~Obstacle() {}
 
 void Obstacle::init() {
@@ -39,7 +39,7 @@ void Obstacle::init() {
     _lowerPart.init();
 
     // Place the obstacle to the right of the window.
-    _x = 1 + _offset + (_width / 2);
+    _position.x = 1 + _offset + (_width / 2);
 
     // Reset the individual parts.
     reset();
@@ -53,9 +53,9 @@ void Obstacle::reset() {
     _lowerPart.setY((0.5 * _lowerPart.height()) - 1);
 
     // Set the light position depending on the height of the lower part.
-    float y = _lowerPart.y() + _lowerPart.height();
+    float y = _lowerPart.position().y + _lowerPart.height();
     float z = Config::obstacleDepth / 2;
-    _lightPosition = glm::vec3(_x, y, z);
+    _lightPosition = glm::vec3(_position.x, y, z);
 
     // Reset the properties of the upper part of this obstacle.
     _upperPart.setHeight(2 - (_lowerPart.height() + Config::obstacleGapHeight));
@@ -69,16 +69,16 @@ void Obstacle::reset() {
 void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     if (isOutOfBounds()) {
         // Place the obstacle to the right of the other obstacles.
-        _x += static_cast<float>(Config::obstacleAmount) * Config::obstacleDistance;
+        _position.x += static_cast<float>(Config::obstacleAmount) * Config::obstacleDistance;
 
         // Reset the individual parts.
         reset();
     }
 
     // Scroll this obstacle.
-    _x += Config::obstacleSpeed;
+    _position.x += Config::obstacleSpeed;
 
-    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_x, 0, 0));
+    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_position.x, 0, 0));
 
     // Scale to width and depth, height is handled by the individual parts.
     _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(_width, 1, _depth));
@@ -88,7 +88,7 @@ void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _lowerPart.update(elapsedTimeMs, _modelViewMatrix);
 
     // Update the light position.
-    _lightPosition.x = _x;
+    _lightPosition.x = _position.x;
 }
 
 void Obstacle::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) {

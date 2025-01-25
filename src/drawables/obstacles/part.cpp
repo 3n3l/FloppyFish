@@ -2,8 +2,6 @@
 #include <vector>
 #define GL_SILENCE_DEPRECATION
 
-#include "src/drawables/obstacles/part.h"
-
 #include <QFile>
 #include <QOpenGLShaderProgram>
 #include <string>
@@ -15,10 +13,11 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "src/config/config.h"
 #include "src/drawables/drawable.h"
+#include "src/drawables/obstacles/part.h"
 #include "src/utils/utils.h"
 
-Part::Part(const std::shared_ptr<FloppyMesh>& partMesh) : _y(0) { _partMesh = partMesh; }
-Part::Part(Part const& p) : _partMesh(p._partMesh), _y(p._y) {}
+Part::Part(const std::shared_ptr<FloppyMesh>& partMesh) : _position(0) { _partMesh = partMesh; }
+Part::Part(Part const& p) : _partMesh(p._partMesh), _position(p._position) {}
 Part::~Part() {}
 
 void Part::init() {
@@ -50,12 +49,8 @@ void Part::init() {
 
     // Fill position buffer with data.
     std::vector<glm::vec3> positions = {
-        glm::vec3(-1, -1, 0),
-        glm::vec3(1, 1, 0),
-        glm::vec3(-1, 1, 0),
-        glm::vec3(-1, -1, 0),
-        glm::vec3(1, -1, 0),
-        glm::vec3(1, 1, 0),
+        glm::vec3(-1, -1, 0), glm::vec3(1, 1, 0),  glm::vec3(-1, 1, 0),
+        glm::vec3(-1, -1, 0), glm::vec3(1, -1, 0), glm::vec3(1, 1, 0),
     };
 
     GLuint position_buffer;
@@ -80,7 +75,7 @@ void Part::init() {
 
 void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // Move on y-axis.
-    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(0, _y, 0));
+    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(0, _position.y, 0));
 
     // Update mesh before scaling part hitbox.
     _partMesh->update(elapsedTimeMs, glm::translate(_modelViewMatrix, glm::vec3(0, _meshOffset, 0)));

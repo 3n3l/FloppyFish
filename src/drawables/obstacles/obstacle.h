@@ -22,7 +22,7 @@ class Obstacle : public Drawable {
     ~Obstacle() override;
     Obstacle(const Obstacle&);
 
-    bool isOutOfBounds() const { return _x < -1 - (_width / 2) - Config::obstacleLeftOverhang; }
+    bool isOutOfBounds() const { return _position.x < -1 - (_width / 2) - Config::obstacleLeftOverhang; }
     glm::vec3 lightPosition() const { return _lightPosition; }
 
     /**
@@ -55,7 +55,7 @@ class Obstacle : public Drawable {
     float _height;            /**< Height of the obstacle. */
     float _width;             /**< Width of the obstacle. */
     float _depth;             /**< Depth of the obstacle. */
-    float _x;                 /**< Current x position. */
+    glm::vec3 _position;      /**< Current position ob the obstacle. */
 };
 
 #endif  // OBSTACLE_H
