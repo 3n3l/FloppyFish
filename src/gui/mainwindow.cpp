@@ -51,9 +51,9 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     // Create the in the Config specified amount of obstacles and add it to the drawables.
     float offset = Config::obstacleDistance;
     for (std::size_t i = 0; i < Config::obstacleAmount; i++) {
-        auto upperMesh = std::make_shared<FloppyMesh>("res/Sign.obj", glm::vec3(0.5f, -1.4f, 0.0f), 0.1f, 45.0f,
+        auto upperMesh = std::make_shared<FloppyMesh>("res/Sign.obj", glm::vec3(0.5f, -0.0f, 0.0f), 0.1f, 45.0f,
                                                       Config::debugRotation);
-        auto lowerMesh = std::make_shared<FloppyMesh>("res/Lamp.obj", glm::vec3(0.5f, -0.2f, 0.0f), 0.1f, 45.0f,
+        auto lowerMesh = std::make_shared<FloppyMesh>("res/Lamp.obj", glm::vec3(0.5f, -0.24f, 0.0f), 0.1f, 45.0f,
                                                       Config::debugRotation);
         _drawables.push_back(std::make_shared<Obstacle>(i * offset, upperMesh, lowerMesh));
     }

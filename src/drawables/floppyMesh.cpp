@@ -259,7 +259,6 @@ bool FloppyMesh::loadObj(const std::string& filename, uint partIndex, std::vecto
 void FloppyMesh::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // Translations.
     modelViewMatrix = translate(modelViewMatrix, _initialTranslation);
-    modelViewMatrix = translate(modelViewMatrix, _subsequentTranslation);
 
     // Scale.
     modelViewMatrix = scale(modelViewMatrix, glm::vec3(_initialScale));
