@@ -70,25 +70,22 @@ void FishController::init() {
 }
 
 void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
-    _modelViewMatrix = modelViewMatrix; // FIXME: get this under control
-
     // Slowly revert velocity back to lower velocity bound.
-    float rotation = 0.0f;
     if (_verticalVelocity >= Config::velocityBound) {
         _verticalVelocity += Config::verticalAcceleration;
-        rotation = -35.0f;
-    } else {
-        // TODO: replace with config variables
-        // TODO: ease the transition between both values
-        rotation = 80.0f;
     }
 
     // Update y-coordinate with the current velocity.
     _y += _verticalVelocity;
 
     // Translate to the updated y-coordinate.
-    _modelViewMatrix = translate(_modelViewMatrix, glm::vec3(_x, _y, 0));
+    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_x, _y, 0));
 
+    // Let's do a simple linear interpolation to translate between current velocity and the angle.
+    // Maps from [velocityBound, verticalVelocity] to [lowerAngle, upperAngle].
+    float x0 = Config::velocityBound, x1 = Config::verticalVelocity, x = _verticalVelocity;
+    float f0 = Config::lowerAngle, f1 = Config::upperAngle;
+    float rotation = f0 * ((x1 - x) / (x1 - x0)) + f1 * ((x - x0) / (x1 - x0));
     _modelViewMatrix = glm::rotate(_modelViewMatrix, glm::radians(rotation), glm::vec3(0, 0, 1));
 
     // Update mesh before scaling the hitbox.

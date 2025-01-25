@@ -36,7 +36,7 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
 
     // Create all the drawables.
     // NOTE: Order in list is important for culling.
-    _billMesh = std::make_shared<FloppyMesh>("res/BillDerLachs.obj", glm::vec3(0.0f, -0.1f, 0.0f), 0.1f, 90.0f,
+    _billMesh = std::make_shared<FloppyMesh>("res/BillDerLachs.obj", glm::vec3(0.0f, -0.1f, 0.0f), 0.1f, -90.0f,
                                              Config::debugRotation),
     _drawables = {
         // TODO: create the fence (ground)
