@@ -161,13 +161,14 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPo
     glUniform1f(glGetUniformLocation(_program, "transparency"), _transparency);
     glUniform3fv(glGetUniformLocation(_program, "emissiveColour"), 1, value_ptr(_emissiveColour));
 
-    // Pass the light positions to the vertex shader.
+    // Push the light positions into an array, then set it in the shader.
+    GLfloat lightPositionsArray[Config::obstacleAmount * 3];
     for (std::size_t i = 0; i < lightPositions.size(); i++) {
-        // Oh boy: We need to pass this values as "light_position[0], light_position[1], ..."
-        // to the vertex shader. See: https://learnopengl.com/Lighting/Multiple-lights
-        std::string uniform = "light_position[" + std::to_string(i) + "]";
-        glUniform3fv(glGetUniformLocation(_program, uniform.c_str()), 1, value_ptr(lightPositions.at(i)));
+        lightPositionsArray[i * 3 + 0] = lightPositions.at(i).x;
+        lightPositionsArray[i * 3 + 1] = lightPositions.at(i).y;
+        lightPositionsArray[i * 3 + 2] = lightPositions.at(i).z;
     }
+    glUniform3fv(glGetUniformLocation(_program, "light_position"), 6, lightPositionsArray);
 
     // Set the background texture.
     glActiveTexture(GL_TEXTURE0);
