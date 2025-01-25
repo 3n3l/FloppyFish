@@ -82,7 +82,6 @@ void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _partMesh->update(elapsedTimeMs, glm::translate(_modelViewMatrix, glm::vec3(0, _meshOffset, 0)));
 
     // Scale to height.
-    _modelViewMatrix = translate(_modelViewMatrix, glm::vec3(0.5f, 0, 0));
     _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(_width, _height, _depth));
 }
 
