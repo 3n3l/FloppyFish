@@ -1,16 +1,15 @@
-#include <memory>
-#include <vector>
 #define GL_SILENCE_DEPRECATION
 
+#include "src/drawables/obstacles/obstacle.h"
+
 #include <QFile>
-#include <QOpenGLShaderProgram>
+#include <vector>
 
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "glm/fwd.hpp"
 #include "src/config/config.h"
-#include "src/drawables/obstacles/obstacle.h"
 
 Obstacle::Obstacle(float offset, const std::shared_ptr<FloppyMesh>& upperPartMesh,
                    const std::shared_ptr<FloppyMesh>& lowerPartMesh)
@@ -46,6 +45,14 @@ void Obstacle::init() {
 }
 
 void Obstacle::reset() {
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<float> dist(-45.0f, 45.0f);
+
+    // Set new random rotations.
+    _upperPart.setMeshRotation(dist(mt));
+    _lowerPart.setMeshRotation(dist(mt));
+
     // Reset the properties of the lower part of this obstacle.
     float lower = Config::obstacleLowerBound;
     float upper = Config::obstacleUpperBound;
