@@ -8,5 +8,5 @@ layout (location = 0) out vec4 fColour;
 
 void main(void) {
     // Set fragment colour.
-    fColour = vec4(hitboxColour, 1.0f);
+    fColour = vec4(hitboxColour, 0.8f);
 }

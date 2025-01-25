@@ -37,12 +37,6 @@ class FloppyMesh : public Drawable {
      */
     void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) override;
 
-    /**
-     *
-     * @param movement The translation that should be applied to the mesh.
-     */
-    void move(glm::vec3 movement) { _subsequentTranslation = movement; }
-
    protected:
     GLuint _program{};                         /**< The opengl program handling the shaders */
     GLuint _vertexArrayObject{};               /**< The vertex array object containing the vertices */
@@ -61,7 +55,6 @@ class FloppyMesh : public Drawable {
     // Transformations, initial and ongoing.
     glm::mat4 _modelViewMatrix{};       /**< The model view matrix to get the object into model view space */
     glm::vec3 _initialTranslation{};    /**< The initial translation applied as a baseline to the mesh */
-    glm::vec3 _subsequentTranslation{}; /**< The subsequent translation applied to the mesh */
     float _initialScale;                /**< The initial scaling applied as a baseline to the mesh */
     float _initialRotation;             /**< The initial rotation around the Y-axis applied as a baseline to the mesh */
     /**< The subsequent rotation around the Y-axis applied to the mesh. Mostly for debugging */

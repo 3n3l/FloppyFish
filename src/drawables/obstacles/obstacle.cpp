@@ -60,6 +60,10 @@ void Obstacle::reset() {
     // Reset the properties of the upper part of this obstacle.
     _upperPart.setHeight(2 - (_lowerPart.height() + Config::obstacleGapHeight));
     _upperPart.setY(2 - (0.5 * _upperPart.height()));
+
+    // Now reset the offsets for the meshes inside the parts.
+    _upperPart.setMeshOffset(-(_upperPart.height()));
+    _lowerPart.setMeshOffset(_lowerPart.height());
 }
 
 void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {

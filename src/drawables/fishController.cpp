@@ -14,8 +14,8 @@
 #include "src/drawables/fishController.h"
 
 FishController::FishController(const std::shared_ptr<FloppyMesh>& billMesh) {
-    _width = 0.05f;
-    _height = 0.05f;
+    _width = 0.25f;
+    _height = 0.08f;
     _hitboxColour = glm::vec3(0.1f, 0.4f, 0.9f);
     _billMesh = billMesh;
     _verticalVelocity = 0.0f;
