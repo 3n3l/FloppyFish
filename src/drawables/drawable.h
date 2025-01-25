@@ -24,7 +24,8 @@ class Drawable : protected QOpenGLFunctions_4_1_Core {
 
     /**
      * @brief draw the drawable.
-     * @param projectionMatrix The current projection matrix
+     * @param projectionMatrix - transformation into NDC.
+     * @param lightPositions - vector holding the light positions.
      */
     virtual void draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) {}
 

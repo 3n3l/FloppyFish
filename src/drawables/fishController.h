@@ -33,6 +33,7 @@ class FishController : public Drawable {
     /**
      * Draw the fish.
      * @param projectionMatrix - transformation into NDC.
+     * @param lightPositions - vector holding the light positions.
      */
     void draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) override;
 
