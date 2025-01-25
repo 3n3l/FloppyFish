@@ -27,7 +27,7 @@ uniform vec3 materialSpecularColour = vec3(1.0f, 1.0f, 1.0f);
 const float pi = 3.14159265358979323846f;
 
 // Send colour to screen.
-layout(location = 0) out vec4 fColour;
+layout(location = 0) out vec4 fColour = vec4(0.0f);
 
 vec3 cook_torrance(vec3 materialDiffuseColour,
     vec3 materialSpecularColour,
@@ -103,7 +103,6 @@ void main(void)
     // Viewing direction, aka. Omega_out.
     vec3 view_vec = normalize(vView);
 
-    fColour = vec4(0.0f);
     for (int i = 0; i < NUM_LIGHTS; i++) {
         // Direction towards the light, aka. -Omega_in.
         vec3 light_vec = normalize(vLightDir[i]);
