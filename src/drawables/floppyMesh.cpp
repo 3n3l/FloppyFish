@@ -181,14 +181,15 @@ bool FloppyMesh::loadObj(std::vector<glm::vec3>& positions, std::vector<glm::vec
     // Validate.
     bool hasNormals = (attributes.normals.size() / 3 == attributes.vertices.size() / 3);
     bool hasTexture = (attributes.texcoords.size() / 2 == attributes.vertices.size());
-    bool dataIsNotUnderstood = (hasTexture && attributes.texcoords.size() / 2 != attributes.vertices.size());
-    dataIsNotUnderstood |= (hasNormals && attributes.normals.size() / 3 != attributes.vertices.size() / 3);
+    bool dataIsNotUnderstood;
+    dataIsNotUnderstood = (hasNormals && attributes.normals.size() / 3 != attributes.vertices.size() / 3);
+    dataIsNotUnderstood |= (hasTexture && attributes.texcoords.size() / 2 != attributes.vertices.size());
     dataIsNotUnderstood |= shapes[_meshIndex].mesh.indices.size() % 3 != 0;
     dataIsNotUnderstood |= shapes[_meshIndex].mesh.indices.empty();
     dataIsNotUnderstood |= attributes.texcoords.size() % 2 != 0;
     dataIsNotUnderstood |= attributes.vertices.size() % 3 != 0;
     dataIsNotUnderstood |= attributes.normals.size() % 3 != 0;
-    dataIsNotUnderstood = attributes.vertices.empty();
+    dataIsNotUnderstood |= attributes.vertices.empty();
     if (dataIsNotUnderstood) {
         positions.clear();
         normals.clear();
