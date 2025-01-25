@@ -13,6 +13,7 @@
 #include <memory>
 #include <random>
 #include <vector>
+#include <thread>
 
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
@@ -21,8 +22,10 @@
 #include "src/config/config.h"
 #include "src/drawables/fishController.h"
 #include "src/drawables/obstacles/obstacle.h"
+#include "src/drawables/scene/background.h"
+#include "src/drawables/scene/ocean.h"
 
-GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _updateTimer(this), _stopWatch() {
+GLMainWindow::GLMainWindow() : _updateTimer(this) {
     // Set to the preconfigured size.
     setWidth(Config::windowWidth);
     setHeight(Config::windowHeight);
@@ -44,6 +47,9 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
         // TODO: create the fence (ground)
         // std::make_shared<Ground>(Ground("res/ground.png")),
         // std::make_shared<Background>(Background("res/background.png")),
+
+        // The ocean background.
+        std::make_shared<Ocean>(),
         // Bill the Salmon.
         _billTheSalmon = std::make_shared<FishController>(_billMesh),
     };

@@ -14,8 +14,8 @@
 #include "src/drawables/drawable.h"
 #include "src/utils/utils.h"
 
-Background::Background(std::string texturePath) : Drawable(), _texturePath(texturePath) {}
-Background::Background(Background const &b) : Drawable(), _texturePath(b._texturePath) {}
+Background::Background(std::string texturePath) : _texturePath(texturePath) {}
+Background::Background(Background const &b) : _texturePath(b._texturePath) {}
 Background::~Background() {}
 
 void Background::init() {
@@ -47,7 +47,7 @@ void Background::init() {
 
     // Fill position buffer with data.
     // TODO: I have no idea why 0.6?!
-    std::vector<glm::vec3> positions = {
+    std::vector positions = {
         glm::vec3(-1, -0.6, 0),
         glm::vec3(-1, 0.6, 0),
         glm::vec3(1, 0.6, 0),
@@ -61,7 +61,7 @@ void Background::init() {
     glEnableVertexAttribArray(0);
 
     // Fill the texture coordinates buffer with data.
-    std::vector<glm::vec2> texcoords = {
+    std::vector texcoords = {
         glm::vec2(-1, -1),
         glm::vec2(-1, 1),
         glm::vec2(1, 1),
@@ -107,10 +107,8 @@ void Background::draw(glm::mat4 projectionMatrix) {
     glBindVertexArray(_vertexArrayObject);
 
     // Set parameter.
-    glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE,
-                       glm::value_ptr(projectionMatrix));
-    glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE,
-                       glm::value_ptr(_modelViewMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE, value_ptr(projectionMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE, value_ptr(_modelViewMatrix));
 
     // Set the background texture.
     glActiveTexture(GL_TEXTURE0);

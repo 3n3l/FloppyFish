@@ -117,10 +117,8 @@ void Skybox::draw(glm::mat4 projection_matrix) {
     glBindVertexArray(_vertexArrayObject);
 
     // Set parameter.
-    glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE,
-                       glm::value_ptr(projection_matrix));
-    glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE,
-                       glm::value_ptr(_modelViewMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE, value_ptr(projection_matrix));
+    glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE, value_ptr(_modelViewMatrix));
 
     // Activate and bind texture.
     glActiveTexture(GL_TEXTURE0);

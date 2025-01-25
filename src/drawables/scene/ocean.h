@@ -32,6 +32,8 @@ class Ocean : public Drawable {
 
     GLuint _textureHandle; /**< Texture handle (memory location of texture). */
 
+    float _elapsedTime;             /**< Elapsed time in ms since last update */
+    glm::vec3 _moonDirection;       /**< Direction of the moon (vector) */
     float _subsequentRotation;      /**< The subsequent rotation around the Y-axis applied to the mesh. */
     float _subsequentRotationSpeed; /**< The subsequent rotation speed around the Y-axis applied to the mesh. */
 

@@ -16,8 +16,8 @@ void Ocean::init() {
     _program = glCreateProgram();
 
     // Compile shader.
-    GLuint vs = Drawable::compileShader(GL_VERTEX_SHADER, "src/shaders/skybox.vs.glsl");
-    GLuint fs = Drawable::compileShader(GL_FRAGMENT_SHADER, "src/shaders/skybox.fs.glsl");
+    GLuint vs = Drawable::compileShader(GL_VERTEX_SHADER, "src/shaders/ocean.vs.glsl");
+    GLuint fs = Drawable::compileShader(GL_FRAGMENT_SHADER, "src/shaders/ocean.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);
@@ -26,15 +26,14 @@ void Ocean::init() {
     // Link program.
     _program = Drawable::linkProgram(_program);
 
-    // Create vectors (dynamic arrays).
-    std::vector<glm::vec3> positions;
-    std::vector<glm::vec3> normals;
-    std::vector<glm::vec2> texcoords;
-    std::vector<unsigned int> indices;
-
-    // Create cube.
-    Utils::geom_cube(positions, normals, texcoords, indices);
-    _verticeAmount = indices.size();
+    // Fill position buffer with data.
+    // TODO: I have no idea why 0.6?!
+    std::vector positions = {
+        glm::vec3(-1, -1, 0.9),
+        glm::vec3(1, -1, 0.9),
+        glm::vec3(1, 1, 0.9),
+        glm::vec3(-1, 1, 0.9),
+    };
 
     // Set up a vertex array object for the geometry.
     if (_vertexArrayObject == 0) {
@@ -50,43 +49,17 @@ void Ocean::init() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
 
-    // Fill vertex array object with normal data.
-    GLuint normal_buffer;
-    glGenBuffers(1, &normal_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
-    glBufferData(GL_ARRAY_BUFFER, normals.size() * 3 * sizeof(float), normals.data(), GL_STATIC_DRAW);
-    // Use index '1'.
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(1);
-
-    // Fill the texture coordinates buffer with data.
-    GLuint texture_coordinate_buffer;
-    glGenBuffers(1, &texture_coordinate_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, texture_coordinate_buffer);
-    // Size of two, due to coordinates s and t.
-    glBufferData(GL_ARRAY_BUFFER, texcoords.size() * 2 * sizeof(float), texcoords.data(), GL_STATIC_DRAW);
-    // Use index '2', and size of two again.
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(2);
-
-    GLuint index_buffer;
-    glGenBuffers(1, &index_buffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
-
     // Unbind vertex array object.
     glBindVertexArray(0);
     // Delete buffers (the data is stored in the vertex array object).
     glDeleteBuffers(1, &position_buffer);
-    glDeleteBuffers(1, &texture_coordinate_buffer);
-    glDeleteBuffers(1, &index_buffer);
 
     // Check for errors.
     glCheckError();
 
     // Save the number of vertices for drawing.
     // Multiplied by because every index will be used thrice.
-    _verticeAmount = indices.size() * 3;
+    _verticeAmount = 6;
 
     // Load texture.
     this->loadTexture();
@@ -105,17 +78,21 @@ void Ocean::draw(glm::mat4 projection_matrix) {
     glBindVertexArray(_vertexArrayObject);
 
     // Set parameter.
-    glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE,
-                       glm::value_ptr(projection_matrix));
-    glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE,
-                       glm::value_ptr(_modelViewMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE, value_ptr(projection_matrix));
+    glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE, value_ptr(_modelViewMatrix));
+    glUniform2fv(glGetUniformLocation(_program, "resolution"), 1,
+                 value_ptr(glm::vec2(Config::windowWidth, Config::windowHeight)));
+    glUniform3fv(glGetUniformLocation(_program, "moon_direction"), 1, value_ptr(_moonDirection));
+
+    // Value that goes from 0.0 to 1.0 and resets again.
+    glUniform1f(glGetUniformLocation(_program, "elapsed_time"), _elapsedTime);
 
     // Activate and bind texture.
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, _textureHandle);
 
     // Call draw.
-    glDrawElements(GL_TRIANGLES, _verticeAmount, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, _verticeAmount);
 
     // Unbin vertex array object.
     glBindVertexArray(0);
@@ -125,10 +102,9 @@ void Ocean::draw(glm::mat4 projection_matrix) {
 }
 
 void Ocean::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
-    // Rotate around Y for debug reasons.
-    _subsequentRotation += _subsequentRotationSpeed * elapsedTimeMs;
-    _subsequentRotation = _subsequentRotation >= 360.0f ? 0.0f : _subsequentRotation;
-    modelViewMatrix = rotate(modelViewMatrix, glm::radians(_subsequentRotation), glm::vec3(0.0f, -0.2f, -1.0f));
+    _elapsedTime += 0.01f;
+    _moonDirection =
+        normalize(glm::vec3(-0.0773502691896258, 0.5 + sin(_elapsedTime * 0.2 + 2.6) * 0.5, 0.5773502691896258));
     // Update the model-view matrix.
     _modelViewMatrix = modelViewMatrix;
 }
