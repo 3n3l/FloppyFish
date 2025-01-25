@@ -49,7 +49,7 @@ GLMainWindow::GLMainWindow() : _updateTimer(this) {
         // std::make_shared<Background>(Background("res/background.png")),
 
         // The ocean background.
-        std::make_shared<Ocean>(),
+        _ocean = std::make_shared<Ocean>(),
         // Bill the Salmon.
         _billTheSalmon = std::make_shared<FishController>(_billMesh),
     };

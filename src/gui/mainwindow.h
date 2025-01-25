@@ -17,6 +17,7 @@
 #include "glm/ext/vector_float3.hpp"
 #include "src/drawables/fishController.h"
 #include "src/drawables/floppyMesh.h"
+#include "src/drawables/scene/ocean.h"
 #include "src/drawables/obstacles/obstacle.h"
 #include "src/drawables/scene/skybox.h"
 

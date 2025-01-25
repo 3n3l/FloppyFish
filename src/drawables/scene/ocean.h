@@ -24,6 +24,12 @@ class Ocean : public Drawable {
      */
     void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) override;
 
+    /**
+     * @brief Returns the direction of the moon.
+     * @return The direction of the moon as a vector.
+     */
+    glm::vec3 getMoonDirection() const { return _moonDirection; }
+
    protected:
     GLuint _program;            /**< The opengl program handling the shaders */
     GLuint _vertexArrayObject;  /**< The vertex array object containing the vertices */
