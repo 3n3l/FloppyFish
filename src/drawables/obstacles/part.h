@@ -1,19 +1,21 @@
 #ifndef PART_H
 #define PART_H
 
+#include "glm/ext/vector_float3.hpp"
 #include "src/drawables/drawable.h"
 #include "src/drawables/floppyMesh.h"
 
 class Part : public Drawable {
    public:
     Part(const std::shared_ptr<FloppyMesh>& partMesh);
-    ~Part() override;
     Part(const Part& p);
+    ~Part() override;
 
     void setMeshOffset(float offset) { _meshOffset = offset; }
     void setHeight(float height) { _height = height; }
-    void setY(float y) { _yCoordinate = y; }
+    void setY(float y) { _position.y = y; }
 
+    glm::vec3 position() { return _position; }
     float height() { return _height; }
 
     /**
@@ -24,7 +26,7 @@ class Part : public Drawable {
     /**
      * @brief Draw the sign.
      */
-    void draw(glm::mat4 projection_matrix) override;
+    void draw(glm::mat4 projection_matrix, std::vector<glm::vec3> lightPositions) override;
 
     /**
      * @brief Update the sign.
@@ -33,12 +35,11 @@ class Part : public Drawable {
     void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) override;
 
    private:
-    float _height;           /**< Height of the sign */
-    float _yCoordinate;      /**< y-coordinate of the sign */
-    glm::vec3 _hitboxColour; /**< Colour of the hitbox. */
-    float _meshOffset;       /**< y-Offset of the mesh, used to center this in the hitbox. */
-
     std::shared_ptr<FloppyMesh> _partMesh; /**< Pointer to the mesh of the part */
+    glm::vec3 _hitboxColour;               /**< Colour of the hitbox. */
+    glm::vec3 _position;                   /**< Current position of the part. */
+    float _meshOffset;                     /**< y-Offset of the mesh, used to center this in the hitbox. */
+    float _height;                         /**< Height of the sign */
 };
 
 #endif  // PART_H

@@ -1,6 +1,11 @@
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
+#include <memory>
+#include <vector>
+
+#include "glm/ext/vector_float3.hpp"
+#include "src/config/config.h"
 #include "src/drawables/drawable.h"
 #include "src/drawables/obstacles/part.h"
 
@@ -17,7 +22,8 @@ class Obstacle : public Drawable {
     ~Obstacle() override;
     Obstacle(const Obstacle&);
 
-    bool isOutOfBounds() const { return _xCoordinate < -1 - (_width / 2); }
+    bool isOutOfBounds() const { return _position.x < -1 - (_width / 2) - Config::obstacleLeftOverhang; }
+    glm::vec3 lightPosition() const { return _lightPosition; }
 
     /**
      * @brief initialize the obstacle.
@@ -27,7 +33,7 @@ class Obstacle : public Drawable {
     /**
      * @brief draw the obstacle.
      */
-    void draw(glm::mat4 projection_matrix) override;
+    void draw(glm::mat4 projection_matrix, std::vector<glm::vec3> lightPositions) override;
 
     /**
      * @brief update the obstacle.
@@ -42,13 +48,14 @@ class Obstacle : public Drawable {
     virtual void reset();
 
    private:
-    Part _upperPart;    /**< Lower part of the Obstacle. */
-    Part _lowerPart;    /**< Upper part of the Obstacle. */
-    float _offset;      /**< X-offset from the origin. */
-    float _height;      /**< Height of the obstacle. */
-    float _width;       /**< Width of the obstacle. */
-    float _depth;       /**< Depth of the obstacle. */
-    float _xCoordinate; /**< Current x position. */
+    glm::vec3 _lightPosition; /**< Position of the light source. */
+    Part _upperPart;          /**< Lower part of the Obstacle. */
+    Part _lowerPart;          /**< Upper part of the Obstacle. */
+    float _offset;            /**< X-offset from the origin. */
+    float _height;            /**< Height of the obstacle. */
+    float _width;             /**< Width of the obstacle. */
+    float _depth;             /**< Depth of the obstacle. */
+    glm::vec3 _position;      /**< Current position ob the obstacle. */
 };
 
 #endif  // OBSTACLE_H

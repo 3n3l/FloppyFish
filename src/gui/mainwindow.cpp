@@ -1,7 +1,9 @@
+#include <memory>
+#include <vector>
+
+#include "glm/ext/vector_float3.hpp"
 #define GLM_FORCE_RADIANS
 #define GLM_SWIZZLE
-
-#include "mainwindow.h"
 
 #include <src/drawables/background.h>
 
@@ -15,6 +17,7 @@
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/matrix_transform.hpp"
+#include "mainwindow.h"
 #include "src/config/config.h"
 #include "src/drawables/fishController.h"
 #include "src/drawables/obstacles/obstacle.h"
@@ -37,7 +40,8 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     // Create all the drawables.
     // NOTE: Order in list is important for culling.
     _billMesh = std::make_shared<FloppyMesh>("res/BillDerLachs.obj", glm::vec3(0.0f, -0.1f, 0.0f), 0.1f, 90.0f,
-                                             Config::debugRotation),
+                                             Config::debugRotation);
+
     _drawables = {
         // TODO: create the fence (ground)
         // std::make_shared<Ground>(Ground("res/ground.png")),
@@ -45,6 +49,7 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
         // Bill the Salmon.
         _billTheSalmon = std::make_shared<FishController>(_billMesh),
     };
+
     // Skybox.
     _skybox = std::make_shared<Skybox>();
 
@@ -55,7 +60,14 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
                                                       Config::debugRotation);
         auto lowerMesh = std::make_shared<FloppyMesh>("res/Lamp.obj", glm::vec3(0.5f, -0.24f, 0.0f), 0.1f, 45.0f,
                                                       Config::debugRotation);
-        _drawables.push_back(std::make_shared<Obstacle>(i * offset, upperMesh, lowerMesh));
+        // Create the obstacle itself.
+        auto obstacle = std::make_shared<Obstacle>(i * offset, upperMesh, lowerMesh);
+
+        // Push this into _drawables to init, update, draw.
+        _drawables.push_back(obstacle);
+
+        // Push this into _obstacles to process lighting and collision.
+        _obstacles.push_back(obstacle);
     }
 
     // TODO: Initialize the media player.
@@ -138,11 +150,17 @@ void GLMainWindow::paintGL() {
     glDepthFunc(GL_LEQUAL);
     _skybox->draw(_projectionMatrix);
 
+    // Get the current light positions from the obstacles.
+    std::vector<glm::vec3> lightPositions;
+    for (auto obstacle : _obstacles) {
+        lightPositions.push_back(obstacle->lightPosition());
+    }
+
     // Draw all drawables.
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
     for (auto drawable : _drawables) {
-        drawable->draw(_projectionMatrix);
+        drawable->draw(_projectionMatrix, lightPositions);
     }
 }
 

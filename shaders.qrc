@@ -3,6 +3,7 @@
         <file>triangle.vs.glsl</file>
         <file>triangle.fs.glsl</file>
         <file>common.vs.glsl</file>
+        <file>cookTorrance.vs.glsl</file>
         <file>cookTorrance.fs.glsl</file>
         <file>skybox.vs.glsl</file>
         <file>skybox.fs.glsl</file>

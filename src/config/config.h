@@ -16,6 +16,7 @@ class Config {
     static float debugRotation;              /**< Amount of debug rotation to apply (used in debug mode). */
     static bool showHitbox;                  /**< Whether to show the collision-hit-boxes. */
     static unsigned int obstacleAmount;      /**< Number of obstacles to spawn. */
+    static float obstacleLeftOverhang;       /**< Overhang to the left of the window. */
     static float obstacleLowerBound;         /**< Lower bound of the height of the obstacle. */
     static float obstacleUpperBound;         /**< Upper bound of the height of the obstacle. */
     static float obstacleGapHeight;          /**< Height of the gap of the obstacle. */
@@ -27,7 +28,7 @@ class Config {
     static float animationSpeed;             /**< The number of steps per ms. */
     static const float verticalAcceleration; /**< Downward acceleration of the fish, will be added to the velocity. */
     static const float velocityBound;        /**< Lower bound for the downward velocity of the fish. */
-    static const float verticalVelocity;       /**< Upward velocity for the flop motion of the fish. */
+    static const float verticalVelocity;     /**< Upward velocity for the flop motion of the fish. */
     static float skyRotation;                /**< Speed at which the skybox rotates. */
     static float lookAtHeight;               /**< Height of the camera. */
 };

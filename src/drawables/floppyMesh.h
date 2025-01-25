@@ -1,7 +1,11 @@
 #ifndef FLOPPY_MESH_H
 #define FLOPPY_MESH_H
 
+#include <memory>
+#include <vector>
+
 #include "drawable.h"
+#include "glm/ext/vector_float3.hpp"
 
 class FloppyMesh : public Drawable {
    public:
@@ -16,8 +20,10 @@ class FloppyMesh : public Drawable {
 
     /**
      * @brief draw the mesh.
+     * @param projectionMatrix - transformation into NDC.
+     * @param lightPositions - vector holding the light positions.
      */
-    void draw(glm::mat4 projectionMatrix) override;
+    void draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) override;
 
     /**
      * @brief initialize the mesh.
@@ -51,10 +57,10 @@ class FloppyMesh : public Drawable {
     glm::vec3 _initialTranslation{};    /**< The initial translation applied as a baseline to the mesh */
     float _initialScale;                /**< The initial scaling applied as a baseline to the mesh */
     float _initialRotation;             /**< The initial rotation around the Y-axis applied as a baseline to the mesh */
-    float
-        _subsequentRotation; /**< The subsequent rotation around the Y-axis applied to the mesh. Mostly for debugging */
-    float _subsequentRotationSpeed; /**< The subsequent rotation speed around the Y-axis applied to the mesh. Mostly for
-                                       debugging */
+    /**< The subsequent rotation around the Y-axis applied to the mesh. Mostly for debugging */
+    float _subsequentRotation;
+    /**< The subsequent rotation speed around the Y-axis applied to the mesh. Mostly for debugging */
+    float _subsequentRotationSpeed;
 
     /**
      * @brief loadObj loads a mesh from a given path.

@@ -3,6 +3,7 @@
 
 #include "floppyMesh.h"
 #include "glm/ext/matrix_float4x4.hpp"
+#include "glm/ext/vector_float3.hpp"
 #include "src/config/config.h"
 #include "src/drawables/drawable.h"
 
@@ -12,10 +13,10 @@ class FishController : public Drawable {
     ~FishController() override;
 
     void flop() { _verticalVelocity = Config::verticalVelocity; }
+
+    glm::vec3 position() const { return _position; }
     float height() { return _height; }
     float width() { return _width; }
-    float x() { return _x; }
-    float y() { return _y; }
 
     /**
      * Initialize the fish.
@@ -32,8 +33,9 @@ class FishController : public Drawable {
     /**
      * Draw the fish.
      * @param projectionMatrix - transformation into NDC.
+     * @param lightPositions - vector holding the light positions.
      */
-    void draw(glm::mat4 projectionMatrix) override;
+    void draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) override;
 
     /**
      * @brief Get the bounding box of the fish.
@@ -48,9 +50,8 @@ class FishController : public Drawable {
    private:
     float _height{};                       /**< Height of the fish. */
     float _width{};                        /**< Width of the fish. */
-    float _y{};                            /**< Y-coordinate of the fish. */
-    float _x{};                            /**< X-coordinate of the fish. */
     float _verticalVelocity;               /**< The current velocity of the fish. */
+    glm::vec3 _position;                   /**< Current positons of the fish. */
     glm::vec3 _hitboxColour{};             /**< The colour of the hitbox. */
     std::shared_ptr<FloppyMesh> _billMesh; /**< Pointer to the mesh of Bill */
 };

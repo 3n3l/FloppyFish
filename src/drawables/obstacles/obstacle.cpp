@@ -1,6 +1,6 @@
+#include <memory>
+#include <vector>
 #define GL_SILENCE_DEPRECATION
-
-#include "src/drawables/obstacles/obstacle.h"
 
 #include <QFile>
 #include <QOpenGLShaderProgram>
@@ -10,7 +10,7 @@
 #include "glm/ext/vector_float3.hpp"
 #include "glm/fwd.hpp"
 #include "src/config/config.h"
-#include "src/drawables/drawable.h"
+#include "src/drawables/obstacles/obstacle.h"
 
 Obstacle::Obstacle(float offset, const std::shared_ptr<FloppyMesh>& upperPartMesh,
                    const std::shared_ptr<FloppyMesh>& lowerPartMesh)
@@ -20,7 +20,8 @@ Obstacle::Obstacle(float offset, const std::shared_ptr<FloppyMesh>& upperPartMes
       _height(Config::obstacleGapHeight),
       _width(Config::obstacleWidth),
       _depth(Config::obstacleDepth),
-      _xCoordinate(0) {}
+      _lightPosition(glm::vec3(0.0f)),
+      _position(0) {}
 Obstacle::Obstacle(Obstacle const& o)
     : _upperPart(o._upperPart),
       _lowerPart(o._lowerPart),
@@ -28,7 +29,8 @@ Obstacle::Obstacle(Obstacle const& o)
       _width(o._width),
       _depth(o._depth),
       _offset(o._offset),
-      _xCoordinate(o._xCoordinate) {}
+      _lightPosition(o._lightPosition),
+      _position(o._position) {}
 Obstacle::~Obstacle() {}
 
 void Obstacle::init() {
@@ -37,7 +39,7 @@ void Obstacle::init() {
     _lowerPart.init();
 
     // Place the obstacle to the right of the window.
-    _xCoordinate = 1 + _offset + (_width / 2);
+    _position.x = 1 + _offset + (_width / 2);
 
     // Reset the individual parts.
     reset();
@@ -49,6 +51,11 @@ void Obstacle::reset() {
     float upper = Config::obstacleUpperBound;
     _lowerPart.setHeight(lower + float(std::rand()) / float(RAND_MAX / (upper - lower)));
     _lowerPart.setY((0.5 * _lowerPart.height()) - 1);
+
+    // Set the light position depending on the height of the lower part.
+    float y = _lowerPart.position().y + _lowerPart.height();
+    float z = Config::obstacleDepth / 2;
+    _lightPosition = glm::vec3(_position.x, y, z);
 
     // Reset the properties of the upper part of this obstacle.
     _upperPart.setHeight(2 - (_lowerPart.height() + Config::obstacleGapHeight));
@@ -62,16 +69,16 @@ void Obstacle::reset() {
 void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     if (isOutOfBounds()) {
         // Place the obstacle to the right of the other obstacles.
-        _xCoordinate += static_cast<float>(Config::obstacleAmount) * Config::obstacleDistance;
+        _position.x += static_cast<float>(Config::obstacleAmount) * Config::obstacleDistance;
 
         // Reset the individual parts.
         reset();
     }
 
     // Scroll this obstacle.
-    _xCoordinate += Config::obstacleSpeed;
+    _position.x += Config::obstacleSpeed;
 
-    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_xCoordinate, 0, 0));
+    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_position.x, 0, 0));
 
     // Scale to width and depth, height is handled by the individual parts.
     _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(_width, 1, _depth));
@@ -79,10 +86,13 @@ void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // Update the individual parts.
     _upperPart.update(elapsedTimeMs, _modelViewMatrix);
     _lowerPart.update(elapsedTimeMs, _modelViewMatrix);
+
+    // Update the light position.
+    _lightPosition.x = _position.x;
 }
 
-void Obstacle::draw(glm::mat4 projectionMatrix) {
+void Obstacle::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) {
     // Draw the individual parts.
-    _upperPart.draw(projectionMatrix);
-    _lowerPart.draw(projectionMatrix);
+    _upperPart.draw(projectionMatrix, lightPositions);
+    _lowerPart.draw(projectionMatrix, lightPositions);
 }

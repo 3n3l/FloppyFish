@@ -2,8 +2,6 @@
 #define SKYBOX_H
 
 #include "drawable.h"
-#include "glm/detail/type_mat4x4.hpp"
-#include "glm/gtc/type_ptr.hpp"
 
 class Skybox : public Drawable {
    public:
@@ -12,7 +10,7 @@ class Skybox : public Drawable {
     /**
      * @brief draw the skybox.
      */
-    void draw(glm::mat4 projectionMatrix) override;
+    void draw(glm::mat4 projectionMatrix);
 
     /**
      * @brief initialize the skybox.

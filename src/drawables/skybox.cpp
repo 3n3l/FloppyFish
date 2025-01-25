@@ -1,3 +1,4 @@
+#include "glm/gtc/type_ptr.hpp"
 #define GL_SILENCE_DEPRECATION
 #define GLM_ENABLE_EXPERIMENTAL
 
@@ -8,7 +9,6 @@
 #include <QFile>
 #include <QOpenGLShaderProgram>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "glm/ext/vector_float3.hpp"
