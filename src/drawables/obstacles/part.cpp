@@ -17,7 +17,8 @@
 #include "src/utils/utils.h"
 
 Part::Part(const std::shared_ptr<FloppyMesh>& partMesh) : _position(0) { _partMesh = partMesh; }
-Part::Part(Part const& p) : _partMesh(p._partMesh), _position(p._position) {}
+Part::Part(Part const& p)
+    : _partMesh(p._partMesh), _position(p._position), _width(p._width), _height(p._height), _depth(p._depth) {}
 Part::~Part() {}
 
 void Part::init() {
@@ -81,7 +82,8 @@ void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _partMesh->update(elapsedTimeMs, glm::translate(_modelViewMatrix, glm::vec3(0, _meshOffset, 0)));
 
     // Scale to height.
-    _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(1, _height, 1));
+    _modelViewMatrix = translate(_modelViewMatrix, glm::vec3(0.5f, 0, 0));
+    _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(_width, _height, _depth));
 }
 
 void Part::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) {

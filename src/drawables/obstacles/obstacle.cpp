@@ -50,6 +50,8 @@ void Obstacle::reset() {
     float lower = Config::obstacleLowerBound;
     float upper = Config::obstacleUpperBound;
     _lowerPart.setHeight(lower + float(std::rand()) / float(RAND_MAX / (upper - lower)));
+    _lowerPart.setDepth(_depth);
+    _lowerPart.setWidth(_width);
     _lowerPart.setY((0.5 * _lowerPart.height()) - 1);
 
     // Set the light position depending on the height of the lower part.
@@ -59,6 +61,8 @@ void Obstacle::reset() {
 
     // Reset the properties of the upper part of this obstacle.
     _upperPart.setHeight(2 - (_lowerPart.height() + Config::obstacleGapHeight));
+    _upperPart.setDepth(_depth);
+    _upperPart.setWidth(_width);
     _upperPart.setY(2 - (0.5 * _upperPart.height()));
 
     // Now reset the offsets for the meshes inside the parts.
@@ -80,10 +84,8 @@ void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
 
     _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_position.x, 0, 0));
 
-    // Scale to width and depth, height is handled by the individual parts.
-    _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(_width, 1, _depth));
-
     // Update the individual parts.
+    // Scale to width and depth, height is handled by the individual parts.
     _upperPart.update(elapsedTimeMs, _modelViewMatrix);
     _lowerPart.update(elapsedTimeMs, _modelViewMatrix);
 

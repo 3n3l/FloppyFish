@@ -11,12 +11,16 @@ class Part : public Drawable {
     Part(const Part& p);
     ~Part() override;
 
-    void setMeshOffset(float offset) { _meshOffset = offset; }
-    void setHeight(float height) { _height = height; }
-    void setY(float y) { _position.y = y; }
+    void setMeshOffset(const float offset) { _meshOffset = offset; }
+    void setWidth(const float width) { _width = width; }
+    void setHeight(const float height) { _height = height; }
+    void setDepth(const float depth) { _depth = depth; }
+    void setY(const float y) { _position.y = y; }
 
     glm::vec3 position() { return _position; }
-    float height() { return _height; }
+    float width() const { return _width; }
+    float height() const { return _height; }
+    float depth() const { return _depth; }
 
     /**
      * @brief Initialize the sign.
@@ -39,7 +43,9 @@ class Part : public Drawable {
     glm::vec3 _hitboxColour;               /**< Colour of the hitbox. */
     glm::vec3 _position;                   /**< Current position of the part. */
     float _meshOffset;                     /**< y-Offset of the mesh, used to center this in the hitbox. */
-    float _height;                         /**< Height of the sign */
+    float _width;                          /**< Width of the hitbox. */
+    float _height;                         /**< Height of the hitbox. */
+    float _depth;                          /**< Depth of the hitbox. */
 };
 
 #endif  // PART_H
