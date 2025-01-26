@@ -44,8 +44,6 @@ add_executable(
         src/drawables/scene/background.h
         src/drawables/floppyMesh.cpp
         src/drawables/floppyMesh.h
-        src/drawables/scene/skybox.cpp
-        src/drawables/scene/skybox.h
         src/drawables/scene/ocean.cpp
         src/drawables/scene/ocean.h
         src/drawables/drawable.cpp

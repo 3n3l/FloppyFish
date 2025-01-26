@@ -1,5 +1,8 @@
 #version 410 core
 
+// afl_ext 2017-2024
+// MIT License
+
 #define DRAG_MULT 0.38 // changes how much waves pull on the water
 #define WATER_DEPTH 1.0 // how deep is the water
 #define CAMERA_HEIGHT 1.5 // how high the camera should be
@@ -17,14 +20,6 @@ uniform vec3 moon_direction;
 layout (location = 0) out vec4 fcolour;
 
 smooth in vec3 direction;
-
-// afl_ext 2017-2024
-// MIT License
-
-// Use your mouse to move the camera around! Press the Left Mouse Button on the image to look around!
-
-
-#define NormalizedMouse vec2(0, 0) // normalize mouse coords
 
 // Calculates wave value and its derivative,
 // for the wave direction, position in space, wave frequency and time
@@ -102,36 +97,12 @@ vec3 normal(vec2 pos, float e, float depth) {
     );
 }
 
-//// Helper function generating a rotation matrix around the axis by the angle
-//mat3 createRotationMatrixAxisAngle(vec3 axis, float angle) {
-//    float s = sin(angle);
-//    float c = cos(angle);
-//    float oc = 1.0 - c;
-//    return mat3(
-//    oc * axis.x * axis.x + c, oc * axis.x * axis.y - axis.z * s, oc * axis.z * axis.x + axis.y * s,
-//    oc * axis.x * axis.y + axis.z * s, oc * axis.y * axis.y + c, oc * axis.y * axis.z - axis.x * s,
-//    oc * axis.z * axis.x - axis.y * s, oc * axis.y * axis.z + axis.x * s, oc * axis.z * axis.z + c
-//    );
-//}
-
-//// Helper function that generates camera ray based on UV.
-//vec3 getRay(vec2 fragCoord) {
-//    vec2 uv = ((fragCoord.xy / resolution.xy) * 2.0 - 1.0) * vec2(resolution.x / resolution.y, 1.0);
-//    // For fisheye, uncomment following line and comment the next one.
-//    //    vec3 proj = normalize(vec3(uv.x, uv.y, 1.0) + vec3(uv.x, uv.y, -1.0) * pow(length(uv), 2.0) * 0.05);
-//    vec3 proj = normalize(vec3(uv.x, uv.y, 1.5));
-//    if (resolution.x < 600.0) {
-//        return proj;
-//    }
-//    return vec3(inverse(transpose(modelview_matrix)) * vec4(proj, 1.0));
-//}
-
-// Ray-Plane intersection checker
+// Ray-Plane intersection checker.
 float intersectPlane(vec3 origin, vec3 direction, vec3 point, vec3 normal) {
     return clamp(dot(point - origin, normal) / dot(direction, normal), -1.0, 9991999.0);
 }
 
-// Some very barebones but fast atmosphere approximation
+// Some very barebones but fast atmosphere approximation.
 vec3 extra_cheap_atmosphere(vec3 raydir, vec3 moondir) {
     moondir.y = max(moondir.y, -0.07);
     // Darker towards sky - lighter towards horizon.
@@ -142,46 +113,45 @@ vec3 extra_cheap_atmosphere(vec3 raydir, vec3 moondir) {
     float raymoondt = pow(abs(dot(moondir, raydir)), 2.0);
     // Moon glow.
     float moondt = pow(max(0.0, dot(moondir, raydir)), 8.0);
-    float mymie = moondt * special_trick * 0.2;
+
+    // Colours.
+    vec3 brightblue = vec3(5.5, 8.0, 18.4) / 1.8f;
+
     // Sunset effect.
-    vec3 mooncolor = mix(vec3(1.0), max(vec3(0.0), vec3(1.0) - vec3(5.5, 13.0, 22.4) / 22.4), special_trick2);
+    vec3 mooncolor = mix(vec3(1.0), max(vec3(0.0), vec3(1.0, 0.9, 1.1) - brightblue / 22.4), special_trick2);
     // Blue sky, greenish when moon at horizon.
-    vec3 bluesky = vec3(5.5, 13.0, 22.4) / 22.4 * mooncolor;
+    vec3 bluesky = brightblue / 22.4 * mooncolor;
 
-    vec3 bluesky2 = max(vec3(0.0), bluesky - vec3(5.5, 13.0, 22.4) * 0.002 * (special_trick + -6.0 * moondir.y * moondir.y));
+    vec3 bluesky2 = max(vec3(0.0), bluesky - brightblue * 0.002 * (special_trick + -6.0 * moondir.y * moondir.y));
     bluesky2 *= special_trick * (0.24 + raymoondt * 0.24);
+    bluesky2 *= (1.0 + 1.0 * pow(1.0 - raydir.y, 3.0));
 
-    //    return bluesky2;
     vec3 sky_direction = vec3(inverse(sky_rotation_matrix) * vec4(raydir, 1.0f));
-    return vec3(texture(skybox_texture, sky_direction));
+    vec3 stars = vec3(texture(skybox_texture, sky_direction));
 
-    return bluesky2 * (1.0 + 1.0 * pow(1.0 - raydir.y, 3.0));
+    float moon_intensity = smoothstep(-0.07, 0.07, moon_direction.y);
+
+    return max(bluesky2, stars / (moon_intensity + 1.0f));
 }
 
-// Get atmosphere color for given direction
+// Get atmosphere color for given direction.
 vec3 getAtmosphere(vec3 dir) {
     return extra_cheap_atmosphere(dir, moon_direction) * 0.5;
 }
 
-// Get moon color for given direction
+// Get moon color for given direction.
 float getMoon(vec3 dir) {
-    return pow(max(0.0, dot(dir, moon_direction)), 2160.0) * 210.0;
+    return pow(max(0.0, dot(dir, moon_direction)), 2160.0) * 10.0;
 }
 
 // Main.
 void main(void) {
     vec2 fragCoord = gl_FragCoord.xy;
 
-    // Get the ray.
-    //    vec3 ray = getRay(fragCoord);
-
     vec3 ray = normalize(direction);
 
     // If ray.y is positive, render the sky.
     if (ray.y >= 0.0) {
-        //        float moonIntensity = getMoon(ray);
-        //        vec4 moonColour = vec4(246, 241, 213, 255) / 255;
-        //        fcolour = moonColour * moonIntensity;
         vec3 C = getAtmosphere(ray) + getMoon(ray);
         fcolour = vec4(C * 2.0, 1.0);
         return;
@@ -208,13 +178,13 @@ void main(void) {
     // Calculate normal at the hit position.
     vec3 N = normal(waterHitPos.xz, 0.01, WATER_DEPTH);
 
-    // mooth the normal with distance to avoid disturbing high frequency noise.
+    // Sooth the normal with distance to avoid disturbing high frequency noise.
     N = mix(N, vec3(0.0, 1.0, 0.0), 0.8 * min(1.0, sqrt(dist * 0.01) * 1.1));
 
     // Calculate fresnel coefficient.
     float fresnel = (0.04 + (1.0 - 0.04) * (pow(1.0 - max(0.0, dot(-N, ray)), 5.0)));
 
-    // reflect the ray and make sure it bounces up.
+    // Reflect the ray and make sure it bounces up.
     vec3 R = normalize(reflect(ray, N));
     R.y = abs(R.y);
 
@@ -225,6 +195,4 @@ void main(void) {
     // Return the combined result.
     vec3 C = fresnel * reflection + scattering;
     fcolour = vec4((C * 2.0), 1.0);
-
-    //    vec4 texColour = texture(skybox_texture, direction);
 }
