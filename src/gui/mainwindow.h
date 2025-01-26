@@ -18,7 +18,7 @@
 #include "src/drawables/fishController.h"
 #include "src/drawables/floppyMesh.h"
 #include "src/drawables/obstacles/obstacle.h"
-#include "src/drawables/skybox.h"
+#include "src/drawables/scene/ocean.h"
 
 /**
  * @brief The GLWindow class handling the opengl window.
@@ -82,7 +82,7 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     std::shared_ptr<QAudioOutput> _audioOutput;             /**< AudioOutput used for Sound */
     std::shared_ptr<FloppyMesh> _billMesh;                  /**< Bill the salmon shown in the window */
     std::shared_ptr<FloppyMesh> _secondProp;                /**< A sign to test multi-parts objs */
-    std::shared_ptr<Skybox> _skybox;                        /**< A skybox */
+    std::shared_ptr<Ocean> _oceanAndSky;                    /**< Ocean and Sky Scene */
     std::shared_ptr<FishController> _billTheSalmon;         /**< Bill the Salmon */
     std::vector<std::shared_ptr<Drawable>> _drawables;      /**< Vector holding pointers to the drawables */
     std::vector<std::shared_ptr<Obstacle>> _obstacles;      /**< Vector holding pointers to the obstacles */

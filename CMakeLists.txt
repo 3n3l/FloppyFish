@@ -40,8 +40,12 @@ add_executable(
         src/drawables/obstacles/obstacle.h
         src/drawables/obstacles/part.cpp
         src/drawables/obstacles/part.h
-        src/drawables/background.cpp
-        src/drawables/background.h
+        src/drawables/scene/background.cpp
+        src/drawables/scene/background.h
+        src/drawables/floppyMesh.cpp
+        src/drawables/floppyMesh.h
+        src/drawables/scene/ocean.cpp
+        src/drawables/scene/ocean.h
         src/drawables/drawable.cpp
         src/drawables/drawable.h
         src/drawables/fishController.cpp
@@ -52,10 +56,6 @@ add_executable(
         src/config/config.h
         src/utils/utils.cpp
         src/utils/utils.h
-        src/drawables/floppyMesh.cpp
-        src/drawables/floppyMesh.h
-        src/drawables/skybox.cpp
-        src/drawables/skybox.h
         src/utils/imageTexture.cpp
         src/utils/imageTexture.h
         # Shaders.

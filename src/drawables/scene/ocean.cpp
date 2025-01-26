@@ -1,26 +1,14 @@
-#include "glm/gtc/type_ptr.hpp"
-#define GL_SILENCE_DEPRECATION
-#define GLM_ENABLE_EXPERIMENTAL
+#include "ocean.h"
 
-#include "skybox.h"
+#include <glm/gtc/type_ptr.hpp>
 
-#include <src/drawables/drawable.h>
-
-#include <QFile>
-#include <QOpenGLShaderProgram>
-#include <string>
-#include <vector>
-
-#include "glm/ext/vector_float3.hpp"
-#include "glm/fwd.hpp"
-#include "glm/gtx/rotate_vector.hpp"
 #include "src/config/config.h"
 #include "src/utils/imageTexture.h"
 #include "src/utils/utils.h"
 
-Skybox::Skybox() { _subsequentRotationSpeed = Config::skyRotation; }
+Ocean::Ocean() { _subsequentRotationSpeed = Config::skyRotation; }
 
-void Skybox::init() {
+void Ocean::init() {
     // Initialize OpenGL functions.
     Drawable::init();
 
@@ -28,8 +16,8 @@ void Skybox::init() {
     _program = glCreateProgram();
 
     // Compile shader.
-    GLuint vs = Drawable::compileShader(GL_VERTEX_SHADER, "src/shaders/skybox.vs.glsl");
-    GLuint fs = Drawable::compileShader(GL_FRAGMENT_SHADER, "src/shaders/skybox.fs.glsl");
+    GLuint vs = Drawable::compileShader(GL_VERTEX_SHADER, "src/shaders/ocean.vs.glsl");
+    GLuint fs = Drawable::compileShader(GL_FRAGMENT_SHADER, "src/shaders/ocean.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);
@@ -104,7 +92,7 @@ void Skybox::init() {
     this->loadTexture();
 }
 
-void Skybox::draw(glm::mat4 projection_matrix) {
+void Ocean::draw(glm::mat4 projection_matrix) {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;
@@ -117,10 +105,16 @@ void Skybox::draw(glm::mat4 projection_matrix) {
     glBindVertexArray(_vertexArrayObject);
 
     // Set parameter.
-    glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE,
-                       glm::value_ptr(projection_matrix));
-    glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE,
-                       glm::value_ptr(_modelViewMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE, value_ptr(projection_matrix));
+    glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE, value_ptr(_modelViewMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(_program, "sky_rotation_matrix"), 1, GL_FALSE,
+                       value_ptr(_skyRotationMatrix));
+    glUniform2fv(glGetUniformLocation(_program, "resolution"), 1,
+                 value_ptr(glm::vec2(Config::windowWidth, Config::windowHeight)));
+    glUniform3fv(glGetUniformLocation(_program, "moon_direction"), 1, value_ptr(_moonDirection));
+
+    // Value that goes from 0.0 to 1.0 and resets again.
+    glUniform1f(glGetUniformLocation(_program, "elapsed_time"), _elapsedTime);
 
     // Activate and bind texture.
     glActiveTexture(GL_TEXTURE0);
@@ -136,16 +130,21 @@ void Skybox::draw(glm::mat4 projection_matrix) {
     glCheckError();
 }
 
-void Skybox::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
-    // Rotate around Y for debug reasons.
-    _subsequentRotation += _subsequentRotationSpeed * elapsedTimeMs;
-    _subsequentRotation = _subsequentRotation >= 360.0f ? 0.0f : _subsequentRotation;
-    modelViewMatrix = rotate(modelViewMatrix, glm::radians(_subsequentRotation), glm::vec3(0.0f, -0.2f, -1.0f));
+void Ocean::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
+    _elapsedTime += 0.01f;
+    _moonDirection =
+        normalize(glm::vec3(-0.3773502691896258, 0.2 * sin(_elapsedTime * 0.1 + 2.6), -0.5773502691896258));
+    // _moonDirection =
+    //     normalize(glm::vec3(glm::inverse(glm::transpose(modelViewMatrix)) * glm::vec4(_moonDirection, 1.0f)));
     // Update the model-view matrix.
     _modelViewMatrix = modelViewMatrix;
+    // Calculate the skybox rotation.
+    _subsequentRotation += _subsequentRotationSpeed * elapsedTimeMs;
+    _subsequentRotation = _subsequentRotation >= 360.0f ? 0.0f : _subsequentRotation;
+    _skyRotationMatrix = rotate(glm::mat4(1.0f), glm::radians(_subsequentRotation), glm::vec3(0.0f, -0.2f, -1.0f));
 }
 
-void Skybox::loadTexture() {
+void Ocean::loadTexture() {
     auto star_images = std::vector<std::string>();
     star_images = {
         "res/starsPX.png", "res/starsNX.png", "res/starsPY.png",

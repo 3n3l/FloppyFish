@@ -3,7 +3,7 @@
 
 #include "mainwindow.h"
 
-#include <src/drawables/background.h>
+#include <src/drawables/scene/background.h>
 
 #include <QMessageBox>
 #include <QMouseEvent>
@@ -12,6 +12,7 @@
 #include <glm/glm.hpp>
 #include <memory>
 #include <random>
+#include <thread>
 #include <vector>
 
 #include "glm/ext/matrix_clip_space.hpp"
@@ -21,8 +22,10 @@
 #include "src/config/config.h"
 #include "src/drawables/fishController.h"
 #include "src/drawables/obstacles/obstacle.h"
+#include "src/drawables/scene/background.h"
+#include "src/drawables/scene/ocean.h"
 
-GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _updateTimer(this), _stopWatch() {
+GLMainWindow::GLMainWindow() : _updateTimer(this) {
     // Set to the preconfigured size.
     setWidth(Config::windowWidth);
     setHeight(Config::windowHeight);
@@ -38,18 +41,13 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     _stopWatch.start();
 
     // Create all the drawables.
-    // NOTE: Order in list is important for culling.
     _billMesh = std::make_shared<FloppyMesh>("res/BillDerLachs.obj", 2.0f, 90.0f),
     _drawables = {
-        // TODO: create the fence (ground)
-        // std::make_shared<Ground>(Ground("res/ground.png")),
-        // std::make_shared<Background>(Background("res/background.png")),
+        // The ocean background.
+        _oceanAndSky = std::make_shared<Ocean>(),
         // Bill the Salmon.
         _billTheSalmon = std::make_shared<FishController>(_billMesh),
     };
-
-    // Skybox.
-    _skybox = std::make_shared<Skybox>();
 
     // Create the in the Config specified amount of obstacles and add it to the drawables.
     float offset = Config::obstacleDistance;
@@ -114,7 +112,6 @@ void GLMainWindow::initializeGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-    _skybox->init();
     // Initialize all drawables.
     for (auto drawable : _drawables) {
         drawable->init();
@@ -147,19 +144,21 @@ void GLMainWindow::paintGL() {
     // Disable culling and set a less strict depth function.
     glDisable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
-    _skybox->draw(_projectionMatrix);
+    // _skybox->draw(_projectionMatrix);
+    _oceanAndSky->draw(_projectionMatrix);
 
     // Get the current light positions from the obstacles.
     std::vector<glm::vec3> lightPositions;
     for (auto obstacle : _obstacles) {
         lightPositions.push_back(obstacle->lightPosition());
     }
+    glm::vec3 moonDirection = _oceanAndSky->getMoonDirection();
 
     // Draw all drawables.
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
     for (auto drawable : _drawables) {
-        drawable->draw(_projectionMatrix, lightPositions);
+        drawable->draw(_projectionMatrix, lightPositions, moonDirection);
     }
 }
 
@@ -178,8 +177,6 @@ void GLMainWindow::animateGL() {
     // Increment the animation looper if the animation is running.
     const float incrementedLooper = Config::animationLooper + Config::animationSpeed;
     Config::animationLooper = incrementedLooper > 1.0f ? 0.0f : incrementedLooper;
-
-    _skybox->update(elapsedTimeMs, modelViewMatrix);
 
     // Update all drawables.
     for (auto drawable : _drawables) {
