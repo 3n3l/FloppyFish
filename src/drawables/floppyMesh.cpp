@@ -132,7 +132,7 @@ void FloppyMesh::init() {
     _textureHandle = loadTexture("res/" + _textureName);
 }
 
-void FloppyMesh::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) {
+void FloppyMesh::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions, glm::vec3 moonDirection) {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;
@@ -140,7 +140,7 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPo
 
     // Draw next mesh part first if it exists.
     if (_nextMeshPart != nullptr) {
-        _nextMeshPart->draw(projectionMatrix, lightPositions);
+        _nextMeshPart->draw(projectionMatrix, lightPositions, moonDirection);
     }
 
     // Load program.
@@ -165,6 +165,7 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPo
     glUniform1f(glGetUniformLocation(_program, "roughness"), roughness);
     glUniform1f(glGetUniformLocation(_program, "transparency"), _transparency);
     glUniform3fv(glGetUniformLocation(_program, "emissiveColour"), 1, value_ptr(_emissiveColour));
+    glUniform3fv(glGetUniformLocation(_program, "moon_direction"), 1, value_ptr(moonDirection));
 
     // Push the light positions into an array, then set it in the shader.
     GLfloat lightPositionsArray[Config::obstacleAmount * 3];

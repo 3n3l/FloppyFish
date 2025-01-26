@@ -31,7 +31,7 @@ class Part : public Drawable {
     /**
      * @brief Draw the sign.
      */
-    void draw(glm::mat4 projection_matrix, std::vector<glm::vec3> lightPositions) override;
+    void draw(glm::mat4 projection_matrix, std::vector<glm::vec3> lightPositions, glm::vec3 moonDirection) override;
 
     /**
      * @brief Update the sign.

@@ -100,8 +100,8 @@ void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _lightPosition.x = _position.x;
 }
 
-void Obstacle::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions) {
+void Obstacle::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions, glm::vec3 moonDirection) {
     // Draw the individual parts.
-    _upperPart.draw(projectionMatrix, lightPositions);
-    _lowerPart.draw(projectionMatrix, lightPositions);
+    _upperPart.draw(projectionMatrix, lightPositions, moonDirection);
+    _lowerPart.draw(projectionMatrix, lightPositions, moonDirection);
 }

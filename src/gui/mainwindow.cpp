@@ -153,19 +153,21 @@ void GLMainWindow::paintGL() {
     // Disable culling and set a less strict depth function.
     glDisable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
-    _skybox->draw(_projectionMatrix);
+    // _skybox->draw(_projectionMatrix);
+    _ocean->draw(_projectionMatrix);
 
     // Get the current light positions from the obstacles.
     std::vector<glm::vec3> lightPositions;
     for (auto obstacle : _obstacles) {
         lightPositions.push_back(obstacle->lightPosition());
     }
+    glm::vec3 moonDirection = _ocean->getMoonDirection();
 
     // Draw all drawables.
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
     for (auto drawable : _drawables) {
-        drawable->draw(_projectionMatrix, lightPositions);
+        drawable->draw(_projectionMatrix, lightPositions, moonDirection);
     }
 }
 

@@ -6,8 +6,7 @@
 #define ITERATIONS_RAYMARCH 12 // waves iterations of raymarching
 #define ITERATIONS_NORMAL 36 // waves iterations when calculating normals
 
-uniform mat4 projection_matrix;
-uniform mat4 modelview_matrix;
+uniform mat4 sky_rotation_matrix;
 
 uniform samplerCube skybox_texture;
 uniform float elapsed_time;
@@ -17,7 +16,7 @@ uniform vec3 moon_direction;
 // Send colour to screen.
 layout (location = 0) out vec4 fcolour;
 
-//smooth in vec3 direction;
+smooth in vec3 direction;
 
 // afl_ext 2017-2024
 // MIT License
@@ -115,17 +114,17 @@ vec3 normal(vec2 pos, float e, float depth) {
 //    );
 //}
 
-// Helper function that generates camera ray based on UV.
-vec3 getRay(vec2 fragCoord) {
-    vec2 uv = ((fragCoord.xy / resolution.xy) * 2.0 - 1.0) * vec2(resolution.x / resolution.y, 1.0);
-    // For fisheye, uncomment following line and comment the next one.
-    //    vec3 proj = normalize(vec3(uv.x, uv.y, 1.0) + vec3(uv.x, uv.y, -1.0) * pow(length(uv), 2.0) * 0.05);
-    vec3 proj = normalize(vec3(uv.x, uv.y, 1.5));
-    if (resolution.x < 600.0) {
-        return proj;
-    }
-    return vec3(inverse(transpose(modelview_matrix)) * vec4(proj, 1.0));
-}
+//// Helper function that generates camera ray based on UV.
+//vec3 getRay(vec2 fragCoord) {
+//    vec2 uv = ((fragCoord.xy / resolution.xy) * 2.0 - 1.0) * vec2(resolution.x / resolution.y, 1.0);
+//    // For fisheye, uncomment following line and comment the next one.
+//    //    vec3 proj = normalize(vec3(uv.x, uv.y, 1.0) + vec3(uv.x, uv.y, -1.0) * pow(length(uv), 2.0) * 0.05);
+//    vec3 proj = normalize(vec3(uv.x, uv.y, 1.5));
+//    if (resolution.x < 600.0) {
+//        return proj;
+//    }
+//    return vec3(inverse(transpose(modelview_matrix)) * vec4(proj, 1.0));
+//}
 
 // Ray-Plane intersection checker
 float intersectPlane(vec3 origin, vec3 direction, vec3 point, vec3 normal) {
@@ -133,19 +132,28 @@ float intersectPlane(vec3 origin, vec3 direction, vec3 point, vec3 normal) {
 }
 
 // Some very barebones but fast atmosphere approximation
-vec3 extra_cheap_atmosphere(vec3 raydir, vec3 sundir) {
-    //sundir.y = max(sundir.y, -0.07);
+vec3 extra_cheap_atmosphere(vec3 raydir, vec3 moondir) {
+    moondir.y = max(moondir.y, -0.07);
+    // Darker towards sky - lighter towards horizon.
     float special_trick = 1.0 / (raydir.y * 1.0 + 0.1);
-    float special_trick2 = 1.0 / (sundir.y * 11.0 + 1.0);
-    float raysundt = pow(abs(dot(sundir, raydir)), 2.0);
-    float sundt = pow(max(0.0, dot(sundir, raydir)), 8.0);
-    float mymie = sundt * special_trick * 0.2;
-    vec3 suncolor = mix(vec3(1.0), max(vec3(0.0), vec3(1.0) - vec3(5.5, 13.0, 22.4) / 22.4), special_trick2);
-    vec3 bluesky = vec3(5.5, 13.0, 22.4) / 22.4 * suncolor;
-    vec3 bluesky2 = max(vec3(0.0), bluesky - vec3(5.5, 13.0, 22.4) * 0.002 * (special_trick + -6.0 * sundir.y * sundir.y));
-    bluesky2 *= special_trick * (0.24 + raysundt * 0.24);
+    // Bright when moon at horizon.
+    float special_trick2 = 1.0 / (moondir.y * 11.0 + 1.0);
+    // Moon glow.
+    float raymoondt = pow(abs(dot(moondir, raydir)), 2.0);
+    // Moon glow.
+    float moondt = pow(max(0.0, dot(moondir, raydir)), 8.0);
+    float mymie = moondt * special_trick * 0.2;
+    // Sunset effect.
+    vec3 mooncolor = mix(vec3(1.0), max(vec3(0.0), vec3(1.0) - vec3(5.5, 13.0, 22.4) / 22.4), special_trick2);
+    // Blue sky, greenish when moon at horizon.
+    vec3 bluesky = vec3(5.5, 13.0, 22.4) / 22.4 * mooncolor;
 
-    return vec3(texture(skybox_texture, raydir));
+    vec3 bluesky2 = max(vec3(0.0), bluesky - vec3(5.5, 13.0, 22.4) * 0.002 * (special_trick + -6.0 * moondir.y * moondir.y));
+    bluesky2 *= special_trick * (0.24 + raymoondt * 0.24);
+
+    //    return bluesky2;
+    vec3 sky_direction = vec3(inverse(sky_rotation_matrix) * vec4(raydir, 1.0f));
+    return vec3(texture(skybox_texture, sky_direction));
 
     return bluesky2 * (1.0 + 1.0 * pow(1.0 - raydir.y, 3.0));
 }
@@ -155,7 +163,7 @@ vec3 getAtmosphere(vec3 dir) {
     return extra_cheap_atmosphere(dir, moon_direction) * 0.5;
 }
 
-// Get sun color for given direction
+// Get moon color for given direction
 float getMoon(vec3 dir) {
     return pow(max(0.0, dot(dir, moon_direction)), 2160.0) * 210.0;
 }
@@ -165,7 +173,9 @@ void main(void) {
     vec2 fragCoord = gl_FragCoord.xy;
 
     // Get the ray.
-    vec3 ray = getRay(fragCoord);
+    //    vec3 ray = getRay(fragCoord);
+
+    vec3 ray = normalize(direction);
 
     // If ray.y is positive, render the sky.
     if (ray.y >= 0.0) {

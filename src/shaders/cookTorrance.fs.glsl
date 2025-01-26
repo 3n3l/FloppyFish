@@ -21,20 +21,24 @@ uniform float transparency;
 uniform vec3 emissiveColour;
 uniform float eta;
 
-uniform vec3 lightColour = vec3(1.0f, 1.0f, 1.0f) * 18.0f;
+uniform float moon_distance = 100.0f;
+uniform vec3 moon_direction;
+uniform vec3 moon_light_colour = vec3(0.65f, 0.85f, 1.0f) * 10000.0f;
+
+uniform vec3 lightColour = vec3(1.0f, 0.8f, 0.6f) * 16.0f;
 uniform vec3 materialSpecularColour = vec3(1.0f, 1.0f, 1.0f);
 
 const float pi = 3.14159265358979323846f;
 
 // Send colour to screen.
-layout(location = 0) out vec4 fColour = vec4(0.0f);
+layout (location = 0) out vec4 fColour = vec4(0.0f);
 
 vec3 cook_torrance(vec3 materialDiffuseColour,
-    vec3 materialSpecularColour,
-    vec3 normal,
-    vec3 lightDir,
-    vec3 viewDir,
-    vec3 lightColour)
+                   vec3 materialSpecularColour,
+                   vec3 normal,
+                   vec3 lightDir,
+                   vec3 viewDir,
+                   vec3 lightColour)
 {
     // Dot pre-calculation one, sometimes called theta.
     float dotNL = max(0.00000001f, dot(normal, lightDir));
@@ -108,8 +112,8 @@ void main(void)
         vec3 light_vec = normalize(vLightDir[i]);
 
         // Attenuate the light source.
-        float a_quadratic_attenuation_term = 0.36f;
-        float b_linear_attenuation_term = 7.2f;
+        float a_quadratic_attenuation_term = 0.6f;
+        float b_linear_attenuation_term = 8.0f;
         float attenuation = b_linear_attenuation_term * vLightDistance[i] + 1.0f;
         attenuation += a_quadratic_attenuation_term * vLightDistance[i] * vLightDistance[i];
         vec3 attenuated_light = lightColour / attenuation;
@@ -118,4 +122,23 @@ void main(void)
         vec3 colourCookTorrance = cook_torrance(textureColour.rgb, materialSpecularColour, normal, light_vec, view_vec, attenuated_light);
         fColour += vec4(colourCookTorrance, transparency);
     }
+
+    // Moon lighting.
+    {
+        // Change light intensity if the moon is below the horizon.
+        float moon_intensity = smoothstep(-0.07, 0.07, moon_direction.y);
+        vec3 moon_direction2 = normalize(moon_direction - vec3(0.0, 0.0, 1.0));
+        // Attenuate the light source.
+        float a_quadratic_attenuation_term = 0.1f;
+        float b_linear_attenuation_term = 0.1f;
+        float attenuation = b_linear_attenuation_term * moon_distance + 1.0f;
+        attenuation += a_quadratic_attenuation_term * moon_distance * moon_distance;
+        vec3 attenuated_light = moon_light_colour / attenuation;
+        attenuated_light *= moon_intensity;
+
+        // Incorporate illumination from the light.
+        vec3 colourCookTorrance = cook_torrance(textureColour.rgb, materialSpecularColour, normal, moon_direction2, view_vec, attenuated_light);
+        fColour += vec4(colourCookTorrance, transparency);
+    }
+
 }

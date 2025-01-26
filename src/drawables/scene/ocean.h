@@ -10,7 +10,7 @@ class Ocean : public Drawable {
     /**
      * @brief draw the ocean.
      */
-    void draw(glm::mat4 projectionMatrix) override;
+    void draw(glm::mat4 projectionMatrix);
 
     /**
      * @brief initialize the ocean.
@@ -42,7 +42,7 @@ class Ocean : public Drawable {
     glm::vec3 _moonDirection;       /**< Direction of the moon (vector) */
     float _subsequentRotation;      /**< The subsequent rotation around the Y-axis applied to the mesh. */
     float _subsequentRotationSpeed; /**< The subsequent rotation speed around the Y-axis applied to the mesh. */
-
+    glm::mat4 _skyRotationMatrix;   /**< Rotation matrix of the skybox. */
     /**
      * @brief loadTexture loads the textures for the ocean
      */

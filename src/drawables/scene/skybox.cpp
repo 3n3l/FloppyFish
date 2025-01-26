@@ -2,8 +2,6 @@
 #define GL_SILENCE_DEPRECATION
 #define GLM_ENABLE_EXPERIMENTAL
 
-#include "skybox.h"
-
 #include <src/drawables/drawable.h>
 
 #include <QFile>
@@ -14,6 +12,7 @@
 #include "glm/ext/vector_float3.hpp"
 #include "glm/fwd.hpp"
 #include "glm/gtx/rotate_vector.hpp"
+#include "skybox.h"
 #include "src/config/config.h"
 #include "src/utils/imageTexture.h"
 #include "src/utils/utils.h"
@@ -135,12 +134,10 @@ void Skybox::draw(glm::mat4 projection_matrix) {
 }
 
 void Skybox::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
-    // Rotate around Y for debug reasons.
+    // Update the model-view matrix.
     _subsequentRotation += _subsequentRotationSpeed * elapsedTimeMs;
     _subsequentRotation = _subsequentRotation >= 360.0f ? 0.0f : _subsequentRotation;
-    modelViewMatrix = rotate(modelViewMatrix, glm::radians(_subsequentRotation), glm::vec3(0.0f, -0.2f, -1.0f));
-    // Update the model-view matrix.
-    _modelViewMatrix = modelViewMatrix;
+    _modelViewMatrix = rotate(modelViewMatrix, glm::radians(_subsequentRotation), glm::vec3(0.0f, -0.2f, -1.0f));
 }
 
 void Skybox::loadTexture() {
