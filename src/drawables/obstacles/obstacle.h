@@ -2,6 +2,7 @@
 #define OBSTACLE_H
 
 #include <memory>
+#include <random>
 #include <vector>
 
 #include "glm/ext/vector_float3.hpp"

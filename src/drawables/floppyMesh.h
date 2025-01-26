@@ -12,6 +12,8 @@ class FloppyMesh : public Drawable {
     /// Constructor for creating a mesh from an obj.
     FloppyMesh(std::string meshPath, glm::vec3 initialTranslation = glm::vec3(0.0f), float initialScale = 1.0f,
                float initialRotation = 0.0f, float subsequentRotationSpeed = 0.0f);
+    /// Simplified constructor.
+    FloppyMesh(std::string meshPath, float initialScale = 1.0f, float initialRotation = 0.0f);
 
     /// Constructor for creating the next mesh part.
     FloppyMesh(std::string meshPath, uint meshIndex);
@@ -37,6 +39,12 @@ class FloppyMesh : public Drawable {
      */
     void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) override;
 
+    /**
+     * @brief re-sets the initial rotation of the mesh.
+     * @param rotation - the new initial rotation of the mesh in degrees.
+     */
+    void setRotation(const float rotation) { _initialRotation = rotation; }
+
    protected:
     GLuint _program{};                         /**< The opengl program handling the shaders */
     GLuint _vertexArrayObject{};               /**< The vertex array object containing the vertices */
@@ -53,10 +61,10 @@ class FloppyMesh : public Drawable {
     glm::vec3 _emissiveColour; /**< The colour of the emission of the object. */
 
     // Transformations, initial and ongoing.
-    glm::mat4 _modelViewMatrix{};       /**< The model view matrix to get the object into model view space */
-    glm::vec3 _initialTranslation{};    /**< The initial translation applied as a baseline to the mesh */
-    float _initialScale;                /**< The initial scaling applied as a baseline to the mesh */
-    float _initialRotation;             /**< The initial rotation around the Y-axis applied as a baseline to the mesh */
+    glm::mat4 _modelViewMatrix{};    /**< The model view matrix to get the object into model view space */
+    glm::vec3 _initialTranslation{}; /**< The initial translation applied as a baseline to the mesh */
+    float _initialScale;             /**< The initial scaling applied as a baseline to the mesh */
+    float _initialRotation;          /**< The initial rotation around the Y-axis applied as a baseline to the mesh */
     /**< The subsequent rotation around the Y-axis applied to the mesh. Mostly for debugging */
     float _subsequentRotation;
     /**< The subsequent rotation speed around the Y-axis applied to the mesh. Mostly for debugging */

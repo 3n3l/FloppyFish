@@ -87,15 +87,15 @@ vec3 cook_torrance(vec3 materialDiffuseColour,
 
 void main(void)
 {
+    // Sample the texture.
+    vec4 textureColour = texture(albedo, vec2(vTexCoords.s, -vTexCoords.t));
+
     // If the texture is emissive, just set the colour to a bright colour.
     if (emissiveColour.r + emissiveColour.g + emissiveColour.b > 0.01)
     {
-        fColour = vec4(1.8f * emissiveColour, 1.0f);
+        fColour = vec4(textureColour.xyz * emissiveColour * 2.0f, 1.0f);
         return;
     }
-
-    // Sample the texture.
-    vec4 textureColour = texture(albedo, vec2(vTexCoords.s, -vTexCoords.t));
 
     // Lighting prequisites.
     vec3 normal = normalize(vNormal);

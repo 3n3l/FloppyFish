@@ -79,7 +79,7 @@ void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _modelViewMatrix = translate(modelViewMatrix, glm::vec3(0, _position.y, 0));
 
     // Update mesh before scaling part hitbox.
-    _partMesh->update(elapsedTimeMs, glm::translate(_modelViewMatrix, glm::vec3(0, _meshOffset, 0)));
+    _partMesh->update(elapsedTimeMs, translate(_modelViewMatrix, glm::vec3(0, _meshOffset, 0)));
 
     // Scale to height.
     _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(_width, _height, _depth));
@@ -108,9 +108,9 @@ void Part::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPosition
 
         // Set parameter.
         glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE,
-                           glm::value_ptr(projectionMatrix));
+                           value_ptr(projectionMatrix));
         glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE,
-                           glm::value_ptr(_modelViewMatrix));
+                           value_ptr(_modelViewMatrix));
         glUniform3fv(glGetUniformLocation(_program, "hitboxColour"), 1, value_ptr(_hitboxColour));
 
         // Call draw.

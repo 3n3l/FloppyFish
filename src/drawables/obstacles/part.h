@@ -16,6 +16,7 @@ class Part : public Drawable {
     void setHeight(const float height) { _height = height; }
     void setDepth(const float depth) { _depth = depth; }
     void setY(const float y) { _position.y = y; }
+    void setMeshRotation(const float rotation) const { _partMesh->setRotation(rotation); }
 
     glm::vec3 position() { return _position; }
     float width() const { return _width; }

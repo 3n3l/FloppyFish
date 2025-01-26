@@ -1,23 +1,23 @@
-#include <memory>
-#include <vector>
-
-#include "glm/ext/vector_float3.hpp"
 #define GLM_FORCE_RADIANS
 #define GLM_SWIZZLE
+
+#include "mainwindow.h"
 
 #include <src/drawables/background.h>
 
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QOpenGLFunctions>
-#include <QOpenGLWindow>
 #include <cstddef>
 #include <glm/glm.hpp>
+#include <memory>
+#include <random>
+#include <vector>
 
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/matrix_transform.hpp"
-#include "mainwindow.h"
+#include "glm/ext/vector_float3.hpp"
 #include "src/config/config.h"
 #include "src/drawables/fishController.h"
 #include "src/drawables/obstacles/obstacle.h"
@@ -39,9 +39,7 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
 
     // Create all the drawables.
     // NOTE: Order in list is important for culling.
-    _billMesh = std::make_shared<FloppyMesh>("res/BillDerLachs.obj", glm::vec3(0.0f, -0.1f, 0.0f), 0.1f, 90.0f,
-                                             Config::debugRotation);
-
+    _billMesh = std::make_shared<FloppyMesh>("res/BillDerLachs.obj", 2.0f, 90.0f),
     _drawables = {
         // TODO: create the fence (ground)
         // std::make_shared<Ground>(Ground("res/ground.png")),
@@ -55,11 +53,12 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
 
     // Create the in the Config specified amount of obstacles and add it to the drawables.
     float offset = Config::obstacleDistance;
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<float> dist(-45.0f, 45.0f);
     for (std::size_t i = 0; i < Config::obstacleAmount; i++) {
-        auto upperMesh =
-            std::make_shared<FloppyMesh>("res/Sign.obj", glm::vec3(0.0f), 0.1f, 45.0f, Config::debugRotation);
-        auto lowerMesh = std::make_shared<FloppyMesh>("res/Lamp.obj", glm::vec3(0.0f, -0.24f, 0.0f), 0.1f, 45.0f,
-                                                      Config::debugRotation);
+        auto upperMesh = std::make_shared<FloppyMesh>("res/Sign.obj", 2.0f, dist(mt));
+        auto lowerMesh = std::make_shared<FloppyMesh>("res/Lamp.obj", 1.0f, dist(mt));
         // Create the obstacle itself.
         auto obstacle = std::make_shared<Obstacle>(i * offset, upperMesh, lowerMesh);
 
@@ -174,7 +173,7 @@ void GLMainWindow::animateGL() {
 
     // Calculate current model view matrix.
     glm::mat4 modelViewMatrix =
-        glm::lookAt(glm::vec3(0.0f, Config::lookAtHeight, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        lookAt(glm::vec3(0.0f, Config::lookAtHeight, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     // Increment the animation looper if the animation is running.
     const float incrementedLooper = Config::animationLooper + Config::animationSpeed;
@@ -192,7 +191,7 @@ void GLMainWindow::animateGL() {
 }
 
 void GLMainWindow::keyPressEvent(QKeyEvent *event) {
-    const bool isFullscreen = visibility() == QWindow::FullScreen;
+    const bool isFullscreen = visibility() == FullScreen;
     // Pressing SPACE will make the fish flop or flop the fish idk.
     if (event->key() == Qt::Key_Space) {
         if (!_jumpSFX->isPlaying()) _jumpSFX->play();

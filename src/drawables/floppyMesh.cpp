@@ -20,7 +20,7 @@
 #include "src/drawables/floppyMesh.h"
 #include "src/utils/utils.h"
 
-// Main constructor.
+// Main constructors.
 FloppyMesh::FloppyMesh(std::string meshPath, glm::vec3 initialTranslation, float initialScale, float initialRotation,
                        float subsequentRotationSpeed) {
     _meshPath = std::move(meshPath);
@@ -28,6 +28,11 @@ FloppyMesh::FloppyMesh(std::string meshPath, glm::vec3 initialTranslation, float
     _initialScale = initialScale;
     _initialRotation = initialRotation;
     _subsequentRotationSpeed = subsequentRotationSpeed;
+}
+FloppyMesh::FloppyMesh(std::string meshPath, float initialScale, float initialRotation) {
+    _meshPath = std::move(meshPath);
+    _initialScale = initialScale;
+    _initialRotation = initialRotation;
 }
 FloppyMesh::~FloppyMesh() = default;
 
