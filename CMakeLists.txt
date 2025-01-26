@@ -40,14 +40,16 @@ add_executable(
         src/drawables/obstacles/obstacle.h
         src/drawables/obstacles/part.cpp
         src/drawables/obstacles/part.h
+        src/drawables/gameover.cpp
+        src/drawables/gameover.h
         src/drawables/background.cpp
         src/drawables/background.h
         src/drawables/drawable.cpp
         src/drawables/drawable.h
         src/drawables/fishController.cpp
         src/drawables/fishController.h
-	    src/drawables/collisionchecker.h
-	    src/drawables/collisionchecker.cpp
+        src/drawables/collisionchecker.h
+        src/drawables/collisionchecker.cpp
         src/gui/mainwindow.cpp
         src/gui/mainwindow.h
         src/config/config.cpp

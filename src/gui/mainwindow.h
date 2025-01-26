@@ -17,6 +17,7 @@
 #include "src/drawables/fishController.h"
 #include "src/drawables/floppyMesh.h"
 #include "src/drawables/skybox.h"
+#include "src/drawables/gameover.h"
 
 /**
  * @brief The GLWindow class handling the opengl window.
@@ -34,9 +35,10 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     std::shared_ptr<FloppyMesh> _billMesh; /**< Bill the salmon shown in the window */
     std::shared_ptr<FloppyMesh> _secondProp;    /**< A sign to test multi-parts objs */
     std::shared_ptr<Skybox> _skybox;            /**< A skybox */
-
     std::shared_ptr<FishController> _billTheSalmon;             /**< Bill the Salmon */
     std::vector<std::shared_ptr<Drawable>> _drawables; /**< Vector holding pointers to the drawables */
+    Gameover _gameover;                                         /**< Game over screen*/
+    bool _gameIsOver = false;
 
    private slots:
     /**
@@ -53,8 +55,6 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
      * @param parent the parent widget
      */
     GLMainWindow();
-
-    bool isGameFrozen = false;
 
     /**
      * @brief show opens the widget

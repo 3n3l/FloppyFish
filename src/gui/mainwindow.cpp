@@ -26,6 +26,8 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     setWidth(Config::windowWidth);
     setHeight(Config::windowHeight);
 
+    
+
     // Set the title.
     setTitle("Floppy Fish");
 
@@ -107,6 +109,8 @@ void GLMainWindow::initializeGL() {
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
     _skybox->init();
+    _gameover.init();
+
     // Initialize all drawables.
     for (auto drawable : _drawables) {
         drawable->init();
@@ -136,29 +140,48 @@ void GLMainWindow::paintGL() {
     // Draw filled polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    // Disable culling and set a less strict depth function.
-    glDisable(GL_CULL_FACE);
-    glDepthFunc(GL_LEQUAL);
-    _skybox->draw(_projectionMatrix);
+    if (_gameIsOver) {
+        // Set projection matrix for 2D rendering
+        glm::mat4 projectionMatrix = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
 
-    glEnable(GL_CULL_FACE);
-    glDepthFunc(GL_LESS);
-    // Draw all drawables.
-    for (auto drawable : _drawables) {
-        drawable->draw(_projectionMatrix);
+        // Set model-view matrix (no transformations, just the screen in place)
+        glm::mat4 modelViewMatrix = glm::mat4(1.0f);
+
+        // Update the model-view matrix (you can animate if needed)
+        _gameover.update(0.0f, modelViewMatrix);
+
+        // Draw the game over screen
+        _gameover.draw(projectionMatrix);
+    } else {
+        // Disable culling and set a less strict depth function.
+        glDisable(GL_CULL_FACE);
+        glDepthFunc(GL_LEQUAL);
+        _skybox->draw(_projectionMatrix);
+
+        glEnable(GL_CULL_FACE);
+        glDepthFunc(GL_LESS);
+        // Draw all drawables.
+        for (auto drawable : _drawables) {
+            drawable->draw(_projectionMatrix);
+        }
     }
+   
 }
 
 void GLMainWindow::animateGL() {
     // Make the context current in case there are glFunctions called.
     makeCurrent();
 
+    
     // If the game is frozen, skip updates and do not animate.
-    if (isGameFrozen) {
-        // Optionally render a "Game Over" or frozen state message here
-        std::cout << "Game is frozen!" << std::endl;
-        return;  // Skip the rest of the function, effectively freezing the game.
-    }
+    //if (isGameFrozen) {
+        // Optionally render a "Game Over"
+       // Gameover gameOver("res/GameOver-1.png");
+       // gameOver.init();
+        //gameOver.draw(_projectionMatrix);
+   //    return;  // Skip the rest of the function, effectively freezing the game.
+    //}
+
 
     // Get the time delta and restart the stopwatch.
     float elapsedTimeMs = _stopWatch.nsecsElapsed() / 1000000.0f;
@@ -178,11 +201,11 @@ void GLMainWindow::animateGL() {
      for (auto drawable : _drawables) {
         drawable->update(elapsedTimeMs, modelViewMatrix);
          // check if collision is true
-        auto draw = dynamic_cast<Obstacle *>(drawable.get());
-         if (draw != nullptr && CollisionChecker::checkCollision(_billTheSalmon.get(), draw)) {
-             std::cout << "collision is true!" << std::endl;
+        auto draw = std::dynamic_pointer_cast<Obstacle>(drawable);
+         if (draw != nullptr && CollisionChecker::checkCollision(_billTheSalmon, draw)) {
+
              // Stop the game and Game Over
-             isGameFrozen = true;  // Freeze the game on collision
+             _gameIsOver = true;  // Freeze the game on collision
              break;                // No need to check further once the game is frozen
          } 
     }
