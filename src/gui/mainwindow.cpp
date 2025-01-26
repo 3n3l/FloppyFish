@@ -144,12 +144,6 @@ void GLMainWindow::paintGL() {
         // Set projection matrix for 2D rendering
         glm::mat4 projectionMatrix = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
 
-        // Set model-view matrix (no transformations, just the screen in place)
-        glm::mat4 modelViewMatrix = glm::mat4(1.0f);
-
-        // Update the model-view matrix (you can animate if needed)
-        _gameover.update(0.0f, modelViewMatrix);
-
         // Draw the game over screen
         _gameover.draw(projectionMatrix);
     } else {
@@ -172,17 +166,6 @@ void GLMainWindow::animateGL() {
     // Make the context current in case there are glFunctions called.
     makeCurrent();
 
-    
-    // If the game is frozen, skip updates and do not animate.
-    //if (isGameFrozen) {
-        // Optionally render a "Game Over"
-       // Gameover gameOver("res/GameOver-1.png");
-       // gameOver.init();
-        //gameOver.draw(_projectionMatrix);
-   //    return;  // Skip the rest of the function, effectively freezing the game.
-    //}
-
-
     // Get the time delta and restart the stopwatch.
     float elapsedTimeMs = _stopWatch.nsecsElapsed() / 1000000.0f;
     _stopWatch.restart();
@@ -191,9 +174,15 @@ void GLMainWindow::animateGL() {
     glm::mat4 modelViewMatrix =
         glm::lookAt(glm::vec3(0.0f, Config::lookAtHeight, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
+    // Set model-view matrix (no transformations, just the screen in place)
+    glm::mat4 _modelViewMatrix = glm::mat4(1.0f);
+
     // Increment the animation looper if the animation is running.
     const float incrementedLooper = Config::animationLooper + Config::animationSpeed;
     Config::animationLooper = incrementedLooper > 1.0f ? 0.0f : incrementedLooper;
+
+    // Update the model-view matrix (you can animate if needed)
+    _gameover.update(elapsedTimeMs,_modelViewMatrix);
 
     _skybox->update(elapsedTimeMs, modelViewMatrix);
 
