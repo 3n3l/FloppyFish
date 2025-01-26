@@ -37,5 +37,5 @@ float Config::skyRotation = 1.0f / 2400.0f;
 const float Config::velocityBound = -9.8f / 1000.0f;
 const float Config::verticalAcceleration = -0.001f;
 const float Config::verticalVelocity = 0.02f;
-const float Config::lowerAngle = -70.0f;
-const float Config::upperAngle = 35.0f;
+const float Config::lowerAngle = -15.0f;
+const float Config::upperAngle = 15.0f;
