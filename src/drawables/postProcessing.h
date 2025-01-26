@@ -45,7 +45,6 @@ class PostProcessingQuad : public Drawable {
     GLuint _depthStencilBuffer;  /**< Texture handle for depth and stencil (memory location of texture). */
 
     GLuint _frameBufferObject; /**< Frame buffer handle (memory location of framebuffer). */
-    // GLuint _renderBufferObject; /**< Render buffer handle (memory location of framebuffer). */
 };
 
 #endif  // PostProcessingQuad_H

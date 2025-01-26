@@ -149,8 +149,8 @@ void GLMainWindow::paintGL() {
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cout << "Framebuffer is incomplete: " << std::to_string(glCheckFramebufferStatus(GL_FRAMEBUFFER))
                   << std::endl;
-        // close();
     }
+
     // Disable culling and set a less strict depth function.
     glDisable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
