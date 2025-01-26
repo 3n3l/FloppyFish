@@ -3,8 +3,10 @@
 
 #include <QOpenGLFunctions_4_1_Core>
 #include <string>
+#include <vector>
 
 #include "glm/ext/matrix_float4x4.hpp"
+#include "glm/ext/vector_float3.hpp"
 
 class Drawable : protected QOpenGLFunctions_4_1_Core {
    public:
@@ -22,9 +24,11 @@ class Drawable : protected QOpenGLFunctions_4_1_Core {
 
     /**
      * @brief draw the drawable.
-     * @param projectionMatrix The current projection matrix
+     * @param projectionMatrix - transformation into NDC.
+     * @param lightPositions - vector holding the light positions.
+     * @param moonDirection - direction to the moon.
      */
-    virtual void draw(glm::mat4 projectionMatrix) {}
+    virtual void draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions, glm::vec3 moonDirection) {}
 
     /**
      * @brief update the drawable.

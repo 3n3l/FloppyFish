@@ -1,3 +1,7 @@
+#include <memory>
+#include <vector>
+
+#include "glm/ext/vector_float3.hpp"
 #include "glm/fwd.hpp"
 #include "glm/trigonometric.hpp"
 #include "src/config/config.h"
@@ -76,10 +80,10 @@ void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     }
 
     // Update y-coordinate with the current velocity.
-    _y += _verticalVelocity;
+    _position.y += _verticalVelocity;
 
     // Translate to the updated y-coordinate.
-    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_x, _y, 0));
+    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_position.x, _position.y, 0));
 
     // Let's do a simple linear interpolation to translate between current velocity and the angle.
     // Maps from [velocityBound, verticalVelocity] to [lowerAngle, upperAngle].
@@ -95,10 +99,10 @@ void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(_width, _height, 1.0));
 }
 
-void FishController::draw(glm::mat4 projectionMatrix) {
+void FishController::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions, glm::vec3 moonDirection) {
     // Draw the mesh.
     if (_billMesh != nullptr) {
-        _billMesh->draw(projectionMatrix);
+        _billMesh->draw(projectionMatrix, lightPositions, moonDirection);
     }
 
     // Only draw the hitbox quad if the debug-flag is enabled.
@@ -130,8 +134,8 @@ void FishController::draw(glm::mat4 projectionMatrix) {
 }
 
 void FishController::getBounds(float& boundX, float& boundY, float& boundWidth, float& boundHeight) const {
-    boundX = _x;
-    boundY = _y;
+    boundX = _position.x;
+    boundY = _position.y;
     boundWidth = _width;
     boundHeight = _height;
 }

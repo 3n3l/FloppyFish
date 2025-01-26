@@ -25,7 +25,7 @@ class Background : public Drawable {
      * Draw the background.
      * @param projectionMatrix - transformation into NDC.
      */
-    void draw(glm::mat4 projectionMatrix) override;
+    void draw(glm::mat4 projectionMatrix);
 
    protected:
     std::string _texturePath;    /**< path of the texture */

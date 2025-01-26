@@ -3,23 +3,27 @@
 
 #include "mainwindow.h"
 
-#include <src/drawables/background.h>
+#include <src/drawables/scene/background.h>
 
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QOpenGLFunctions>
-#include <QOpenGLWindow>
 #include <cstddef>
 #include <glm/glm.hpp>
+#include <memory>
+#include <random>
+#include <vector>
 
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/matrix_transform.hpp"
+#include "glm/ext/vector_float3.hpp"
 #include "src/config/config.h"
 #include "src/drawables/fishController.h"
 #include "src/drawables/obstacles/obstacle.h"
+#include "src/drawables/scene/ocean.h"
 
-GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _updateTimer(this), _stopWatch() {
+GLMainWindow::GLMainWindow() : _updateTimer(this) {
     // Set to the preconfigured size.
     setWidth(Config::windowWidth);
     setHeight(Config::windowHeight);
@@ -35,27 +39,31 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     _stopWatch.start();
 
     // Create all the drawables.
-    // NOTE: Order in list is important for culling.
-    _billMesh = std::make_shared<FloppyMesh>("res/BillDerLachs.obj", glm::vec3(0.0f, -0.1f, 0.0f), 0.1f, -90.0f,
-                                             Config::debugRotation),
+    _billMesh = std::make_shared<FloppyMesh>("res/BillDerLachs.obj", 2.0f, 90.0f),
+
     _drawables = {
-        // TODO: create the fence (ground)
-        // std::make_shared<Ground>(Ground("res/ground.png")),
-        // std::make_shared<Background>(Background("res/background.png")),
+        // The ocean background.
+        _oceanAndSky = std::make_shared<Ocean>(),
         // Bill the Salmon.
         _billTheSalmon = std::make_shared<FishController>(_billMesh),
     };
-    // Skybox.
-    _skybox = std::make_shared<Skybox>();
 
     // Create the in the Config specified amount of obstacles and add it to the drawables.
     float offset = Config::obstacleDistance;
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<float> dist(-45.0f, 45.0f);
     for (std::size_t i = 0; i < Config::obstacleAmount; i++) {
-        auto upperMesh = std::make_shared<FloppyMesh>("res/Sign.obj", glm::vec3(0.5f, -0.0f, 0.0f), 0.1f, 45.0f,
-                                                      Config::debugRotation);
-        auto lowerMesh = std::make_shared<FloppyMesh>("res/Lamp.obj", glm::vec3(0.5f, -0.24f, 0.0f), 0.1f, 45.0f,
-                                                      Config::debugRotation);
-        _drawables.push_back(std::make_shared<Obstacle>(i * offset, upperMesh, lowerMesh));
+        auto upperMesh = std::make_shared<FloppyMesh>("res/Sign.obj", 2.0f, dist(mt));
+        auto lowerMesh = std::make_shared<FloppyMesh>("res/Lamp.obj", 1.0f, dist(mt));
+        // Create the obstacle itself.
+        auto obstacle = std::make_shared<Obstacle>(i * offset, upperMesh, lowerMesh);
+
+        // Push this into _drawables to init, update, draw.
+        _drawables.push_back(obstacle);
+
+        // Push this into _obstacles to process lighting and collision.
+        _obstacles.push_back(obstacle);
     }
 
     // TODO: Initialize the media player.
@@ -103,7 +111,6 @@ void GLMainWindow::initializeGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-    _skybox->init();
     // Initialize all drawables.
     for (auto drawable : _drawables) {
         drawable->init();
@@ -136,13 +143,21 @@ void GLMainWindow::paintGL() {
     // Disable culling and set a less strict depth function.
     glDisable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
-    _skybox->draw(_projectionMatrix);
+    // _skybox->draw(_projectionMatrix);
+    _oceanAndSky->draw(_projectionMatrix);
+
+    // Get the current light positions from the obstacles.
+    std::vector<glm::vec3> lightPositions;
+    for (auto obstacle : _obstacles) {
+        lightPositions.push_back(obstacle->lightPosition());
+    }
+    glm::vec3 moonDirection = _oceanAndSky->getMoonDirection();
 
     // Draw all drawables.
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
     for (auto drawable : _drawables) {
-        drawable->draw(_projectionMatrix);
+        drawable->draw(_projectionMatrix, lightPositions, moonDirection);
     }
 }
 
@@ -156,13 +171,11 @@ void GLMainWindow::animateGL() {
 
     // Calculate current model view matrix.
     glm::mat4 modelViewMatrix =
-        glm::lookAt(glm::vec3(0.0f, Config::lookAtHeight, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        lookAt(glm::vec3(0.0f, Config::lookAtHeight, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     // Increment the animation looper if the animation is running.
     const float incrementedLooper = Config::animationLooper + Config::animationSpeed;
     Config::animationLooper = incrementedLooper > 1.0f ? 0.0f : incrementedLooper;
-
-    _skybox->update(elapsedTimeMs, modelViewMatrix);
 
     // Update all drawables.
     for (auto drawable : _drawables) {
@@ -174,7 +187,7 @@ void GLMainWindow::animateGL() {
 }
 
 void GLMainWindow::keyPressEvent(QKeyEvent *event) {
-    const bool isFullscreen = visibility() == QWindow::FullScreen;
+    const bool isFullscreen = visibility() == FullScreen;
     // Pressing SPACE will make the fish flop or flop the fish idk.
     if (event->key() == Qt::Key_Space) {
         if (!_jumpSFX->isPlaying()) _jumpSFX->play();

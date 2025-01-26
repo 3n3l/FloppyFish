@@ -1,6 +1,6 @@
+#include <memory>
+#include <vector>
 #define GL_SILENCE_DEPRECATION
-
-#include "src/drawables/obstacles/part.h"
 
 #include <QFile>
 #include <QOpenGLShaderProgram>
@@ -13,10 +13,12 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "src/config/config.h"
 #include "src/drawables/drawable.h"
+#include "src/drawables/obstacles/part.h"
 #include "src/utils/utils.h"
 
-Part::Part(const std::shared_ptr<FloppyMesh>& partMesh) : _yCoordinate(0) { _partMesh = partMesh; }
-Part::Part(Part const& p) : _partMesh(p._partMesh), _yCoordinate(p._yCoordinate) {}
+Part::Part(const std::shared_ptr<FloppyMesh>& partMesh) : _position(0) { _partMesh = partMesh; }
+Part::Part(Part const& p)
+    : _partMesh(p._partMesh), _position(p._position), _width(p._width), _height(p._height), _depth(p._depth) {}
 Part::~Part() {}
 
 void Part::init() {
@@ -48,12 +50,8 @@ void Part::init() {
 
     // Fill position buffer with data.
     std::vector<glm::vec3> positions = {
-        glm::vec3(-1, -1, 0),
-        glm::vec3(1, 1, 0),
-        glm::vec3(-1, 1, 0),
-        glm::vec3(-1, -1, 0),
-        glm::vec3(1, -1, 0),
-        glm::vec3(1, 1, 0),
+        glm::vec3(-1, -1, 0), glm::vec3(1, 1, 0),  glm::vec3(-1, 1, 0),
+        glm::vec3(-1, -1, 0), glm::vec3(1, -1, 0), glm::vec3(1, 1, 0),
     };
 
     GLuint position_buffer;
@@ -78,16 +76,21 @@ void Part::init() {
 
 void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // Move on y-axis.
-    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(0, _yCoordinate, 0));
+    _modelViewMatrix = translate(modelViewMatrix, glm::vec3(0, _position.y, 0));
 
     // Update mesh before scaling part hitbox.
-    _partMesh->update(elapsedTimeMs, glm::translate(_modelViewMatrix, glm::vec3(0, _meshOffset, 0)));
+    _partMesh->update(elapsedTimeMs, translate(_modelViewMatrix, glm::vec3(0, _meshOffset, 0)));
 
     // Scale to height.
-    _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(1, _height, 1));
+    _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(_width, _height, _depth));
 }
 
-void Part::draw(glm::mat4 projectionMatrix) {
+void Part::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions, glm::vec3 moonDirection) {
+    // Draw the mesh.
+    if (_partMesh != nullptr) {
+        _partMesh->draw(projectionMatrix, lightPositions, moonDirection);
+    }
+
     // Only draw the hitbox quad if the debug-flag is enabled.
     if (Config::showHitbox) {
         if (_program == 0) {
@@ -105,9 +108,9 @@ void Part::draw(glm::mat4 projectionMatrix) {
 
         // Set parameter.
         glUniformMatrix4fv(glGetUniformLocation(_program, "projection_matrix"), 1, GL_FALSE,
-                           glm::value_ptr(projectionMatrix));
+                           value_ptr(projectionMatrix));
         glUniformMatrix4fv(glGetUniformLocation(_program, "modelview_matrix"), 1, GL_FALSE,
-                           glm::value_ptr(_modelViewMatrix));
+                           value_ptr(_modelViewMatrix));
         glUniform3fv(glGetUniformLocation(_program, "hitboxColour"), 1, value_ptr(_hitboxColour));
 
         // Call draw.
@@ -117,10 +120,5 @@ void Part::draw(glm::mat4 projectionMatrix) {
         // Unbind vertex array object.
         glBindVertexArray(0);
         glCheckError();
-    }
-
-    // Draw the mesh.
-    if (_partMesh != nullptr) {
-        _partMesh->draw(projectionMatrix);
     }
 }

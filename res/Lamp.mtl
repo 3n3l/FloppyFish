@@ -2,14 +2,15 @@
 # www.blender.org
 
 newmtl LightGlass
-Ns 876.776855
-Ka 0.636364 0.636364 0.636364
+Ns 902.500000
+Ka 0.700000 0.700000 0.700000
 Ks 0.500000 0.500000 0.500000
-Ke 1.0 0.5137255 0.35686275
+Ke 1.0 0.8 0.45
 Ni 1.500000
-d 0.6
-illum 6
+d 1.000000
+illum 3
 map_Kd LampTexture.png
+map_Ke LampTexture.png
 
 newmtl TextureLamp
 Ns 62.500000

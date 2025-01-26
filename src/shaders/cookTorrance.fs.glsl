@@ -1,31 +1,37 @@
 #version 410 core
 
+// NOTE: this must be the same as Config::obstacleAmount
+#define NUM_LIGHTS 6
+
 // Get values from vertex shader.
 smooth in vec2 vTexCoords;
 smooth in vec3 vNormal;
 smooth in vec3 vView;
 
-smooth in vec3 vLightDir;
-smooth in float vLightDistance;
+smooth in float vLightDistance[NUM_LIGHTS];
+smooth in vec3 vLightDir[NUM_LIGHTS];
 
-// The texture of the current planetoid.
 // Primary texture mostly used for albedo.
 uniform sampler2D albedo;
 
-// Components for Cook-Toorance.
+// Components for Cook-Torrance.
 uniform float kdMaterialDiffuse;
 uniform float roughness;
 uniform float transparency;
 uniform vec3 emissiveColour;
 uniform float eta;
 
-uniform vec3 lightColour = vec3(1.0f, 1.0f, 1.0f) * 18.0f;
+uniform float moon_distance = 100.0f;
+uniform vec3 moon_direction;
+uniform vec3 moon_light_colour = vec3(0.65f, 0.85f, 1.0f) * 10000.0f;
+
+uniform vec3 lightColour = vec3(1.0f, 0.8f, 0.6f) * 16.0f;
 uniform vec3 materialSpecularColour = vec3(1.0f, 1.0f, 1.0f);
 
 const float pi = 3.14159265358979323846f;
 
 // Send colour to screen.
-layout (location = 0) out vec4 fColour;
+layout (location = 0) out vec4 fColour = vec4(0.0f);
 
 vec3 cook_torrance(vec3 materialDiffuseColour,
                    vec3 materialSpecularColour,
@@ -85,35 +91,54 @@ vec3 cook_torrance(vec3 materialDiffuseColour,
 
 void main(void)
 {
-    // If the texture is emissive, just set the colour to a bright colour.
-    if (emissiveColour.r + emissiveColour.g + emissiveColour.b > 0.01)
-    {
-        fColour = vec4(1.8f * emissiveColour, 1.0f);
-        return;
-    }
-
     // Sample the texture.
     vec4 textureColour = texture(albedo, vec2(vTexCoords.s, -vTexCoords.t));
 
+    // If the texture is emissive, just set the colour to a bright colour.
+    if (emissiveColour.r + emissiveColour.g + emissiveColour.b > 0.01)
+    {
+        fColour = vec4(textureColour.xyz * emissiveColour * 2.0f, 1.0f);
+        return;
+    }
+
     // Lighting prequisites.
     vec3 normal = normalize(vNormal);
-    // Direction towards the light, aka. -Omega_in.
-    vec3 light_vec = normalize(vLightDir);
 
     // Viewing direction, aka. Omega_out.
     vec3 view_vec = normalize(vView);
 
-    // Attenuate the light source.
-    float a_quadratic_attenuation_term = 0.03f;
-    float b_linear_attenuation_term = 0.6f;
-    float intensity_attenuation_factor = 1.0f / (a_quadratic_attenuation_term * vLightDistance * vLightDistance + b_linear_attenuation_term * vLightDistance + 1.0f);
+    for (int i = 0; i < NUM_LIGHTS; i++) {
+        // Direction towards the light, aka. -Omega_in.
+        vec3 light_vec = normalize(vLightDir[i]);
 
-    // Incorporate illumination from the light.
-    vec3 colourCookTorrance = cook_torrance(textureColour.rgb,
-                                            materialSpecularColour,
-                                            normal,
-                                            light_vec,
-                                            view_vec,
-                                            lightColour * intensity_attenuation_factor);
-    fColour = vec4(colourCookTorrance, transparency);
+        // Attenuate the light source.
+        float a_quadratic_attenuation_term = 0.6f;
+        float b_linear_attenuation_term = 8.0f;
+        float attenuation = b_linear_attenuation_term * vLightDistance[i] + 1.0f;
+        attenuation += a_quadratic_attenuation_term * vLightDistance[i] * vLightDistance[i];
+        vec3 attenuated_light = lightColour / attenuation;
+
+        // Incorporate illumination from the light.
+        vec3 colourCookTorrance = cook_torrance(textureColour.rgb, materialSpecularColour, normal, light_vec, view_vec, attenuated_light);
+        fColour += vec4(colourCookTorrance, transparency);
+    }
+
+    // Moon lighting.
+    {
+        // Change light intensity if the moon is below the horizon.
+        float moon_intensity = smoothstep(-0.07, 0.07, moon_direction.y);
+        vec3 moon_direction2 = normalize(moon_direction - vec3(0.0, 0.0, 1.0));
+        // Attenuate the light source.
+        float a_quadratic_attenuation_term = 0.1f;
+        float b_linear_attenuation_term = 0.1f;
+        float attenuation = b_linear_attenuation_term * moon_distance + 1.0f;
+        attenuation += a_quadratic_attenuation_term * moon_distance * moon_distance;
+        vec3 attenuated_light = moon_light_colour / attenuation;
+        attenuated_light *= moon_intensity;
+
+        // Incorporate illumination from the light.
+        vec3 colourCookTorrance = cook_torrance(textureColour.rgb, materialSpecularColour, normal, moon_direction2, view_vec, attenuated_light);
+        fColour += vec4(colourCookTorrance, transparency);
+    }
+
 }

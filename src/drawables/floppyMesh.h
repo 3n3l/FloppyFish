@@ -1,13 +1,19 @@
 #ifndef FLOPPY_MESH_H
 #define FLOPPY_MESH_H
 
+#include <memory>
+#include <vector>
+
 #include "drawable.h"
+#include "glm/ext/vector_float3.hpp"
 
 class FloppyMesh : public Drawable {
    public:
     /// Constructor for creating a mesh from an obj.
     FloppyMesh(std::string meshPath, glm::vec3 initialTranslation = glm::vec3(0.0f), float initialScale = 1.0f,
                float initialRotation = 0.0f, float subsequentRotationSpeed = 0.0f);
+    /// Simplified constructor.
+    FloppyMesh(std::string meshPath, float initialScale = 1.0f, float initialRotation = 0.0f);
 
     /// Constructor for creating the next mesh part.
     FloppyMesh(std::string meshPath, uint meshIndex);
@@ -16,8 +22,11 @@ class FloppyMesh : public Drawable {
 
     /**
      * @brief draw the mesh.
+     * @param projectionMatrix - transformation into NDC.
+     * @param lightPositions - vector holding the light positions.
+     * @param moonDirection - vector holding the moon direction.
      */
-    void draw(glm::mat4 projectionMatrix) override;
+    void draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions, glm::vec3 moonDirection) override;
 
     /**
      * @brief initialize the mesh.
@@ -30,6 +39,12 @@ class FloppyMesh : public Drawable {
      * @param modelViewMatrix the mode view matrix of the parent object
      */
     void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) override;
+
+    /**
+     * @brief re-sets the initial rotation of the mesh.
+     * @param rotation - the new initial rotation of the mesh in degrees.
+     */
+    void setRotation(const float rotation) { _initialRotation = rotation; }
 
    protected:
     GLuint _program{};                         /**< The opengl program handling the shaders */
@@ -47,14 +62,14 @@ class FloppyMesh : public Drawable {
     glm::vec3 _emissiveColour; /**< The colour of the emission of the object. */
 
     // Transformations, initial and ongoing.
-    glm::mat4 _modelViewMatrix{};       /**< The model view matrix to get the object into model view space */
-    glm::vec3 _initialTranslation{};    /**< The initial translation applied as a baseline to the mesh */
-    float _initialScale;                /**< The initial scaling applied as a baseline to the mesh */
-    float _initialRotation;             /**< The initial rotation around the Y-axis applied as a baseline to the mesh */
-    float
-        _subsequentRotation; /**< The subsequent rotation around the Y-axis applied to the mesh. Mostly for debugging */
-    float _subsequentRotationSpeed; /**< The subsequent rotation speed around the Y-axis applied to the mesh. Mostly for
-                                       debugging */
+    glm::mat4 _modelViewMatrix{};    /**< The model view matrix to get the object into model view space */
+    glm::vec3 _initialTranslation{}; /**< The initial translation applied as a baseline to the mesh */
+    float _initialScale;             /**< The initial scaling applied as a baseline to the mesh */
+    float _initialRotation;          /**< The initial rotation around the Y-axis applied as a baseline to the mesh */
+    /**< The subsequent rotation around the Y-axis applied to the mesh. Mostly for debugging */
+    float _subsequentRotation;
+    /**< The subsequent rotation speed around the Y-axis applied to the mesh. Mostly for debugging */
+    float _subsequentRotationSpeed;
 
     /**
      * @brief loadObj loads a mesh from a given path.

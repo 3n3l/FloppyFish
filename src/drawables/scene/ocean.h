@@ -1,21 +1,19 @@
-#ifndef SKYBOX_H
-#define SKYBOX_H
+#ifndef OCEAN_H
+#define OCEAN_H
 
-#include "drawable.h"
-#include "glm/detail/type_mat4x4.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include "src/drawables/drawable.h"
 
-class Skybox : public Drawable {
+class Ocean : public Drawable {
    public:
-    Skybox();
+    Ocean();
 
     /**
-     * @brief draw the skybox.
+     * @brief draw the ocean.
      */
-    void draw(glm::mat4 projectionMatrix) override;
+    void draw(glm::mat4 projectionMatrix);
 
     /**
-     * @brief initialize the skybox.
+     * @brief initialize the ocean.
      */
     void init() override;
 
@@ -26,6 +24,12 @@ class Skybox : public Drawable {
      */
     void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) override;
 
+    /**
+     * @brief Returns the direction of the moon.
+     * @return The direction of the moon as a vector.
+     */
+    glm::vec3 getMoonDirection() const { return _moonDirection; }
+
    protected:
     GLuint _program;            /**< The opengl program handling the shaders */
     GLuint _vertexArrayObject;  /**< The vertex array object containing the vertices */
@@ -34,13 +38,15 @@ class Skybox : public Drawable {
 
     GLuint _textureHandle; /**< Texture handle (memory location of texture). */
 
+    float _elapsedTime;             /**< Elapsed time in ms since last update */
+    glm::vec3 _moonDirection;       /**< Direction of the moon (vector) */
     float _subsequentRotation;      /**< The subsequent rotation around the Y-axis applied to the mesh. */
     float _subsequentRotationSpeed; /**< The subsequent rotation speed around the Y-axis applied to the mesh. */
-
+    glm::mat4 _skyRotationMatrix;   /**< Rotation matrix of the skybox. */
     /**
-     * @brief loadTexture loads the textures for the skybox
+     * @brief loadTexture loads the textures for the ocean
      */
     void loadTexture();
 };
 
-#endif  // SKYBOX_H
+#endif  // OCEAN_H

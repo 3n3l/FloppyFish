@@ -1,3 +1,7 @@
+#include <OpenGL/gltypes.h>
+
+#include <cstddef>
+
 #include "glm/gtc/type_ptr.hpp"
 #define GL_SILENCE_DEPRECATION
 #define GLM_ENABLE_EXPERIMENTAL
@@ -16,7 +20,7 @@
 #include "src/drawables/floppyMesh.h"
 #include "src/utils/utils.h"
 
-// Main constructor.
+// Main constructors.
 FloppyMesh::FloppyMesh(std::string meshPath, glm::vec3 initialTranslation, float initialScale, float initialRotation,
                        float subsequentRotationSpeed) {
     _meshPath = std::move(meshPath);
@@ -24,6 +28,11 @@ FloppyMesh::FloppyMesh(std::string meshPath, glm::vec3 initialTranslation, float
     _initialScale = initialScale;
     _initialRotation = initialRotation;
     _subsequentRotationSpeed = subsequentRotationSpeed;
+}
+FloppyMesh::FloppyMesh(std::string meshPath, float initialScale, float initialRotation) {
+    _meshPath = std::move(meshPath);
+    _initialScale = initialScale;
+    _initialRotation = initialRotation;
 }
 FloppyMesh::~FloppyMesh() = default;
 
@@ -43,7 +52,7 @@ void FloppyMesh::init() {
     _program = glCreateProgram();
 
     // Compile shader.
-    GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/common.vs.glsl");
+    GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/cookTorrance.vs.glsl");
     GLuint fs = compileShader(GL_FRAGMENT_SHADER, "src/shaders/cookTorrance.fs.glsl");
 
     // Attach shader to the program.
@@ -123,7 +132,7 @@ void FloppyMesh::init() {
     _textureHandle = loadTexture("res/" + _textureName);
 }
 
-void FloppyMesh::draw(glm::mat4 projectionMatrix) {
+void FloppyMesh::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions, glm::vec3 moonDirection) {
     if (_program == 0) {
         qDebug() << "Program not initialized.";
         return;
@@ -131,7 +140,7 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix) {
 
     // Draw next mesh part first if it exists.
     if (_nextMeshPart != nullptr) {
-        _nextMeshPart->draw(projectionMatrix);
+        _nextMeshPart->draw(projectionMatrix, lightPositions, moonDirection);
     }
 
     // Load program.
@@ -156,9 +165,16 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix) {
     glUniform1f(glGetUniformLocation(_program, "roughness"), roughness);
     glUniform1f(glGetUniformLocation(_program, "transparency"), _transparency);
     glUniform3fv(glGetUniformLocation(_program, "emissiveColour"), 1, value_ptr(_emissiveColour));
-    // TODO: Replace this light position in the future.
-    glm::vec3 lightPosition = glm::vec3(-2.0f, 2.0f, 2.0f);
-    glUniform3fv(glGetUniformLocation(_program, "light_position"), 1, value_ptr(lightPosition));
+    glUniform3fv(glGetUniformLocation(_program, "moon_direction"), 1, value_ptr(moonDirection));
+
+    // Push the light positions into an array, then set it in the shader.
+    GLfloat lightPositionsArray[Config::obstacleAmount * 3];
+    for (std::size_t i = 0; i < lightPositions.size(); i++) {
+        lightPositionsArray[i * 3 + 0] = lightPositions.at(i).x;
+        lightPositionsArray[i * 3 + 1] = lightPositions.at(i).y;
+        lightPositionsArray[i * 3 + 2] = lightPositions.at(i).z;
+    }
+    glUniform3fv(glGetUniformLocation(_program, "light_position"), 6, lightPositionsArray);
 
     // Set the background texture.
     glActiveTexture(GL_TEXTURE0);
@@ -167,7 +183,6 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix) {
 
     // Call draw.
     glDrawElements(GL_TRIANGLES, _verticeAmount, GL_UNSIGNED_INT, 0);
-    // glDrawArrays(GL_TRIANGLES, 0, _verticeAmount);
     glCheckError();
 
     // Unbind vertex array object.
