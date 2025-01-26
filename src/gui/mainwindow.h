@@ -18,6 +18,7 @@
 #include "src/drawables/fishController.h"
 #include "src/drawables/floppyMesh.h"
 #include "src/drawables/obstacles/obstacle.h"
+#include "src/drawables/postProcessing.h"
 #include "src/drawables/scene/ocean.h"
 
 /**
@@ -54,26 +55,26 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
      *
      * The function initializes GLEW and all drawable objects
      */
-    virtual void initializeGL() override;
+    void initializeGL() override;
 
     /**
      * @brief resizeGL called automatically on resize
      * @param width the new width of the widget
      * @param height the new height of the widget
      */
-    virtual void resizeGL(int width, int height) override;
+    void resizeGL(int width, int height) override;
 
     /**
      * @brief paintGL draws the scene
      */
-    virtual void paintGL() override;
+    void paintGL() override;
 
    protected:
     /**
      * @brief mousePressEvent automatically called whenever the mouse wheel is used
      * @param event the QWheelEvent containing all relevant data
      */
-    virtual void keyPressEvent(QKeyEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
 
    private:
     glm::mat4 _projectionMatrix;                            /**< Projection Matrix */
@@ -82,8 +83,9 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     std::shared_ptr<QAudioOutput> _audioOutput;             /**< AudioOutput used for Sound */
     std::shared_ptr<FloppyMesh> _billMesh;                  /**< Bill the salmon shown in the window */
     std::shared_ptr<FloppyMesh> _secondProp;                /**< A sign to test multi-parts objs */
-    std::shared_ptr<Ocean> _oceanAndSky;                    /**< Ocean and Sky Scene */
+    std::shared_ptr<Ocean> _oceanAndSky;                       /**< A skybox */
     std::shared_ptr<FishController> _billTheSalmon;         /**< Bill the Salmon */
+    std::shared_ptr<PostProcessingQuad> _postProcessing;    /**< Post Processing framebuffer */
     std::vector<std::shared_ptr<Drawable>> _drawables;      /**< Vector holding pointers to the drawables */
     std::vector<std::shared_ptr<Obstacle>> _obstacles;      /**< Vector holding pointers to the obstacles */
     std::vector<std::shared_ptr<glm::vec3>> _lighPositions; /**< Vector holding pointers to the light positions */

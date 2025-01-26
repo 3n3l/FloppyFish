@@ -10,6 +10,7 @@
 #include <QOpenGLFunctions>
 #include <cstddef>
 #include <glm/glm.hpp>
+#include <iostream>
 #include <memory>
 #include <random>
 #include <vector>
@@ -46,6 +47,7 @@ GLMainWindow::GLMainWindow() : _updateTimer(this) {
         _oceanAndSky = std::make_shared<Ocean>(),
         // Bill the Salmon.
         _billTheSalmon = std::make_shared<FishController>(_billMesh),
+        _postProcessing = std::make_shared<PostProcessingQuad>(),
     };
 
     // Create the in the Config specified amount of obstacles and add it to the drawables.
@@ -128,18 +130,27 @@ void GLMainWindow::resizeGL(int width, int height) {
     // Calculate projection matrix from current resolution, this allows for resizing the window without distortion.
     const float aspect = float(Config::windowWidth) / float(Config::windowHeight);
     _projectionMatrix = glm::perspective(glm::radians(Config::fieldOfVision), aspect, 0.1f, 100.0f);
+
+    _postProcessing->resetBufferTextures(width * Config::resolutionScale, height * Config::resolutionScale);
 }
 
 void GLMainWindow::paintGL() {
-    // Set up view.
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Set a background colour.
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
     // Draw filled polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+    // Bind framebuffer.
+    _postProcessing->bind();
+    glEnable(GL_DEPTH_TEST);
+    // Set up view.
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // Set a background colour.
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cout << "Framebuffer is incomplete: " << std::to_string(glCheckFramebufferStatus(GL_FRAMEBUFFER))
+                  << std::endl;
+        // close();
+    }
     // Disable culling and set a less strict depth function.
     glDisable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
@@ -159,6 +170,18 @@ void GLMainWindow::paintGL() {
     for (auto drawable : _drawables) {
         drawable->draw(_projectionMatrix, lightPositions, moonDirection);
     }
+
+    // Unbind framebuffer, thus binding the default framebuffer again.
+    _postProcessing->unbind();
+    glDisable(GL_DEPTH_TEST);
+
+    // Set up view.
+    glClear(GL_COLOR_BUFFER_BIT);
+    // Set a background colour.
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    // Draw the framebuffer.
+    _postProcessing->draw();
 }
 
 void GLMainWindow::animateGL() {
@@ -223,6 +246,7 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
     }
     // Pressing ESCAPE or Q will quit everything.
     else if (event->key() == Qt::Key_Escape || event->key() == Qt::Key_Q) {
+        _postProcessing->destroy();
         close();
     }
 }

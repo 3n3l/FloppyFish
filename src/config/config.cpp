@@ -6,6 +6,7 @@ unsigned int Config::currentScore = 0;
 // Window.
 unsigned int Config::windowWidth = 1440;
 unsigned int Config::windowHeight = 1080;
+unsigned int Config::resolutionScale = 2;
 
 // Camera.
 float Config::fieldOfVision = 90.0f;
