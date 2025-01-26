@@ -2,6 +2,8 @@
 #include <vector>
 
 #include "glm/ext/vector_float3.hpp"
+#include "glm/fwd.hpp"
+#include "glm/trigonometric.hpp"
 #include "src/config/config.h"
 #define GL_SILENCE_DEPRECATION
 
@@ -82,6 +84,13 @@ void FishController::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
 
     // Translate to the updated y-coordinate.
     _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_position.x, _position.y, 0));
+
+    // Let's do a simple linear interpolation to translate between current velocity and the angle.
+    // Maps from [velocityBound, verticalVelocity] to [lowerAngle, upperAngle].
+    float x0 = Config::velocityBound, x1 = Config::verticalVelocity, x = _verticalVelocity;
+    float f0 = Config::lowerAngle, f1 = Config::upperAngle;
+    float rotation = f0 * ((x1 - x) / (x1 - x0)) + f1 * ((x - x0) / (x1 - x0));
+    _modelViewMatrix = glm::rotate(_modelViewMatrix, glm::radians(rotation), glm::vec3(0, 0, 1));
 
     // Update mesh before scaling the hitbox.
     _billMesh->update(elapsedTimeMs, _modelViewMatrix);

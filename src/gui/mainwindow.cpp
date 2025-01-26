@@ -12,7 +12,6 @@
 #include <glm/glm.hpp>
 #include <memory>
 #include <random>
-#include <thread>
 #include <vector>
 
 #include "glm/ext/matrix_clip_space.hpp"
@@ -22,7 +21,6 @@
 #include "src/config/config.h"
 #include "src/drawables/fishController.h"
 #include "src/drawables/obstacles/obstacle.h"
-#include "src/drawables/scene/background.h"
 #include "src/drawables/scene/ocean.h"
 
 GLMainWindow::GLMainWindow() : _updateTimer(this) {
@@ -42,6 +40,7 @@ GLMainWindow::GLMainWindow() : _updateTimer(this) {
 
     // Create all the drawables.
     _billMesh = std::make_shared<FloppyMesh>("res/BillDerLachs.obj", 2.0f, 90.0f),
+
     _drawables = {
         // The ocean background.
         _oceanAndSky = std::make_shared<Ocean>(),
