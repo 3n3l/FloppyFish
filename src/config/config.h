@@ -36,6 +36,8 @@ class Config {
     static const float upperAngle;           /**< Upper angle for the flopping animation. */
     static unsigned int resolutionScale;     /**< Resolution scale factor, used by high DPI screens */
     static float gamma;                      /**< Gamma correction coefficient */
+    static float volume;                     /**< Volume level of sound effects */
+    static bool musicMuted;                  /**< Whether the background music is muted or not */
 };
 
 #endif  // CONFIG_H

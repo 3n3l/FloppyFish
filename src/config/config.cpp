@@ -2,6 +2,8 @@
 
 // State.
 unsigned int Config::currentScore = 0;
+float Config::volume = 0.2f;
+bool Config::musicMuted = false;
 
 // Window.
 unsigned int Config::windowWidth = 1024;
