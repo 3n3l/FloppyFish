@@ -166,7 +166,7 @@ void FloppyMesh::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPo
     glUniform3fv(glGetUniformLocation(_program, "moon_direction"), 1, value_ptr(moonDirection));
 
     // Push the light positions into an array, then set it in the shader.
-    GLfloat lightPositionsArray[Config::obstacleAmount * 3];
+    GLfloat *lightPositionsArray = new GLfloat[Config::obstacleAmount * 3];
     for (std::size_t i = 0; i < lightPositions.size(); i++) {
         lightPositionsArray[i * 3 + 0] = lightPositions.at(i).x;
         lightPositionsArray[i * 3 + 1] = lightPositions.at(i).y;
