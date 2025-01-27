@@ -50,6 +50,8 @@ add_executable(
         src/drawables/drawable.h
         src/drawables/fishController.cpp
         src/drawables/fishController.h
+        src/drawables/postProcessing.cpp
+        src/drawables/postProcessing.h
         src/gui/mainwindow.cpp
         src/gui/mainwindow.h
         src/config/config.cpp
