@@ -112,6 +112,9 @@ void GLMainWindow::initializeGL() {
     // Enable multisampling for AA;
     glEnable(GL_MULTISAMPLE);
 
+    // Enable SRGB framebuffer.
+    glEnable(GL_FRAMEBUFFER_SRGB);
+
     // Enable alpha blending and selecting blend function.
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -242,6 +245,14 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
     // Pressing D will toggle debug mode on/off.
     else if (event->key() == Qt::Key_D) {
         Config::showHitbox = !Config::showHitbox;
+    }
+    // Pressing R will toggle resolution scaling.
+    else if (event->key() == Qt::Key_R) {
+        if (Config::resolutionScale == 1)
+            Config::resolutionScale = 2;
+        else
+            Config::resolutionScale = 1;
+        this->resizeGL(Config::windowWidth, Config::windowHeight);
     }
     // Pressing ARROW keys will move the camera or change FoV. 0 Resets it again.
     else if (event->key() == Qt::Key_Up) {

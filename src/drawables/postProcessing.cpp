@@ -95,7 +95,7 @@ void PostProcessingQuad::resetBufferTextures(int width, int height) {
     glGenTextures(1, &_textureColourBuffer);
     glBindTexture(GL_TEXTURE_2D, _textureColourBuffer);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -140,6 +140,10 @@ void PostProcessingQuad::draw() {
 
     // Bind texture.
     glBindTexture(GL_TEXTURE_2D, _textureColourBuffer);
+
+    // Parameters.
+    // uniform gamma from Config.
+    glUniform1f(glGetUniformLocation(_program, "gamma"), Config::gamma);
 
     // Call draw.
     glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
