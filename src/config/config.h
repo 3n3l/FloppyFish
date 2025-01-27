@@ -16,6 +16,7 @@ class Config {
     static float debugRotation;              /**< Amount of debug rotation to apply (used in debug mode). */
     static bool showHitbox;                  /**< Whether to show the collision-hit-boxes. */
     static unsigned int obstacleAmount;      /**< Number of obstacles to spawn. */
+    static float obstacleInitialOffset;      /**< Initial offset to the right of the window. */
     static float obstacleLeftOverhang;       /**< Overhang to the left of the window. */
     static float obstacleLowerBound;         /**< Lower bound of the height of the obstacle. */
     static float obstacleUpperBound;         /**< Upper bound of the height of the obstacle. */

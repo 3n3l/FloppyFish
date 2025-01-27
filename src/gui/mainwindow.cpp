@@ -51,7 +51,6 @@ GLMainWindow::GLMainWindow() : _updateTimer(this) {
     };
 
     // Create the in the Config specified amount of obstacles and add it to the drawables.
-    float offset = Config::obstacleDistance;
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_real_distribution<float> dist(-45.0f, 45.0f);
@@ -59,7 +58,8 @@ GLMainWindow::GLMainWindow() : _updateTimer(this) {
         auto upperMesh = std::make_shared<FloppyMesh>("res/Sign.obj", 2.0f, dist(mt));
         auto lowerMesh = std::make_shared<FloppyMesh>("res/Lamp.obj", 1.0f, dist(mt));
         // Create the obstacle itself.
-        auto obstacle = std::make_shared<Obstacle>(i * offset, upperMesh, lowerMesh);
+        float initialOffset = Config::obstacleInitialOffset + (i * Config::obstacleDistance);
+        auto obstacle = std::make_shared<Obstacle>(initialOffset, upperMesh, lowerMesh);
 
         // Push this into _drawables to init, update, draw.
         _drawables.push_back(obstacle);

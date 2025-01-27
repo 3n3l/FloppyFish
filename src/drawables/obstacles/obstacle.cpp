@@ -14,7 +14,7 @@ Obstacle::Obstacle(float offset, const std::shared_ptr<FloppyMesh>& upperPartMes
                    const std::shared_ptr<FloppyMesh>& lowerPartMesh)
     : _upperPart(Part(upperPartMesh)),
       _lowerPart(Part(lowerPartMesh)),
-      _offset(offset),
+      _initialOffset(offset),
       _height(Config::obstacleGapHeight),
       _width(Config::obstacleWidth),
       _depth(Config::obstacleDepth),
@@ -26,7 +26,7 @@ Obstacle::Obstacle(Obstacle const& o)
       _height(o._height),
       _width(o._width),
       _depth(o._depth),
-      _offset(o._offset),
+      _initialOffset(o._initialOffset),
       _lightPosition(o._lightPosition),
       _position(o._position) {}
 Obstacle::~Obstacle() {}
@@ -37,7 +37,7 @@ void Obstacle::init() {
     _lowerPart.init();
 
     // Place the obstacle to the right of the window.
-    _position.x = 1 + _offset + (_width / 2);
+    _position.x = 1 + _initialOffset + (_width / 2);
 
     // Reset the individual parts.
     reset();
