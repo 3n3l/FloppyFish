@@ -112,6 +112,9 @@ void GLMainWindow::initializeGL() {
     // Enable multisampling for AA;
     glEnable(GL_MULTISAMPLE);
 
+    // Enable SRGB framebuffer.
+    glEnable(GL_FRAMEBUFFER_SRGB);
+
     // Enable alpha blending and selecting blend function.
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
