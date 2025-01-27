@@ -1,8 +1,5 @@
-#include <OpenGL/gltypes.h>
 #include <random>
 #define GL_SILENCE_DEPRECATION
-
-#include "src/drawables/obstacles/obstacle.h"
 
 #include <QFile>
 
@@ -11,6 +8,7 @@
 #include "glm/ext/vector_float3.hpp"
 #include "glm/fwd.hpp"
 #include "src/config/config.h"
+#include "src/drawables/obstacles/obstacle.h"
 
 Obstacle::Obstacle(float offset, const std::shared_ptr<FloppyMesh>& upperPartMesh,
                    const std::shared_ptr<FloppyMesh>& lowerPartMesh)

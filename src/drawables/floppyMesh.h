@@ -1,8 +1,6 @@
 #ifndef FLOPPY_MESH_H
 #define FLOPPY_MESH_H
 
-#include <OpenGL/gltypes.h>
-
 #include <memory>
 #include <vector>
 

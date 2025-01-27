@@ -1,8 +1,6 @@
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
-#include <OpenGL/gltypes.h>
-
 #include <memory>
 
 #include "glm/ext/vector_float3.hpp"

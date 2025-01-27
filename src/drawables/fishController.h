@@ -1,7 +1,6 @@
 #ifndef FISH_H
 #define FISH_H
 
-#include <OpenGL/gltypes.h>
 #include "floppyMesh.h"
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/vector_float3.hpp"

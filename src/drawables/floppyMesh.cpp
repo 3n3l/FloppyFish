@@ -1,5 +1,3 @@
-#include <OpenGL/gltypes.h>
-
 #include <cstddef>
 
 #include "glm/gtc/type_ptr.hpp"

@@ -1,7 +1,6 @@
 #ifndef PART_H
 #define PART_H
 
-#include <OpenGL/gltypes.h>
 #include "glm/ext/vector_float3.hpp"
 #include "src/drawables/drawable.h"
 #include "src/drawables/floppyMesh.h"

@@ -1,4 +1,3 @@
-#include <OpenGL/gltypes.h>
 #include <memory>
 #include <vector>
 
