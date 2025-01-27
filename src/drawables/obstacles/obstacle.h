@@ -52,7 +52,7 @@ class Obstacle : public Drawable {
     glm::vec3 _lightPosition; /**< Position of the light source. */
     Part _upperPart;          /**< Lower part of the Obstacle. */
     Part _lowerPart;          /**< Upper part of the Obstacle. */
-    float _offset;            /**< X-offset from the origin. */
+    float _initialOffset;     /**< X-offset from the origin. */
     float _height;            /**< Height of the obstacle. */
     float _width;             /**< Width of the obstacle. */
     float _depth;             /**< Depth of the obstacle. */
