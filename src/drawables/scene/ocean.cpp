@@ -123,7 +123,7 @@ void Ocean::draw(glm::mat4 projection_matrix) {
     // Call draw.
     glDrawElements(GL_TRIANGLES, _verticeAmount, GL_UNSIGNED_INT, 0);
 
-    // Unbin vertex array object.
+    // Unbind vertex array object.
     glBindVertexArray(0);
 
     // Check for errors.

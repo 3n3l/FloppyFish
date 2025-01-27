@@ -6,6 +6,7 @@ unsigned int Config::currentScore = 0;
 // Window.
 unsigned int Config::windowWidth = 1440;
 unsigned int Config::windowHeight = 1080;
+unsigned int Config::resolutionScale = 2;
 
 // Camera.
 float Config::fieldOfVision = 90.0f;
@@ -17,11 +18,11 @@ float Config::roughness = 0.4f;
 
 // Obstacles.
 unsigned int Config::obstacleAmount = 6;
-float Config::obstacleLeftOverhang = 0.5;
+float Config::obstacleLeftOverhang = 0.75;
 float Config::obstacleLowerBound = 0.33f;
 float Config::obstacleUpperBound = 0.66f;
 float Config::obstacleGapHeight = 0.33f;
-float Config::obstacleDistance = 0.66f;
+float Config::obstacleDistance = 1.6f;
 float Config::obstacleWidth = 0.1f;
 float Config::obstacleDepth = 1.0f;
 float Config::obstacleSpeed = -0.01f;
