@@ -69,14 +69,10 @@ GLMainWindow::GLMainWindow() : _updateTimer(this) {
     }
 
     // TODO: Initialize the media player.
-    _mediaPlayer = std::make_shared<QMediaPlayer>();
-    const auto devices = QMediaDevices::audioOutputs();
-    _audioOutput = std::make_shared<QAudioOutput>(devices.first());
-
-    _audioOutput->setVolume(100);
-    _mediaPlayer->setAudioOutput(_audioOutput.get());
-
+    _mediaPlayer = std::make_shared<QSoundEffect>();
+    _mediaPlayer->setVolume(0.2f);
     _mediaPlayer->setSource(QUrl::fromLocalFile("res/FloppyJumpOST_v1.wav"));
+    _mediaPlayer->setLoopCount(99);
     _mediaPlayer->play();
 
     // Set sfx.
@@ -252,7 +248,20 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
             Config::resolutionScale = 2;
         else
             Config::resolutionScale = 1;
-        this->resizeGL(Config::windowWidth, Config::windowHeight);
+        resizeGL(Config::windowWidth, Config::windowHeight);
+    }
+    // Pressing + and - will increase or decrease the volume of the audio.
+    else if (event->key() == Qt::Key_Plus) {
+        if (Config::volume < 1.0f) Config::volume += 0.1f;
+        changeVolume();
+    } else if (event->key() == Qt::Key_Minus) {
+        if (Config::volume > 0.0f) Config::volume -= 0.1f;
+        changeVolume();
+    }
+    // Pressing M will toggle mute the music.
+    else if (event->key() == Qt::Key_M) {
+        Config::musicMuted = !Config::musicMuted;
+        changeVolume();
     }
     // Pressing ARROW keys will move the camera or change FoV. 0 Resets it again.
     else if (event->key() == Qt::Key_Up) {
@@ -261,18 +270,30 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
         Config::lookAtHeight -= 0.01f;
     } else if (event->key() == Qt::Key_Left) {
         Config::fieldOfVision -= 5.0f;
-        this->resizeGL(Config::windowWidth, Config::windowHeight);
+        resizeGL(Config::windowWidth, Config::windowHeight);
     } else if (event->key() == Qt::Key_Right) {
         Config::fieldOfVision += 5.0f;
-        this->resizeGL(Config::windowWidth, Config::windowHeight);
+        resizeGL(Config::windowWidth, Config::windowHeight);
     } else if (event->key() == Qt::Key_0) {
         Config::lookAtHeight = 0.0f;
         Config::fieldOfVision = 75.0f;
-        this->resizeGL(Config::windowWidth, Config::windowHeight);
+        resizeGL(Config::windowWidth, Config::windowHeight);
     }
     // Pressing ESCAPE or Q will quit everything.
     else if (event->key() == Qt::Key_Escape || event->key() == Qt::Key_Q) {
         _postProcessing->destroy();
         close();
     }
+}
+void GLMainWindow::changeVolume() {
+    // Set the volume for all sfx.
+    for (int i = 0; i < 3; ++i) {
+        _jumpSFX[i]->setVolume(Config::volume);
+    }
+
+    // Set the volume for the music.
+    if (Config::musicMuted)
+        _mediaPlayer->setVolume(0.0f);
+    else
+        _mediaPlayer->setVolume(Config::volume);
 }
