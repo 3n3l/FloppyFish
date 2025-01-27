@@ -31,18 +31,14 @@ class Ocean : public Drawable {
     glm::vec3 getMoonDirection() const { return _moonDirection; }
 
    protected:
-    GLuint _program;            /**< The opengl program handling the shaders */
-    GLuint _vertexArrayObject;  /**< The vertex array object containing the vertices */
-    GLuint _verticeAmount;      /**< The amount of vertices used to draw the triangle */
-    glm::mat4 _modelViewMatrix; /**< The model view matrix to get the object into model view space */
-
-    GLuint _textureHandle; /**< Texture handle (memory location of texture). */
-
+    GLuint _verticeAmount;          /**< The amount of vertices used to draw the triangle */
+    GLuint _textureHandle;          /**< Texture handle (memory location of texture). */
     float _elapsedTime;             /**< Elapsed time in ms since last update */
-    glm::vec3 _moonDirection;       /**< Direction of the moon (vector) */
     float _subsequentRotation;      /**< The subsequent rotation around the Y-axis applied to the mesh. */
     float _subsequentRotationSpeed; /**< The subsequent rotation speed around the Y-axis applied to the mesh. */
     glm::mat4 _skyRotationMatrix;   /**< Rotation matrix of the skybox. */
+    glm::mat4 _modelViewMatrix;     /**< The model view matrix to get the object into model view space */
+    glm::vec3 _moonDirection;       /**< Direction of the moon (vector) */
     /**
      * @brief loadTexture loads the textures for the ocean
      */

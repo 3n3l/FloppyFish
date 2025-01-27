@@ -7,8 +7,8 @@
 
 #include "src/utils/imageTexture.h"
 
-Drawable::Drawable() : _modelViewMatrix(1.0f), _vertexArrayObject(0) {}
-Drawable::Drawable(Drawable const &d) : _modelViewMatrix(1.0f), _vertexArrayObject(0) {}
+Drawable::Drawable() : _modelViewMatrix(1.0f), _vertexArrayObject(0), _program(0) {}
+Drawable::Drawable(Drawable const &d) : _modelViewMatrix(1.0f), _vertexArrayObject(0), _program(0) {}
 Drawable::~Drawable() {}
 
 void Drawable::init() {

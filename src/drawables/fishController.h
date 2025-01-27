@@ -49,11 +49,11 @@ class FishController : public Drawable {
     void getBounds(float& boundX, float& boundY, float& boundWidth, float& boundHeight) const;
 
    private:
-    float _height{};                       /**< Height of the fish. */
-    float _width{};                        /**< Width of the fish. */
+    float _height;                         /**< Height of the fish. */
+    float _width;                          /**< Width of the fish. */
     float _verticalVelocity;               /**< The current velocity of the fish. */
     glm::vec3 _position;                   /**< Current positons of the fish. */
-    glm::vec3 _hitboxColour{};             /**< The colour of the hitbox. */
+    glm::vec3 _hitboxColour;               /**< The colour of the hitbox. */
     std::shared_ptr<FloppyMesh> _billMesh; /**< Pointer to the mesh of Bill */
 };
 

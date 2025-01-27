@@ -47,25 +47,23 @@ class FloppyMesh : public Drawable {
     void setRotation(const float rotation) { _initialRotation = rotation; }
 
    protected:
-    GLuint _program{};                         /**< The opengl program handling the shaders */
-    GLuint _vertexArrayObject{};               /**< The vertex array object containing the vertices */
-    GLuint _verticeAmount{};                   /**< The amount of vertices used to draw bill */
+    GLuint _verticeAmount;                     /**< The amount of vertices used to draw bill */
     std::shared_ptr<FloppyMesh> _nextMeshPart; /**< The subsequent part of the mesh if it exists */
 
     // Mesh and material.
-    std::string _meshPath;     /**< The filepath of the mesh. */
-    uint _meshIndex;           /**< The part of mesh to render, will be used to recursively render each part */
-    std::string _textureName;  /**< The name of the texture file. */
-    GLuint _textureHandle{};   /**< handle of the background texture */
     float _shininess;          /**< The shininess of the object. */
     float _transparency;       /**< The transparency/dissolve/alpha of the object. */
+    GLuint _meshIndex;         /**< The part of mesh to render, will be used to recursively render each part */
+    GLuint _textureHandle;     /**< handle of the background texture */
+    std::string _meshPath;     /**< The filepath of the mesh. */
+    std::string _textureName;  /**< The name of the texture file. */
     glm::vec3 _emissiveColour; /**< The colour of the emission of the object. */
 
     // Transformations, initial and ongoing.
-    glm::mat4 _modelViewMatrix{};    /**< The model view matrix to get the object into model view space */
-    glm::vec3 _initialTranslation{}; /**< The initial translation applied as a baseline to the mesh */
-    float _initialScale;             /**< The initial scaling applied as a baseline to the mesh */
-    float _initialRotation;          /**< The initial rotation around the Y-axis applied as a baseline to the mesh */
+    glm::mat4 _modelViewMatrix;    /**< The model view matrix to get the object into model view space */
+    glm::vec3 _initialTranslation; /**< The initial translation applied as a baseline to the mesh */
+    float _initialScale;           /**< The initial scaling applied as a baseline to the mesh */
+    float _initialRotation;        /**< The initial rotation around the Y-axis applied as a baseline to the mesh */
     /**< The subsequent rotation around the Y-axis applied to the mesh. Mostly for debugging */
     float _subsequentRotation;
     /**< The subsequent rotation speed around the Y-axis applied to the mesh. Mostly for debugging */

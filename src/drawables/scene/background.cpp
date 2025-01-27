@@ -14,8 +14,8 @@
 #include "src/drawables/drawable.h"
 #include "src/utils/utils.h"
 
-Background::Background(std::string texturePath) : _texturePath(texturePath) {}
-Background::Background(Background const &b) : _texturePath(b._texturePath) {}
+Background::Background(std::string texturePath) : Drawable(), _textureHandle(0), _texturePath(texturePath) {}
+Background::Background(Background const &b) : _textureHandle(b._textureHandle), _texturePath(b._texturePath) {}
 Background::~Background() {}
 
 void Background::init() {
