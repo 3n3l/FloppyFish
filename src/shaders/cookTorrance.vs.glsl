@@ -1,7 +1,7 @@
 #version 410 core
 
 // NOTE: this must be the same as Config::obstacleAmount
-#define NUM_LIGHTS 6
+#define NUM_LIGHTS 5
 
 uniform mat4 projection_matrix;
 uniform mat4 modelview_matrix;
