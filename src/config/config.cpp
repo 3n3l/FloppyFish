@@ -25,6 +25,7 @@ float Config::obstacleWidth = 0.1f;
 float Config::obstacleDepth = 1.0f;
 float Config::obstacleSpeed = -0.01f;
 bool Config::showHitbox = false;
+int Config::_score = 0;
 
 // Animations.
 float Config::animationSpeed = 0.0f;

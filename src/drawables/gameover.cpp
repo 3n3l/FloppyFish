@@ -47,7 +47,6 @@ void Gameover::init() {
         {1.0f, 0.0f}   // top-right
     };
 
-
     // Define indices for the quad (since OpenGL uses indices to reference the vertices)
     std::vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};
 
@@ -124,7 +123,7 @@ void Gameover::draw(glm::mat4 projection_matrix) {
 
 
 void Gameover::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
-    // Update modelview matrix if needed (for animations or positioning)
+    // Update modelview matrix
     _modelViewMatrix = modelViewMatrix;
 }
 
@@ -141,7 +140,7 @@ void Gameover::loadTexture() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Load texture data
-    ImageTexture image("res/GameOver-1.png");  // Replace with your image
+    ImageTexture image("res/GameOver-1.png");
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
                  image.getData());
 

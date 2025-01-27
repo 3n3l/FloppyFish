@@ -5,6 +5,8 @@
 
 #include <src/drawables/background.h>
 
+#include <QFontDatabase>
+#include <QPainter>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QOpenGLFunctions>
@@ -25,8 +27,6 @@ GLMainWindow::GLMainWindow() : QOpenGLWindow(), QOpenGLFunctions_4_1_Core(), _up
     // Set to the preconfigured size.
     setWidth(Config::windowWidth);
     setHeight(Config::windowHeight);
-
-    
 
     // Set the title.
     setTitle("Floppy Fish");
@@ -139,21 +139,42 @@ void GLMainWindow::paintGL() {
 
     // Draw filled polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    
+     QPainter painter(this);
+
+     //Load Font from a file
+    _fontId = QFontDatabase::addApplicationFont("res/UnifrakturMaguntia-Regular.ttf");
+    if (_fontId == -1) {
+        // Haandle error if font couldnt be loaded
+        qWarning("Font failed to load.");
+        return;
+    }
+
+    // Get font family name from the loaded font
+    QString fontFamily = QFontDatabase::applicationFontFamilies(_fontId).at(0);
+
 
     if (_gameIsOver) {
         // Set projection matrix for 2D rendering
         glm::mat4 projectionMatrix = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
 
-        // Set model-view matrix (no transformations, just the screen in place)
-        glm::mat4 modelViewMatrix = glm::mat4(1.0f);
-
-        // Update the model-view matrix (you can animate if needed)
-        _gameover.update(0.0f, modelViewMatrix);
-
         // Draw the game over screen
         _gameover.draw(projectionMatrix);
+
+        // context for the drawing
+        painter.beginNativePainting();
+
+        // Display the final score on the game-over screen
+        painter.setPen(Qt::red);            
+        painter.setFont(QFont(fontFamily, 36));  
+        painter.drawText(width() / 2 - 100, height() / 6, QString("Game Over!"));
+        painter.setFont(QFont(fontFamily, 24));  
+        painter.drawText(width() / 2 - 100, height() / 6 + 40, QString("Final Score: %1").arg(Config::_score));
+
+         // End native painting
+        painter.endNativePainting();
     } else {
-        // Disable culling and set a less strict depth function.
+         // Disable culling and set a less strict depth function.
         glDisable(GL_CULL_FACE);
         glDepthFunc(GL_LEQUAL);
         _skybox->draw(_projectionMatrix);
@@ -164,32 +185,36 @@ void GLMainWindow::paintGL() {
         for (auto drawable : _drawables) {
             drawable->draw(_projectionMatrix);
         }
+  
+        painter.beginNativePainting();  
+
+        painter.setPen(Qt::red);            
+        painter.setFont(QFont(fontFamily, 24));  
+        painter.drawText(width() / 2 - 100, height() / 6, QString("Score: %1").arg(Config::_score));
+
+        painter.endNativePainting(); 
     }
-   
 }
 
 void GLMainWindow::animateGL() {
     // Make the context current in case there are glFunctions called.
     makeCurrent();
 
-    
-    // If the game is frozen, skip updates and do not animate.
-    //if (isGameFrozen) {
-        // Optionally render a "Game Over"
-       // Gameover gameOver("res/GameOver-1.png");
-       // gameOver.init();
-        //gameOver.draw(_projectionMatrix);
-   //    return;  // Skip the rest of the function, effectively freezing the game.
-    //}
-
-
     // Get the time delta and restart the stopwatch.
     float elapsedTimeMs = _stopWatch.nsecsElapsed() / 1000000.0f;
     _stopWatch.restart();
 
+     // If the animation is paused (collision happened), stop updating.
+    if (_gameIsOver) {
+        return;
+    }
+
     // Calculate current model view matrix.
     glm::mat4 modelViewMatrix =
         glm::lookAt(glm::vec3(0.0f, Config::lookAtHeight, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    // Set model-view matrix (no transformations, just the screen in place)
+    glm::mat4 _modelViewMatrix = glm::mat4(1.0f);
 
     // Increment the animation looper if the animation is running.
     const float incrementedLooper = Config::animationLooper + Config::animationSpeed;
@@ -197,18 +222,20 @@ void GLMainWindow::animateGL() {
 
     _skybox->update(elapsedTimeMs, modelViewMatrix);
 
+    // Update the model-view matrix
+    _gameover.update(elapsedTimeMs, _modelViewMatrix);
+
     // Update all drawables and check for collision
      for (auto drawable : _drawables) {
         drawable->update(elapsedTimeMs, modelViewMatrix);
          // check if collision is true
         auto draw = std::dynamic_pointer_cast<Obstacle>(drawable);
          if (draw != nullptr && CollisionChecker::checkCollision(_billTheSalmon, draw)) {
-
-             // Stop the game and Game Over
-             _gameIsOver = true;  // Freeze the game on collision
-             break;                // No need to check further once the game is frozen
-         } 
-    }
+            // Freeze the game on collision
+             _gameIsOver = true;
+             break;                
+         }
+     }
     // Update the window.
     update();
 }

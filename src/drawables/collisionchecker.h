@@ -1,7 +1,6 @@
 #ifndef COLLISIONCHECKER_H
 #define COLLISIONCHECKER_H
 
-//#include "floppyfish.h"
 #include <src/drawables/obstacles/obstacle.h>
 #include <src/drawables/fishController.h>
 
@@ -11,4 +10,4 @@ class CollisionChecker {
     static bool checkCollision(const std::shared_ptr<FishController>& salmon, const std::shared_ptr<Obstacle>& obstacle);
 };
 
-#endif  // COLLISIONCHECKER_H
+#endif // COLLISIONCHECKER_H

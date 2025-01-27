@@ -30,6 +30,7 @@ class Config {
     static const float verticalVelocity;       /**< Upward velocity for the flop motion of the fish. */
     static float skyRotation;                /**< Speed at which the skybox rotates. */
     static float lookAtHeight;               /**< Height of the camera. */
+    static int _score;                       /**< Score variable*/
 };
 
 #endif  // CONFIG_H

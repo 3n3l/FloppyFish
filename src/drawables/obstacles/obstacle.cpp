@@ -67,6 +67,11 @@ void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // Scroll this obstacle.
     _xCoordinate += Config::obstacleSpeed;
 
+     if (_xCoordinate >= -0.00001f && _xCoordinate <= 0.0001f) {
+        // Increment score only once when the obstacle crosses 0.0f
+        Config::_score++;
+     }
+
     _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_xCoordinate, 0, 0));
 
     // Scale to width and depth, height is handled by the individual parts.

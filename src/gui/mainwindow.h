@@ -37,9 +37,10 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     std::shared_ptr<Skybox> _skybox;            /**< A skybox */
     std::shared_ptr<FishController> _billTheSalmon;             /**< Bill the Salmon */
     std::vector<std::shared_ptr<Drawable>> _drawables; /**< Vector holding pointers to the drawables */
-    Gameover _gameover;                                         /**< Game over screen*/
-    bool _gameIsOver = false;
-
+    Gameover _gameover;                         /**< Game over screen*/
+    bool _gameIsOver = false;                   /**< Game Over variable*/
+    int _fontId;                                /**< Font id variable*/
+    
    private slots:
     /**
      * @brief animateGL updates the scene
@@ -90,7 +91,7 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     virtual void keyPressEvent(QKeyEvent* event) override;
 
    private:
-    glm::mat4 _projectionMatrix; /* Projection Matrix */
+    glm::mat4 _projectionMatrix; /*Game Over Screen Projection Matrix */
 };
 
 #endif  // GLMAINWINDOW_H
