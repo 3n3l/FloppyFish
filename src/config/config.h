@@ -35,6 +35,7 @@ class Config {
     static const float lowerAngle;           /**< Lower angle for the flopping animation. */
     static const float upperAngle;           /**< Upper angle for the flopping animation. */
     static unsigned int resolutionScale;     /**< Resolution scale factor, used by high DPI screens */
+    static float gamma;                      /**< Gamma correction coefficient */
 };
 
 #endif  // CONFIG_H

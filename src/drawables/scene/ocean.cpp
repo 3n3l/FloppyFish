@@ -140,9 +140,7 @@ void Ocean::draw(glm::mat4 projection_matrix) {
 void Ocean::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _elapsedTime += 0.01f;
     _moonDirection =
-        normalize(glm::vec3(-0.3773502691896258, 0.2 * sin(_elapsedTime * 0.1 + 2.6), -0.5773502691896258));
-    // _moonDirection =
-    //     normalize(glm::vec3(glm::inverse(glm::transpose(modelViewMatrix)) * glm::vec4(_moonDirection, 1.0f)));
+        normalize(glm::vec3(-0.3773502691896258, 0.45 * sin(_elapsedTime * 0.1 + 2.6) + 0.25, -0.5773502691896258));
     // Update the model-view matrix.
     _modelViewMatrix = modelViewMatrix;
     // Calculate the skybox rotation.
@@ -170,7 +168,7 @@ void Ocean::loadTexture() {
     glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     // Assign image data.
@@ -182,6 +180,11 @@ void Ocean::loadTexture() {
     }
 
     glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+    // Retrieve maximum supported anisotropy level, and set it.
+    GLfloat maxAnisotropy;
+    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
+    glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
 
     _textureHandle = textureID;
 }
