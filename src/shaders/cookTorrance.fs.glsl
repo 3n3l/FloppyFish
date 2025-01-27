@@ -21,12 +21,12 @@ uniform float transparency;
 uniform vec3 emissiveColour;
 uniform float eta;
 
-uniform float moon_distance = 100.0f;
+const float moon_distance = 100.0f;
 uniform vec3 moon_direction;
-uniform vec3 moon_light_colour = vec3(0.65f, 0.85f, 1.0f) * 10000.0f;
+const vec3 moon_light_colour = vec3(0.65f, 0.85f, 1.0f) * 10000.0f;
 
-uniform vec3 lightColour = vec3(1.0f, 0.8f, 0.6f) * 16.0f;
-uniform vec3 materialSpecularColour = vec3(1.0f, 1.0f, 1.0f);
+const vec3 lightColour = vec3(1.0f, 0.8f, 0.6f) * 16.0f;
+const vec3 materialSpecularColour = vec3(1.0f, 1.0f, 1.0f);
 
 const float pi = 3.14159265358979323846f;
 
