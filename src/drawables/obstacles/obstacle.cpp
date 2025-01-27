@@ -1,9 +1,10 @@
+#include <OpenGL/gltypes.h>
+#include <random>
 #define GL_SILENCE_DEPRECATION
 
 #include "src/drawables/obstacles/obstacle.h"
 
 #include <QFile>
-#include <vector>
 
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/matrix_transform.hpp"
@@ -100,7 +101,7 @@ void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _lightPosition.x = _position.x;
 }
 
-void Obstacle::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions, glm::vec3 moonDirection) {
+void Obstacle::draw(glm::mat4 projectionMatrix, GLfloat lightPositions[], glm::vec3 moonDirection) {
     // Draw the individual parts.
     _upperPart.draw(projectionMatrix, lightPositions, moonDirection);
     _lowerPart.draw(projectionMatrix, lightPositions, moonDirection);

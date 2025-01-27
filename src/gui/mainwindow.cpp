@@ -147,10 +147,15 @@ void GLMainWindow::paintGL() {
     _oceanAndSky->draw(_projectionMatrix);
 
     // Get the current light positions from the obstacles.
-    std::vector<glm::vec3> lightPositions;
-    for (auto obstacle : _obstacles) {
-        lightPositions.push_back(obstacle->lightPosition());
+    GLfloat lightPositions[Config::obstacleAmount * 3];
+    for (std::size_t i = 0; i < Config::obstacleAmount; i++) {
+        auto lightPosition = _obstacles.at(i)->lightPosition();
+        lightPositions[i * 3 + 0] = lightPosition.x;
+        lightPositions[i * 3 + 1] = lightPosition.y;
+        lightPositions[i * 3 + 2] = lightPosition.z;
     }
+
+    // Get the moon direction for the lighting computations.
     glm::vec3 moonDirection = _oceanAndSky->getMoonDirection();
 
     // Draw all drawables.

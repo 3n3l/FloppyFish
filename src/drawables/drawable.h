@@ -1,9 +1,10 @@
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
 
+#include <OpenGL/gltypes.h>
+
 #include <QOpenGLFunctions_4_1_Core>
 #include <string>
-#include <vector>
 
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/vector_float3.hpp"
@@ -23,18 +24,19 @@ class Drawable : protected QOpenGLFunctions_4_1_Core {
     virtual void init();
 
     /**
-     * @brief draw the drawable.
-     * @param projectionMatrix - transformation into NDC.
-     * @param lightPositions - vector holding the light positions.
-     * @param moonDirection - direction to the moon.
-     */
-    virtual void draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions, glm::vec3 moonDirection) {}
-
-    /**
      * @brief update the drawable.
      * @param elapsedTimeMs The elapsed time since the last update in ms
+     * @param modelViewMatrix the mode view matrix of the parent object
      */
     virtual void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {}
+
+    /**
+     * @brief draw the drawable.
+     * @param projectionMatrix - transformation into NDC.
+     * @param lightPositions - array holding the light positions.
+     * @param moonDirection - direction to the moon.
+     */
+    virtual void draw(glm::mat4 projectionMatrix, GLfloat lightPositions[], glm::vec3 moonDirection) {}
 
     /**
      * @brief Compile a shader and print warnings/errors if necessary.

@@ -1,9 +1,9 @@
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
+#include <OpenGL/gltypes.h>
+
 #include <memory>
-#include <random>
-#include <vector>
 
 #include "glm/ext/vector_float3.hpp"
 #include "src/config/config.h"
@@ -33,8 +33,10 @@ class Obstacle : public Drawable {
 
     /**
      * @brief draw the obstacle.
+     * @param lightPositions - array holding the light positions.
+     * @param moonDirection - vector holding the moon direction.
      */
-    void draw(glm::mat4 projection_matrix, std::vector<glm::vec3> lightPositions, glm::vec3 moonDirection) override;
+    void draw(glm::mat4 projection_matrix, GLfloat lightPositions[], glm::vec3 moonDirection) override;
 
     /**
      * @brief update the obstacle.
