@@ -110,11 +110,11 @@ vec3 extra_cheap_atmosphere(vec3 raydir, vec3 moondir) {
     float sky_colour_factor = 0.8f;
     float sky_colour_power = 2.2f;
     vec3 sky_direction = vec3(inverse(sky_rotation_matrix) * vec4(raydir, 1.0f));
-    vec3 stars = vec3(texture(skybox_texture, sky_direction));
-    stars = pow(stars, vec3(sky_colour_power)) * sky_colour_factor;
+    vec3 star_texure_colour = vec3(texture(skybox_texture, sky_direction));
+    star_texure_colour = pow(star_texure_colour, vec3(sky_colour_power)) * sky_colour_factor;
 
-    float moon_intensity = smoothstep(-0.07, 0.07, moon_direction.y);
-    if (moondir.y <= -0.07f) return stars / (moon_intensity + 1.0f);
+    float moon_visibility = smoothstep(-0.07, 0.07, moon_direction.y);
+    if (moondir.y <= -0.07f) return star_texure_colour / (moon_visibility + 1.0f);
 
     // Atmosphere.
     // Darker towards sky - lighter towards horizon.
@@ -127,18 +127,18 @@ vec3 extra_cheap_atmosphere(vec3 raydir, vec3 moondir) {
     float moondt = pow(max(0.0, dot(moondir, raydir)), 8.0);
 
     // Colours.
-    vec3 brightblue = vec3(5.5, 7.0, 18.4) / 5.0f;
+    vec3 sky_hue_base_colour = vec3(5.5, 7.0, 18.4) / 5.0f;
 
     // Sunset effect.
-    vec3 mooncolor = mix(vec3(1.0), max(vec3(0.0), vec3(1.0, 0.9, 1.1) - brightblue / 22.4), special_trick2);
+    vec3 mooncolor = mix(vec3(1.0), max(vec3(0.0), vec3(1.0, 0.9, 1.1) - sky_hue_base_colour / 22.4), special_trick2);
     // Blue sky, greenish when moon at horizon.
-    vec3 bluesky = brightblue / 22.4 * mooncolor;
+    vec3 bluesky = sky_hue_base_colour / 22.4 * mooncolor;
 
-    vec3 bluesky2 = max(vec3(0.0), bluesky - brightblue * 0.002 * (special_trick + -6.0 * moondir.y * moondir.y));
-    bluesky2 *= special_trick * (0.24 + raymoondt * 0.24);
-    bluesky2 *= (1.0 + 1.0 * pow(1.0 - raydir.y, 3.0));
+    vec3 final_atmosphere_colour = max(vec3(0.0), bluesky - sky_hue_base_colour * 0.002 * (special_trick + -6.0 * moondir.y * moondir.y));
+    final_atmosphere_colour *= special_trick * (0.24 + raymoondt * 0.24);
+    final_atmosphere_colour *= (1.0 + 1.0 * pow(1.0 - raydir.y, 3.0));
 
-    return max(bluesky2 * moon_intensity, stars / (moon_intensity + 1.0f));
+    return max(final_atmosphere_colour * moon_visibility, star_texure_colour / (moon_visibility + 1.0f));
 }
 
 // Get atmosphere color for given direction.

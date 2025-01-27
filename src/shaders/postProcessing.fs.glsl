@@ -31,7 +31,5 @@ void main(void)
     vec3 aces_colour = aces_tonemap(tex_colour.rgb);
     f_colour = vec4(aces_colour, 1.0f);
     f_colour.a = 1.0f;
-    //        f_colour.rgb = pow(tex_colour.rgb, vec3(1.0 / 2.2));
-    //    f_colour = tex_colour;
 }
 
