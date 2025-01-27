@@ -147,7 +147,7 @@ void GLMainWindow::paintGL() {
     _oceanAndSky->draw(_projectionMatrix);
 
     // Get the current light positions from the obstacles.
-    GLfloat lightPositions[Config::obstacleAmount * 3];
+    GLfloat *lightPositions = new GLfloat[Config::obstacleAmount * 3];
     for (std::size_t i = 0; i < Config::obstacleAmount; i++) {
         auto lightPosition = _obstacles.at(i)->lightPosition();
         lightPositions[i * 3 + 0] = lightPosition.x;
