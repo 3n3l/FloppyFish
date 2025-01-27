@@ -1,8 +1,9 @@
 #include "collisionchecker.h"
+#include <src/gui/mainwindow.h>
 
 bool CollisionChecker::checkCollision(const std::shared_ptr<FishController>& fish,
                                       const std::shared_ptr<Obstacle>& obstacle) {
-    // Get obstacle bounding box (UpperPart und LowerPart)
+    // Get obstacle bounding box (UpperPart and LowerPart)
     float obsX, obsY, obsWidth, obsHeight;
     obstacle->getBounds(obsX, obsY, obsWidth, obsHeight);
 

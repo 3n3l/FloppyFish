@@ -91,6 +91,10 @@ void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _position.x += Config::obstacleSpeed;
 
     _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_position.x, 0, 0));
+    if (_position.x >= -0.00001f && _position.x <= 0.0001f) {
+        // Increment score only once when the obstacle crosses 0.0f
+        Config::currentScore++;
+    }
 
     // Update the individual parts.
     // Scale to width and depth, height is handled by the individual parts.
