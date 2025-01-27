@@ -21,14 +21,6 @@ class FloppyMesh : public Drawable {
     ~FloppyMesh() override;
 
     /**
-     * @brief draw the mesh.
-     * @param projectionMatrix - transformation into NDC.
-     * @param lightPositions - vector holding the light positions.
-     * @param moonDirection - vector holding the moon direction.
-     */
-    void draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions, glm::vec3 moonDirection) override;
-
-    /**
      * @brief initialize the mesh.
      */
     void init() override;
@@ -39,6 +31,14 @@ class FloppyMesh : public Drawable {
      * @param modelViewMatrix the mode view matrix of the parent object
      */
     void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) override;
+
+    /**
+     * @brief draw the mesh.
+     * @param projectionMatrix - transformation into NDC.
+     * @param lightPositions - array holding the light positions.
+     * @param moonDirection - vector holding the moon direction.
+     */
+    void draw(glm::mat4 projectionMatrix, GLfloat lightPositions[], glm::vec3 moonDirection) override;
 
     /**
      * @brief re-sets the initial rotation of the mesh.

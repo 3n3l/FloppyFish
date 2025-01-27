@@ -30,12 +30,15 @@ class Part : public Drawable {
 
     /**
      * @brief Draw the sign.
+     * @param lightPositions - array holding the light positions.
+     * @param moonDirection - vector holding the moon direction.
      */
-    void draw(glm::mat4 projection_matrix, std::vector<glm::vec3> lightPositions, glm::vec3 moonDirection) override;
+    void draw(glm::mat4 projection_matrix, GLfloat lightPositions[], glm::vec3 moonDirection) override;
 
     /**
      * @brief Update the sign.
      * @param elapsedTimeMs - elapsed time since the last update in ms
+     * @param modelViewMatrix the mode view matrix of the parent object
      */
     void update(float elapsedTimeMs, glm::mat4 modelViewMatrix) override;
 

@@ -85,7 +85,7 @@ void Part::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _modelViewMatrix = scale(_modelViewMatrix, glm::vec3(_width, _height, _depth));
 }
 
-void Part::draw(glm::mat4 projectionMatrix, std::vector<glm::vec3> lightPositions, glm::vec3 moonDirection) {
+void Part::draw(glm::mat4 projectionMatrix, GLfloat lightPositions[], glm::vec3 moonDirection) {
     // Draw the mesh.
     if (_partMesh != nullptr) {
         _partMesh->draw(projectionMatrix, lightPositions, moonDirection);
