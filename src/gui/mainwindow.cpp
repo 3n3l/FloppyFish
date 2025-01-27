@@ -108,6 +108,9 @@ void GLMainWindow::initializeGL() {
     // Enable multisampling for AA;
     glEnable(GL_MULTISAMPLE);
 
+    // Enable SRGB framebuffer.
+    glEnable(GL_FRAMEBUFFER_SRGB);
+
     // Enable alpha blending and selecting blend function.
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -214,6 +217,8 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
     // Pressing SPACE will make the fish flop or flop the fish idk.
     if (event->key() == Qt::Key_Space) {
         if (!_jumpSFX->isPlaying()) _jumpSFX->play();
+        //  setSource(QUrl::fromLocalFile("res/FloppyJumpSFX.wav"));
+        // setVolume(100);
         _billTheSalmon->flop();
     }
     // Pressing F in fullscreen mode will reset the window.
