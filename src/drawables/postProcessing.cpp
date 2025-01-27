@@ -77,9 +77,6 @@ void PostProcessingQuad::init() {
 
     // Initialize the framebuffer.
     glGenFramebuffers(1, &_frameBufferObject);
-
-    // Create and attach texture.
-    this->resetBufferTextures(Config::windowWidth, Config::windowHeight);
 }
 void PostProcessingQuad::bind() {
     // Bind framebuffer.
@@ -125,13 +122,6 @@ void PostProcessingQuad::resetBufferTextures(int width, int height) {
     bind();
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _textureColourBuffer, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, _depthStencilBuffer, 0);
-
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        std::cout << "Framebuffer is incomplete: " << std::to_string(glCheckFramebufferStatus(GL_FRAMEBUFFER))
-                  << std::endl;
-    } else {
-        std::cout << "Framebuffer is complete." << std::endl;
-    }
 
     unbind();
 }
