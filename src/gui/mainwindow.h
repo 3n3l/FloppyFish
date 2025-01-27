@@ -94,7 +94,7 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     /**
      * @brief Updates the volume of all the audio sources in the application.
      */
-    void changeVolumeHelper();
+    void changeVolume();
 };
 
 #endif  // GLMAINWINDOW_H

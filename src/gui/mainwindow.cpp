@@ -248,20 +248,20 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
             Config::resolutionScale = 2;
         else
             Config::resolutionScale = 1;
-        this->resizeGL(Config::windowWidth, Config::windowHeight);
+        resizeGL(Config::windowWidth, Config::windowHeight);
     }
     // Pressing + and - will increase or decrease the volume of the audio.
     else if (event->key() == Qt::Key_Plus) {
         if (Config::volume < 1.0f) Config::volume += 0.1f;
-        this->changeVolumeHelper();
+        changeVolume();
     } else if (event->key() == Qt::Key_Minus) {
         if (Config::volume > 0.0f) Config::volume -= 0.1f;
-        this->changeVolumeHelper();
+        changeVolume();
     }
     // Pressing M will toggle mute the music.
     else if (event->key() == Qt::Key_M) {
         Config::musicMuted = !Config::musicMuted;
-        this->changeVolumeHelper();
+        changeVolume();
     }
     // Pressing ARROW keys will move the camera or change FoV. 0 Resets it again.
     else if (event->key() == Qt::Key_Up) {
@@ -270,14 +270,14 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
         Config::lookAtHeight -= 0.01f;
     } else if (event->key() == Qt::Key_Left) {
         Config::fieldOfVision -= 5.0f;
-        this->resizeGL(Config::windowWidth, Config::windowHeight);
+        resizeGL(Config::windowWidth, Config::windowHeight);
     } else if (event->key() == Qt::Key_Right) {
         Config::fieldOfVision += 5.0f;
-        this->resizeGL(Config::windowWidth, Config::windowHeight);
+        resizeGL(Config::windowWidth, Config::windowHeight);
     } else if (event->key() == Qt::Key_0) {
         Config::lookAtHeight = 0.0f;
         Config::fieldOfVision = 75.0f;
-        this->resizeGL(Config::windowWidth, Config::windowHeight);
+        resizeGL(Config::windowWidth, Config::windowHeight);
     }
     // Pressing ESCAPE or Q will quit everything.
     else if (event->key() == Qt::Key_Escape || event->key() == Qt::Key_Q) {
@@ -285,7 +285,7 @@ void GLMainWindow::keyPressEvent(QKeyEvent *event) {
         close();
     }
 }
-void GLMainWindow::changeVolumeHelper() {
+void GLMainWindow::changeVolume() {
     // Set the volume for all sfx.
     for (int i = 0; i < 3; ++i) {
         _jumpSFX[i]->setVolume(Config::volume);
