@@ -110,11 +110,11 @@ vec3 extra_cheap_atmosphere(vec3 raydir, vec3 moondir) {
     float sky_colour_factor = 0.8f;
     float sky_colour_power = 2.2f;
     vec3 sky_direction = vec3(inverse(sky_rotation_matrix) * vec4(raydir, 1.0f));
-    vec3 star_texure_colour = vec3(texture(skybox_texture, sky_direction));
-    star_texure_colour = pow(star_texure_colour, vec3(sky_colour_power)) * sky_colour_factor;
+    vec3 star_texture_colour = vec3(texture(skybox_texture, sky_direction));
+    star_texture_colour = pow(star_texture_colour, vec3(sky_colour_power)) * sky_colour_factor;
 
     float moon_visibility = smoothstep(-0.07, 0.07, moon_direction.y);
-    if (moondir.y <= -0.07f) return star_texure_colour / (moon_visibility + 1.0f);
+    if (moondir.y <= -0.07f) return star_texture_colour / (moon_visibility + 1.0f);
 
     // Atmosphere.
     // Darker towards sky - lighter towards horizon.
@@ -138,7 +138,7 @@ vec3 extra_cheap_atmosphere(vec3 raydir, vec3 moondir) {
     final_atmosphere_colour *= special_trick * (0.24 + raymoondt * 0.24);
     final_atmosphere_colour *= (1.0 + 1.0 * pow(1.0 - raydir.y, 3.0));
 
-    return max(final_atmosphere_colour * moon_visibility, star_texure_colour / (moon_visibility + 1.0f));
+    return max(final_atmosphere_colour * moon_visibility, star_texture_colour / (moon_visibility + 1.0f));
 }
 
 // Get atmosphere color for given direction.
