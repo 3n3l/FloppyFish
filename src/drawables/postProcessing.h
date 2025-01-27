@@ -38,13 +38,9 @@ class PostProcessingQuad : public Drawable {
     void resetBufferTextures(int width, int height);
 
    protected:
-    GLuint _program;           /**< The opengl program handling the shaders */
-    GLuint _vertexArrayObject; /**< The vertex array object containing the vertices */
-
     GLuint _textureColourBuffer; /**< Texture handle (memory location of texture). */
     GLuint _depthStencilBuffer;  /**< Texture handle for depth and stencil (memory location of texture). */
-
-    GLuint _frameBufferObject; /**< Frame buffer handle (memory location of framebuffer). */
+    GLuint _frameBufferObject;   /**< Frame buffer handle (memory location of framebuffer). */
 };
 
 #endif  // PostProcessingQuad_H

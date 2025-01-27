@@ -15,13 +15,14 @@
 #include "src/drawables/drawable.h"
 #include "src/drawables/fishController.h"
 
-FishController::FishController(const std::shared_ptr<FloppyMesh>& billMesh) {
-    _width = 0.25f;
-    _height = 0.08f;
-    _hitboxColour = glm::vec3(0.1f, 0.4f, 0.9f);
-    _billMesh = billMesh;
-    _verticalVelocity = 0.0f;
-}
+FishController::FishController(const std::shared_ptr<FloppyMesh>& billMesh)
+    : Drawable(),
+      _height(0.08f),
+      _width(0.25f),
+      _verticalVelocity(0.0f),
+      _position(glm::vec3(0.0f)),
+      _hitboxColour(glm::vec3(0.1f, 0.4f, 0.9f)),
+      _billMesh(billMesh) {}
 FishController::~FishController() {}
 
 void FishController::init() {

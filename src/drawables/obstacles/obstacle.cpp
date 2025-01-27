@@ -20,6 +20,7 @@ Obstacle::Obstacle(float offset, const std::shared_ptr<FloppyMesh>& upperPartMes
       _depth(Config::obstacleDepth),
       _lightPosition(glm::vec3(0.0f)),
       _position(0) {}
+
 Obstacle::Obstacle(Obstacle const& o)
     : _upperPart(o._upperPart),
       _lowerPart(o._lowerPart),
@@ -29,6 +30,7 @@ Obstacle::Obstacle(Obstacle const& o)
       _initialOffset(o._initialOffset),
       _lightPosition(o._lightPosition),
       _position(o._position) {}
+
 Obstacle::~Obstacle() {}
 
 void Obstacle::init() {

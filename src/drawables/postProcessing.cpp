@@ -4,10 +4,12 @@
 #include <iostream>
 
 #include "src/config/config.h"
+#include "src/drawables/drawable.h"
 #include "src/utils/imageTexture.h"
 #include "src/utils/utils.h"
 
-PostProcessingQuad::PostProcessingQuad() {}
+PostProcessingQuad::PostProcessingQuad()
+    : Drawable(), _textureColourBuffer(0), _depthStencilBuffer(0), _frameBufferObject(0) {}
 
 void PostProcessingQuad::init() {
     // Initialize OpenGL functions.

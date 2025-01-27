@@ -3,10 +3,17 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "src/config/config.h"
+#include "src/drawables/drawable.h"
 #include "src/utils/imageTexture.h"
 #include "src/utils/utils.h"
 
-Ocean::Ocean() { _subsequentRotationSpeed = Config::skyRotation; }
+Ocean::Ocean()
+    : Drawable(),
+      _verticeAmount(0),
+      _textureHandle(0),
+      _elapsedTime(0.0f),
+      _subsequentRotation(0.0f),
+      _subsequentRotationSpeed(Config::skyRotation) {}
 
 void Ocean::init() {
     // Initialize OpenGL functions.

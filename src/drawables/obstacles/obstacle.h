@@ -49,14 +49,14 @@ class Obstacle : public Drawable {
     virtual void reset();
 
    private:
-    glm::vec3 _lightPosition; /**< Position of the light source. */
-    Part _upperPart;          /**< Lower part of the Obstacle. */
-    Part _lowerPart;          /**< Upper part of the Obstacle. */
     float _initialOffset;     /**< X-offset from the origin. */
     float _height;            /**< Height of the obstacle. */
     float _width;             /**< Width of the obstacle. */
     float _depth;             /**< Depth of the obstacle. */
+    Part _upperPart;          /**< Lower part of the Obstacle. */
+    Part _lowerPart;          /**< Upper part of the Obstacle. */
     glm::vec3 _position;      /**< Current position ob the obstacle. */
+    glm::vec3 _lightPosition; /**< Position of the light source. */
 };
 
 #endif  // OBSTACLE_H

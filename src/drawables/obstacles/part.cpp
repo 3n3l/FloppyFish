@@ -16,9 +16,12 @@
 #include "src/drawables/obstacles/part.h"
 #include "src/utils/utils.h"
 
-Part::Part(const std::shared_ptr<FloppyMesh>& partMesh) : _position(0) { _partMesh = partMesh; }
+Part::Part(const std::shared_ptr<FloppyMesh>& partMesh)
+    : Drawable(), _meshOffset(0.0f), _width(0), _height(0), _depth(0), _position(0), _partMesh(partMesh) {}
+
 Part::Part(Part const& p)
     : _partMesh(p._partMesh), _position(p._position), _width(p._width), _height(p._height), _depth(p._depth) {}
+
 Part::~Part() {}
 
 void Part::init() {
