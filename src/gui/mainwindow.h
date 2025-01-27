@@ -78,7 +78,7 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
 
    private:
     glm::mat4 _projectionMatrix;                             /**< Projection Matrix */
-    std::shared_ptr<QSoundEffect> _jumpSFX;                  /**< Jump SFX */
+    std::shared_ptr<QSoundEffect> _jumpSFX[3];               /**< Jump SFX */
     std::shared_ptr<QMediaPlayer> _mediaPlayer;              /**< Media Player used for SFX */
     std::shared_ptr<QAudioOutput> _audioOutput;              /**< AudioOutput used for Sound */
     std::shared_ptr<FloppyMesh> _billMesh;                   /**< Bill the salmon shown in the window */

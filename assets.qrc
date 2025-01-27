@@ -18,6 +18,8 @@
         <file>starsPZ.png</file>
 
         <file>FloppyJumpOST_v1.wav</file>
-        <file>FloppyJumpSFX.wav</file>
+        <file>FloppyJumpSFX0.wav</file>
+        <file>FloppyJumpSFX1.wav</file>
+        <file>FloppyJumpSFX2.wav</file>
     </qresource>
 </RCC>
