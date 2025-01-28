@@ -3,6 +3,7 @@
 
 #include "mainwindow.h"
 
+#include <src/drawables/collisionchecker.h>
 #include <src/drawables/scene/background.h>
 
 #include <QMessageBox>
@@ -41,6 +42,9 @@ GLMainWindow::GLMainWindow() : _updateTimer(this) {
 
     // Create all the drawables.
     _billMesh = std::make_shared<FloppyMesh>("res/BillDerLachs.obj", 2.0f, 90.0f),
+
+    _gameOverScreen = std::make_shared<Gameover>();
+    _gameIsOver = false;
 
     _drawables = {
         // The ocean background.
@@ -116,6 +120,8 @@ void GLMainWindow::initializeGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
+    _gameOverScreen->init();
+
     // Initialize all drawables.
     for (auto drawable : _drawables) {
         drawable->init();
@@ -178,6 +184,10 @@ void GLMainWindow::paintGL() {
     for (auto drawable : _drawables) {
         drawable->draw(_projectionMatrix, lightPositions, moonDirection);
     }
+    if (_gameIsOver) {
+        // Draw the game over screen
+        _gameOverScreen->draw(_projectionMatrix);
+    }
 
     // Unbind framebuffer, thus binding the default framebuffer again.
     _postProcessing->unbind();
@@ -208,9 +218,20 @@ void GLMainWindow::animateGL() {
     const float incrementedLooper = Config::animationLooper + Config::animationSpeed;
     Config::animationLooper = incrementedLooper > 1.0f ? 0.0f : incrementedLooper;
 
-    // Update all drawables.
-    for (auto drawable : _drawables) {
-        drawable->update(elapsedTimeMs, modelViewMatrix);
+    _gameOverScreen->update(elapsedTimeMs, modelViewMatrix);
+
+    if (!_gameIsOver) {
+        // Update all drawables.
+        for (auto drawable : _drawables) {
+            drawable->update(elapsedTimeMs, modelViewMatrix);
+            // check if collision is true
+            auto draw = std::dynamic_pointer_cast<Obstacle>(drawable);
+            if (draw != nullptr && CollisionChecker::checkCollision(_billTheSalmon, draw)) {
+                // Stop the game and Game Over
+                _gameIsOver = true;  // Freeze the game on collision
+                break;               // No need to check further once the game is frozen
+            }
+        }
     }
 
     // Update the window.

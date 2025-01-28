@@ -48,6 +48,8 @@ class Obstacle : public Drawable {
      */
     virtual void reset();
 
+    void getBounds(float& bx, float& by, float& bwidth, float& bheight) const;
+
    private:
     float _initialOffset;     /**< X-offset from the origin. */
     float _height;            /**< Height of the obstacle. */
