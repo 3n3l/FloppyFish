@@ -57,3 +57,4 @@ ui_mainwindow.h
 /.idea
 /cmake-build-debug
 /.cmake
+qrc_assets.cpp

@@ -91,6 +91,10 @@ void Obstacle::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     _position.x += Config::obstacleSpeed;
 
     _modelViewMatrix = translate(modelViewMatrix, glm::vec3(_position.x, 0, 0));
+    if (_position.x >= -0.00001f && _position.x <= 0.0001f) {
+        // Increment score only once when the obstacle crosses 0.0f
+        Config::currentScore++;
+    }
 
     // Update the individual parts.
     // Scale to width and depth, height is handled by the individual parts.
@@ -105,4 +109,14 @@ void Obstacle::draw(glm::mat4 projectionMatrix, GLfloat lightPositions[], glm::v
     // Draw the individual parts.
     _upperPart.draw(projectionMatrix, lightPositions, moonDirection);
     _lowerPart.draw(projectionMatrix, lightPositions, moonDirection);
+}
+
+void Obstacle::getBounds(float& bx, float& by, float& bwidth, float& bheight) const {
+    // Combine the bounding boxes of the two parts
+    bx = _position.x;
+    by = 0.0f;  // The lower part starts at y = 0 (with the upper part above it)
+    bwidth = _width;
+
+    // Calculate the height as the height of the lower and upper parts together
+    bheight = _lowerPart.height() + _upperPart.height();
 }

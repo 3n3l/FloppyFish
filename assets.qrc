@@ -1,25 +1,27 @@
 <RCC>
-    <qresource prefix="/res">
-        <file>BillAlbedo.png</file>
-        <file>BillDerLachs.mtl</file>
-        <file>BillDerLachs.obj</file>
-        <file>Lamp.mtl</file>
-        <file>Lamp.obj</file>
-        <file>LampTexture.png</file>
-        <file>Sign.mtl</file>
-        <file>Sign.obj</file>
-        <file>SignTexture.png</file>
+    <qresource prefix="/assets">
+        <file>res/BillAlbedo.png</file>
+        <file>res/BillDerLachs.mtl</file>
+        <file>res/BillDerLachs.obj</file>
+        <file>res/Lamp.mtl</file>
+        <file>res/Lamp.obj</file>
+        <file>res/LampTexture.png</file>
+        <file>res/Sign.mtl</file>
+        <file>res/Sign.obj</file>
+        <file>res/SignTexture.png</file>
+        <file>res/GameOver-1.png</file>
+        <file>res/Tiny5.ttf</file>
 
-        <file>starsNX.png</file>
-        <file>starsPX.png</file>
-        <file>starsNY.png</file>
-        <file>starsPY.png</file>
-        <file>starsNZ.png</file>
-        <file>starsPZ.png</file>
+        <file>res/starsNX.png</file>
+        <file>res/starsPX.png</file>
+        <file>res/starsNY.png</file>
+        <file>res/starsPY.png</file>
+        <file>res/starsNZ.png</file>
+        <file>res/starsPZ.png</file>
 
-        <file>FloppyJumpOST_v1.wav</file>
-        <file>FloppyJumpSFX0.wav</file>
-        <file>FloppyJumpSFX1.wav</file>
-        <file>FloppyJumpSFX2.wav</file>
+        <file>res/FloppyJumpOST_v1.wav</file>
+        <file>res/FloppyJumpSFX0.wav</file>
+        <file>res/FloppyJumpSFX1.wav</file>
+        <file>res/FloppyJumpSFX2.wav</file>
     </qresource>
 </RCC>

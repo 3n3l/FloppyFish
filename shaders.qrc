@@ -13,5 +13,7 @@
         <file>ocean.fs.glsl</file>
         <file>postProcessing.vs.glsl</file>
         <file>postProcessing.fs.glsl</file>
+        <file>gameover.vs.glsl</file>
+        <file>gameover.fs.glsl</file>
     </qresource>
 </RCC>

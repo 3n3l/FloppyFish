@@ -3,11 +3,14 @@
 
 #include "mainwindow.h"
 
+#include <src/drawables/collisionchecker.h>
 #include <src/drawables/scene/background.h>
 
+#include <QFontDatabase>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QOpenGLFunctions>
+#include <QPainter>
 #include <cstddef>
 #include <glm/glm.hpp>
 #include <iostream>
@@ -41,6 +44,9 @@ GLMainWindow::GLMainWindow() : _updateTimer(this) {
 
     // Create all the drawables.
     _billMesh = std::make_shared<FloppyMesh>("res/BillDerLachs.obj", 2.0f, 90.0f),
+
+    _gameOverScreen = std::make_shared<Gameover>();
+    _gameIsOver = false;
 
     _drawables = {
         // The ocean background.
@@ -116,6 +122,8 @@ void GLMainWindow::initializeGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
+    _gameOverScreen->init();
+
     // Initialize all drawables.
     for (auto drawable : _drawables) {
         drawable->init();
@@ -154,6 +162,19 @@ void GLMainWindow::paintGL() {
                   << std::endl;
     }
 
+    QPainter painter(this);
+
+    // Load Font from a file
+    _fontId = QFontDatabase::addApplicationFont(":/assets/res/Tiny5.ttf");
+    if (_fontId == -1) {
+        // Haandle error if font couldnt be loaded
+        qWarning("Font failed to load.");
+        return;
+    }
+
+    // Get font family name from the loaded font
+    QString fontFamily = QFontDatabase::applicationFontFamilies(_fontId).at(0);
+
     // Disable culling and set a less strict depth function.
     glDisable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
@@ -177,6 +198,31 @@ void GLMainWindow::paintGL() {
     glDepthFunc(GL_LESS);
     for (auto drawable : _drawables) {
         drawable->draw(_projectionMatrix, lightPositions, moonDirection);
+    }
+    if (_gameIsOver) {
+        // Draw the game over screen
+        _gameOverScreen->draw(_projectionMatrix);
+
+        // context for the drawing
+        painter.beginNativePainting();
+
+        // Display the final score on the game-over screen
+        painter.setPen(Qt::red);
+        painter.setFont(QFont(fontFamily, 36));
+        painter.drawText(width() / 2 - 100, height() / 6, QString("Game Over!"));
+        painter.setFont(QFont(fontFamily, 24));
+        painter.drawText(width() / 2 - 100, height() / 6 + 40, QString("Final Score: %1").arg(Config::currentScore));
+
+        // End native painting
+        painter.endNativePainting();
+    } else {
+        painter.beginNativePainting();
+
+        painter.setPen(Qt::red);
+        painter.setFont(QFont(fontFamily, 24));
+        painter.drawText(width() / 2 - 100, height() / 6, QString("Score: %1").arg(Config::currentScore));
+
+        painter.endNativePainting();
     }
 
     // Unbind framebuffer, thus binding the default framebuffer again.
@@ -208,9 +254,20 @@ void GLMainWindow::animateGL() {
     const float incrementedLooper = Config::animationLooper + Config::animationSpeed;
     Config::animationLooper = incrementedLooper > 1.0f ? 0.0f : incrementedLooper;
 
-    // Update all drawables.
-    for (auto drawable : _drawables) {
-        drawable->update(elapsedTimeMs, modelViewMatrix);
+    _gameOverScreen->update(elapsedTimeMs, modelViewMatrix);
+
+    if (!_gameIsOver) {
+        // Update all drawables.
+        for (auto drawable : _drawables) {
+            drawable->update(elapsedTimeMs, modelViewMatrix);
+            // check if collision is true
+            auto draw = std::dynamic_pointer_cast<Obstacle>(drawable);
+            if (draw != nullptr && CollisionChecker::checkCollision(_billTheSalmon, draw)) {
+                // Stop the game and Game Over
+                _gameIsOver = true;  // Freeze the game on collision
+                break;               // No need to check further once the game is frozen
+            }
+        }
     }
 
     // Update the window.

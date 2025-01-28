@@ -17,6 +17,7 @@
 #include "glm/ext/vector_float3.hpp"
 #include "src/drawables/fishController.h"
 #include "src/drawables/floppyMesh.h"
+#include "src/drawables/gameover.h"
 #include "src/drawables/obstacles/obstacle.h"
 #include "src/drawables/postProcessing.h"
 #include "src/drawables/scene/ocean.h"
@@ -85,6 +86,9 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     std::shared_ptr<Ocean> _oceanAndSky;                     /**< Ocean and Sky Scene */
     std::shared_ptr<FishController> _billTheSalmon;          /**< Bill the Salmon */
     std::shared_ptr<PostProcessingQuad> _postProcessing;     /**< Post Processing framebuffer */
+    std::shared_ptr<Gameover> _gameOverScreen;               /**< Game over screen. */
+    bool _gameIsOver;                                        /**< Game state flag. */
+    int _fontId;                                             /**< Font id variable*/
     std::vector<std::shared_ptr<Drawable>> _drawables;       /**< Vector holding pointers to the drawables */
     std::vector<std::shared_ptr<Obstacle>> _obstacles;       /**< Vector holding pointers to the obstacles */
     std::vector<std::shared_ptr<glm::vec3>> _lightPositions; /**< Vector holding pointers to the light positions */

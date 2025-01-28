@@ -21,11 +21,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS
         ON
         CACHE INTERNAL "1")
 
+
 # Optional libraries.
 find_package(GTA QUIET)
 
 # Add the res.qrc file.
 set(ASSETS assets.qrc)
+
+qt6_add_resources(ResourceSources assets.qrc)
 
 # Add the shaders.qrc file.
 set(SHADERS shaders.qrc)
@@ -40,16 +43,20 @@ add_executable(
         src/drawables/obstacles/obstacle.h
         src/drawables/obstacles/part.cpp
         src/drawables/obstacles/part.h
+        src/drawables/gameover.cpp
+        src/drawables/gameover.h
         src/drawables/scene/background.cpp
         src/drawables/scene/background.h
-        src/drawables/floppyMesh.cpp
-        src/drawables/floppyMesh.h
         src/drawables/scene/ocean.cpp
         src/drawables/scene/ocean.h
+        src/drawables/floppyMesh.cpp
+        src/drawables/floppyMesh.h
         src/drawables/drawable.cpp
         src/drawables/drawable.h
         src/drawables/fishController.cpp
         src/drawables/fishController.h
+        src/drawables/collisionchecker.h
+        src/drawables/collisionchecker.cpp
         src/drawables/postProcessing.cpp
         src/drawables/postProcessing.h
         src/gui/mainwindow.cpp
@@ -60,6 +67,7 @@ add_executable(
         src/utils/utils.h
         src/utils/imageTexture.cpp
         src/utils/imageTexture.h
+        ${ResourceSources}
         # Shaders.
         ${SHADERS}
         # Assets.
