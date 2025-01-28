@@ -1,6 +1,8 @@
 #define GL_SILENCE_DEPRECATION
 #define GLM_ENABLE_EXPERIMENTAL
 
+#include "gameover.h"
+
 #include <src/drawables/drawable.h>
 
 #include <QFile>
@@ -12,7 +14,6 @@
 #include "glm/ext/vector_float3.hpp"
 #include "glm/fwd.hpp"
 #include "glm/gtx/rotate_vector.hpp"
-#include "gameover.h"
 #include "src/config/config.h"
 #include "src/utils/imageTexture.h"
 #include "src/utils/utils.h"
@@ -46,7 +47,6 @@ void Gameover::init() {
         {1.0f, 1.0f},  // bottom-right
         {1.0f, 0.0f}   // top-right
     };
-
 
     // Define indices for the quad (since OpenGL uses indices to reference the vertices)
     std::vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};
@@ -85,8 +85,8 @@ void Gameover::init() {
     glDeleteBuffers(1, &texture_coordinate_buffer);
     glDeleteBuffers(1, &index_buffer);
 
-    // Load texture
-    this->loadTexture();
+    // Load texture.
+    _textureHandle = loadTexture("res/GameOver-1.png");
 }
 
 void Gameover::draw(glm::mat4 projection_matrix) {
@@ -122,29 +122,7 @@ void Gameover::draw(glm::mat4 projection_matrix) {
     glCheckError();
 }
 
-
 void Gameover::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
     // Update modelview matrix if needed (for animations or positioning)
     _modelViewMatrix = modelViewMatrix;
-}
-
-
-void Gameover::loadTexture() {
-    GLuint textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-
-    // Set texture parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // Load texture data
-    ImageTexture image("res/GameOver-1.png");  // Replace with your image
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                 image.getData());
-
-    glGenerateMipmap(GL_TEXTURE_2D);
-    _textureHandle = textureID;
 }

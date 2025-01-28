@@ -109,7 +109,7 @@ void Obstacle::draw(glm::mat4 projectionMatrix, GLfloat lightPositions[], glm::v
 
 void Obstacle::getBounds(float& bx, float& by, float& bwidth, float& bheight) const {
     // Combine the bounding boxes of the two parts
-    bx = _xCoordinate;
+    bx = _position.x;
     by = 0.0f;  // The lower part starts at y = 0 (with the upper part above it)
     bwidth = _width;
 

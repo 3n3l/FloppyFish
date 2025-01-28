@@ -44,6 +44,7 @@ GLMainWindow::GLMainWindow() : _updateTimer(this) {
     _billMesh = std::make_shared<FloppyMesh>("res/BillDerLachs.obj", 2.0f, 90.0f),
 
     _gameOverScreen = std::make_shared<Gameover>();
+    _gameIsOver = false;
 
     _drawables = {
         // The ocean background.
@@ -159,50 +160,46 @@ void GLMainWindow::paintGL() {
                   << std::endl;
     }
 
-    if (_gameIsOver) {
-        // Set projection matrix for 2D rendering
-        glm::mat4 projectionMatrix = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+    // Disable culling and set a less strict depth function.
+    glDisable(GL_CULL_FACE);
+    glDepthFunc(GL_LEQUAL);
+    // _skybox->draw(_projectionMatrix);
+    _oceanAndSky->draw(_projectionMatrix);
 
-        // Draw the game over screen
-        _gameOverScreen->draw(projectionMatrix);
-    } else {
-        // Disable culling and set a less strict depth function.
-        glDisable(GL_CULL_FACE);
-        glDepthFunc(GL_LEQUAL);
-        // _skybox->draw(_projectionMatrix);
-        _oceanAndSky->draw(_projectionMatrix);
-
-        // Get the current light positions from the obstacles.
-        GLfloat *lightPositions = new GLfloat[Config::obstacleAmount * 3];
-        for (std::size_t i = 0; i < Config::obstacleAmount; i++) {
-            auto lightPosition = _obstacles.at(i)->lightPosition();
-            lightPositions[i * 3 + 0] = lightPosition.x;
-            lightPositions[i * 3 + 1] = lightPosition.y;
-            lightPositions[i * 3 + 2] = lightPosition.z;
-        }
-
-        // Get the moon direction for the lighting computations.
-        glm::vec3 moonDirection = _oceanAndSky->getMoonDirection();
-
-        // Draw all drawables.
-        glEnable(GL_CULL_FACE);
-        glDepthFunc(GL_LESS);
-        for (auto drawable : _drawables) {
-            drawable->draw(_projectionMatrix, lightPositions, moonDirection);
-        }
-
-        // Unbind framebuffer, thus binding the default framebuffer again.
-        _postProcessing->unbind();
-        glDisable(GL_DEPTH_TEST);
-
-        // Set up view.
-        glClear(GL_COLOR_BUFFER_BIT);
-        // Set a background colour.
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-        // Draw the framebuffer.
-        _postProcessing->draw();
+    // Get the current light positions from the obstacles.
+    GLfloat *lightPositions = new GLfloat[Config::obstacleAmount * 3];
+    for (std::size_t i = 0; i < Config::obstacleAmount; i++) {
+        auto lightPosition = _obstacles.at(i)->lightPosition();
+        lightPositions[i * 3 + 0] = lightPosition.x;
+        lightPositions[i * 3 + 1] = lightPosition.y;
+        lightPositions[i * 3 + 2] = lightPosition.z;
     }
+
+    // Get the moon direction for the lighting computations.
+    glm::vec3 moonDirection = _oceanAndSky->getMoonDirection();
+
+    // Draw all drawables.
+    glEnable(GL_CULL_FACE);
+    glDepthFunc(GL_LESS);
+    for (auto drawable : _drawables) {
+        drawable->draw(_projectionMatrix, lightPositions, moonDirection);
+    }
+    if (_gameIsOver) {
+        // Draw the game over screen
+        _gameOverScreen->draw(_projectionMatrix);
+    }
+
+    // Unbind framebuffer, thus binding the default framebuffer again.
+    _postProcessing->unbind();
+    glDisable(GL_DEPTH_TEST);
+
+    // Set up view.
+    glClear(GL_COLOR_BUFFER_BIT);
+    // Set a background colour.
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    // Draw the framebuffer.
+    _postProcessing->draw();
 }
 
 void GLMainWindow::animateGL() {
@@ -223,15 +220,17 @@ void GLMainWindow::animateGL() {
 
     _gameOverScreen->update(elapsedTimeMs, modelViewMatrix);
 
-    // Update all drawables.
-    for (auto drawable : _drawables) {
-        drawable->update(elapsedTimeMs, modelViewMatrix);
-        // check if collision is true
-        auto draw = std::dynamic_pointer_cast<Obstacle>(drawable);
-        if (draw != nullptr && CollisionChecker::checkCollision(_billTheSalmon, draw)) {
-            // Stop the game and Game Over
-            _gameIsOver = true;  // Freeze the game on collision
-            break;               // No need to check further once the game is frozen
+    if (!_gameIsOver) {
+        // Update all drawables.
+        for (auto drawable : _drawables) {
+            drawable->update(elapsedTimeMs, modelViewMatrix);
+            // check if collision is true
+            auto draw = std::dynamic_pointer_cast<Obstacle>(drawable);
+            if (draw != nullptr && CollisionChecker::checkCollision(_billTheSalmon, draw)) {
+                // Stop the game and Game Over
+                _gameIsOver = true;  // Freeze the game on collision
+                break;               // No need to check further once the game is frozen
+            }
         }
     }
 

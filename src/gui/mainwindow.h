@@ -87,7 +87,7 @@ class GLMainWindow : public QOpenGLWindow, protected QOpenGLFunctions_4_1_Core {
     std::shared_ptr<FishController> _billTheSalmon;          /**< Bill the Salmon */
     std::shared_ptr<PostProcessingQuad> _postProcessing;     /**< Post Processing framebuffer */
     std::shared_ptr<Gameover> _gameOverScreen;               /**< Game over screen. */
-    static bool _gameIsOver;                                 /**< Game state flag. */
+    bool _gameIsOver;                                        /**< Game state flag. */
     std::vector<std::shared_ptr<Drawable>> _drawables;       /**< Vector holding pointers to the drawables */
     std::vector<std::shared_ptr<Obstacle>> _obstacles;       /**< Vector holding pointers to the obstacles */
     std::vector<std::shared_ptr<glm::vec3>> _lightPositions; /**< Vector holding pointers to the light positions */

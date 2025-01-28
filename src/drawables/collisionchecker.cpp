@@ -7,7 +7,9 @@ bool CollisionChecker::checkCollision(const std::shared_ptr<FishController>& fis
     obstacle->getBounds(obsX, obsY, obsWidth, obsHeight);
 
     // Check if the rectangles overlap (AABB - Axis-Aligned Bounding Box Kollision)
-    if ((fish->x() + fish->width() > obsX && fish->x() < obsX + obsWidth && fish->y() + fish->height() > obsY && fish->y() < obsY + obsHeight) || fish->y() <= -0.9f) {
+    if ((fish->position().x + fish->width() > obsX && fish->position().x < obsX + obsWidth &&
+         fish->position().y + fish->height() > obsY && fish->position().y < obsY + obsHeight) ||
+        fish->position().y <= -0.9f) {
         return true;  // Collision detected
     }
 

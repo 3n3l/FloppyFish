@@ -12,7 +12,7 @@ class Gameover : public Drawable {
     /**
      * @brief draw the Game over picture.
      */
-    void draw(glm::mat4 projectionMatrix) override;
+    void draw(glm::mat4 projectionMatrix);
 
     /**
      * @brief initialize the Game over.
@@ -33,11 +33,6 @@ class Gameover : public Drawable {
     glm::mat4 _modelViewMatrix; /**< The model view matrix to get the object into model view space */
 
     GLuint _textureHandle; /**< Texture handle (memory location of texture). */
-
-    /**
-     * @brief loadTexture loads the textures for the skybox
-     */
-    void loadTexture();
 };
 
 #endif  // GAMEOVER_H
