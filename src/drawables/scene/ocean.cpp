@@ -128,7 +128,7 @@ void Ocean::draw(glm::mat4 projection_matrix) {
     glBindTexture(GL_TEXTURE_CUBE_MAP, _textureHandle);
 
     // Call draw.
-    glDrawElements(GL_TRIANGLES, _verticeAmount, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, _verticeAmount, GL_UNSIGNED_INT, nullptr);
 
     // Unbind vertex array object.
     glBindVertexArray(0);

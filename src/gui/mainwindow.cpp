@@ -68,7 +68,6 @@ GLMainWindow::GLMainWindow() : _updateTimer(this) {
         _obstacles.push_back(obstacle);
     }
 
-    // TODO: Initialize the media player.
     _mediaPlayer = std::make_shared<QSoundEffect>();
     _mediaPlayer->setVolume(0.2f);
     _mediaPlayer->setSource(QUrl::fromLocalFile("res/FloppyJumpOST_v1.wav"));
@@ -143,6 +142,7 @@ void GLMainWindow::paintGL() {
 
     // Bind framebuffer.
     _postProcessing->bind();
+    _postProcessing->unbind();
     glEnable(GL_DEPTH_TEST);
     // Set up view.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -180,6 +180,7 @@ void GLMainWindow::paintGL() {
     }
 
     // Unbind framebuffer, thus binding the default framebuffer again.
+    _postProcessing->blitBuffers();
     _postProcessing->unbind();
     glDisable(GL_DEPTH_TEST);
 

@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     glFormat.setSwapInterval(::getenv("COREGL_FPS") ? 0 : 1);
     glFormat.setVersion(4, 1);
     glFormat.setProfile(QSurfaceFormat::CoreProfile);
-    glFormat.setSamples(8);
+    glFormat.setSamples(Config::samples);
     glFormat.setColorSpace(QColorSpace::NamedColorSpace::SRgb);
     glFormat.setDepthBufferSize(24);
     glFormat.setOption(QSurfaceFormat::DebugContext);

@@ -9,6 +9,7 @@ bool Config::musicMuted = false;
 unsigned int Config::windowWidth = 1024;
 unsigned int Config::windowHeight = 768;
 unsigned int Config::resolutionScale = 1;
+unsigned int Config::samples = 2;
 float Config::gamma = 2.2f;
 
 // Camera.

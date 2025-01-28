@@ -38,6 +38,7 @@ class Config {
     static float gamma;                      /**< Gamma correction coefficient */
     static float volume;                     /**< Volume level of sound effects */
     static bool musicMuted;                  /**< Whether the background music is muted or not */
+    static unsigned int samples;             /** Number of sample for antialiasing */
 };
 
 #endif  // CONFIG_H
