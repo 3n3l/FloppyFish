@@ -22,7 +22,7 @@ vec3 aces_tonemap(vec3 colour) {
     vec3 v = vec3(m1 * colour);
     vec3 a = v * (v + 0.0245786) - 0.000090537;
     vec3 b = v * (0.983729 * v + 0.4329510) + 0.238081;
-    return pow(clamp(m2 * (a / b), 0.0, 1.0), vec3(1.0 / (2.2 / gamma)));
+    return pow(clamp(m2 * (a / b), 0.0, 1.0), vec3(1.0 / (gamma / 2.2)));
 }
 
 void main(void)

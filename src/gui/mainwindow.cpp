@@ -200,6 +200,8 @@ void GLMainWindow::animateGL() {
     float elapsedTimeMs = _stopWatch.nsecsElapsed() / 1000000.0f;
     _stopWatch.restart();
 
+    Config::obstacleSpeed -= 1e-6;
+
     // Calculate current model view matrix.
     glm::mat4 modelViewMatrix =
         lookAt(glm::vec3(0.0f, Config::lookAtHeight, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));

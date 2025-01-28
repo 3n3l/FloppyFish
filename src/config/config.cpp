@@ -9,7 +9,7 @@ bool Config::musicMuted = false;
 unsigned int Config::windowWidth = 1024;
 unsigned int Config::windowHeight = 768;
 unsigned int Config::resolutionScale = 1;
-float Config::gamma = 2.2f;
+float Config::gamma = 2.0f;
 
 // Camera.
 float Config::fieldOfVision = 90.0f;
@@ -40,7 +40,7 @@ float Config::debugRotation = 0.0f;
 float Config::skyRotation = 1.0f / 2400.0f;
 
 // Bill the Salmon.
-const float Config::velocityBound = -9.8f / 1000.0f;
+const float Config::velocityBound = -19.8f / 1000.0f;
 const float Config::verticalAcceleration = -0.001f;
 const float Config::verticalVelocity = 0.02f;
 const float Config::lowerAngle = 0.0f;
