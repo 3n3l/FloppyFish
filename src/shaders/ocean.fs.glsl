@@ -113,8 +113,8 @@ vec3 extra_cheap_atmosphere(vec3 raydir, vec3 moondir) {
     vec3 star_texture_colour = vec3(texture(skybox_texture, sky_direction));
     star_texture_colour = pow(star_texture_colour, vec3(sky_colour_power)) * sky_colour_factor;
 
-    float moon_visibility = smoothstep(-0.07, 0.07, moon_direction.y);
-    if (moondir.y <= -0.07f) return star_texture_colour / (moon_visibility + 1.0f);
+    float moon_visibility = smoothstep(-0.07, 0.07, moon_direction.y) / 2.0f + 0.5f;
+    //    if (moondir.y <= -0.07f) return star_texture_colour / (moon_visibility + 1.0f);
 
     // Atmosphere.
     // Darker towards sky - lighter towards horizon.
@@ -153,8 +153,6 @@ float getMoon(vec3 dir) {
 
 // Main.
 void main(void) {
-    vec2 fragCoord = gl_FragCoord.xy;
-
     vec3 ray = normalize(direction);
 
     // If ray.y is positive, render the sky.

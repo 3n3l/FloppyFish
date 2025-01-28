@@ -113,7 +113,7 @@ void main(void)
         vec3 light_vec = normalize(vLightDir[i]);
 
         // Attenuate the light source.
-        float a_quadratic_attenuation_term = 1.6f;
+        float a_quadratic_attenuation_term = 3.6f;
         float b_linear_attenuation_term = 8.0f;
         float attenuation = b_linear_attenuation_term * vLightDistance[i] + 1.0f;
         attenuation += a_quadratic_attenuation_term * vLightDistance[i] * vLightDistance[i];
