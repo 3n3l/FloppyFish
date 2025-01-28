@@ -21,11 +21,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS
         ON
         CACHE INTERNAL "1")
 
+
 # Optional libraries.
 find_package(GTA QUIET)
 
 # Add the res.qrc file.
 set(ASSETS assets.qrc)
+
+qt6_add_resources(ResourceSources assets.qrc)
 
 # Add the shaders.qrc file.
 set(SHADERS shaders.qrc)
@@ -64,6 +67,7 @@ add_executable(
         src/utils/utils.h
         src/utils/imageTexture.cpp
         src/utils/imageTexture.h
+        ${ResourceSources}
         # Shaders.
         ${SHADERS}
         # Assets.

@@ -165,7 +165,7 @@ void GLMainWindow::paintGL() {
     QPainter painter(this);
 
     // Load Font from a file
-    _fontId = QFontDatabase::addApplicationFont("res/Tiny5.ttf");
+    _fontId = QFontDatabase::addApplicationFont(":/assets/res/Tiny5.ttf");
     if (_fontId == -1) {
         // Haandle error if font couldnt be loaded
         qWarning("Font failed to load.");

@@ -105,6 +105,8 @@ void Ocean::draw(glm::mat4 projection_matrix) {
         return;
     }
 
+    glCheckError();
+
     // Load program.
     glUseProgram(_program);
 
