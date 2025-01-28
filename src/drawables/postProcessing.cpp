@@ -79,7 +79,9 @@ void PostProcessingQuad::init() {
 
     // Initialize the framebuffer.
     glGenFramebuffers(1, &_frameBufferObject);
+    glGenFramebuffers(1, &_postProcessFrameBufferObject);
 }
+
 void PostProcessingQuad::bind() {
     // Bind framebuffer.
     glBindFramebuffer(GL_FRAMEBUFFER, _frameBufferObject);
@@ -90,42 +92,86 @@ void PostProcessingQuad::unbind() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void PostProcessingQuad::blitBuffers() {
+    const unsigned int width = Config::windowWidth * Config::resolutionScale;
+    const unsigned int height = Config::windowHeight * Config::resolutionScale;
+    // Make it so the multisampling FBO is read while the post-processing FBO is drawn.
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, _frameBufferObject);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _postProcessFrameBufferObject);
+    glCheckError();
+    // Conclude the multisampling and copy it to the post-processing FBO.
+    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glCheckError();
+}
+
 void PostProcessingQuad::destroy() { glDeleteFramebuffers(1, &_frameBufferObject); }
 
 void PostProcessingQuad::resetBufferTextures(int width, int height) {
+    bind();
     // Create colour buffer.
     glGenTextures(1, &_textureColourBuffer);
-    glBindTexture(GL_TEXTURE_2D, _textureColourBuffer);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _textureColourBuffer);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Config::samples, GL_RGB, width, height, GL_TRUE);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glCheckError();
+    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glCheckError();
     // Clamping prevents the edges bleeding.
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glCheckError();
+    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    // Attach texture to the framebuffer.
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, _textureColourBuffer, 0);
+    glCheckError();
 
     // Create depth and stencil buffer.
     glGenTextures(1, &_depthStencilBuffer);
-    glBindTexture(GL_TEXTURE_2D, _depthStencilBuffer);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _depthStencilBuffer);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
+    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Config::samples, GL_DEPTH24_STENCIL8, width, height, GL_TRUE);
 
+    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    // Clamping prevents the edges bleeding.
+    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    // Attach renderbuffer to the framebuffer.
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D_MULTISAMPLE, _depthStencilBuffer,
+                           0);
+
+    glCheckError();
+
+    // Unbind texture.
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+
+    unbind();
+
+    // Due to multisample textures not working for postprocessing, use a separate texture.
+    glBindFramebuffer(GL_FRAMEBUFFER, _postProcessFrameBufferObject);
+
+    glGenTextures(1, &_postProcessingTexture);
+    glBindTexture(GL_TEXTURE_2D, _postProcessingTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Clamping prevents the edges bleeding.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    // Unbind texture.
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _postProcessingTexture, 0);
 
-    // Attach texture and renderbuffer to the framebuffer.
-    bind();
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _textureColourBuffer, 0);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, _depthStencilBuffer, 0);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cout << "Framebuffer is incomplete: " << std::to_string(glCheckFramebufferStatus(GL_FRAMEBUFFER))
+                  << std::endl;
+    }
 
     unbind();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glCheckError();
 }
 
 void PostProcessingQuad::draw() {
@@ -133,7 +179,6 @@ void PostProcessingQuad::draw() {
         qDebug() << "Program not initialized.";
         return;
     }
-
     // Load program.
     glUseProgram(_program);
 
@@ -141,7 +186,8 @@ void PostProcessingQuad::draw() {
     glBindVertexArray(_vertexArrayObject);
 
     // Bind texture.
-    glBindTexture(GL_TEXTURE_2D, _textureColourBuffer);
+    glBindTexture(GL_TEXTURE_2D, _postProcessingTexture);
+    glCheckError();
 
     // Parameters.
     // uniform gamma from Config.
