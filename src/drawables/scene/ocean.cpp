@@ -23,8 +23,8 @@ void Ocean::init() {
     _program = glCreateProgram();
 
     // Compile shader.
-    GLuint vs = Drawable::compileShader(GL_VERTEX_SHADER, "src/shaders/ocean.vs.glsl");
-    GLuint fs = Drawable::compileShader(GL_FRAGMENT_SHADER, "src/shaders/ocean.fs.glsl");
+    GLuint vs = Drawable::compileShader(GL_VERTEX_SHADER, ":/src/shaders/ocean.vs.glsl");
+    GLuint fs = Drawable::compileShader(GL_FRAGMENT_SHADER, ":/src/shaders/ocean.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);
@@ -152,8 +152,8 @@ void Ocean::update(float elapsedTimeMs, glm::mat4 modelViewMatrix) {
 void Ocean::loadTexture() {
     auto star_images = std::vector<std::string>();
     star_images = {
-        "res/starsPX.png", "res/starsNX.png", "res/starsPY.png",
-        "res/starsNY.png", "res/starsPZ.png", "res/starsNZ.png",
+        ":/res/starsPX.png", ":/res/starsNX.png", ":/res/starsPY.png",
+        ":/res/starsNY.png", ":/res/starsPZ.png", ":/res/starsNZ.png",
     };
 
     GLuint textureID;
