@@ -25,10 +25,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS
 find_package(GTA QUIET)
 
 # Add the res.qrc file.
-set(ASSETS assets.qrc)
+qt6_add_resources(ASSETS assets.qrc)
 
 # Add the shaders.qrc file.
-set(SHADERS shaders.qrc)
+qt6_add_resources(SHADERS shaders.qrc)
 
 # Project files.
 add_executable(

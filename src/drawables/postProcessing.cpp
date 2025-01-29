@@ -19,8 +19,8 @@ void PostProcessingQuad::init() {
     _program = glCreateProgram();
 
     // Compile shader.
-    GLuint vs = Drawable::compileShader(GL_VERTEX_SHADER, "src/shaders/postProcessing.vs.glsl");
-    GLuint fs = Drawable::compileShader(GL_FRAGMENT_SHADER, "src/shaders/postProcessing.fs.glsl");
+    GLuint vs = Drawable::compileShader(GL_VERTEX_SHADER, ":/src/shaders/postProcessing.vs.glsl");
+    GLuint fs = Drawable::compileShader(GL_FRAGMENT_SHADER, ":/src/shaders/postProcessing.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);

@@ -1,17 +1,15 @@
 <RCC>
-    <qresource prefix="/src/shaders">
-        <file>triangle.vs.glsl</file>
-        <file>triangle.fs.glsl</file>
-        <file>common.vs.glsl</file>
-        <file>cookTorrance.vs.glsl</file>
-        <file>cookTorrance.fs.glsl</file>
-        <file>background.vs.glsl</file>
-        <file>background.fs.glsl</file>
-        <file>hitbox.vs.glsl</file>
-        <file>hitbox.fs.glsl</file>
-        <file>ocean.vs.glsl</file>
-        <file>ocean.fs.glsl</file>
-        <file>postProcessing.vs.glsl</file>
-        <file>postProcessing.fs.glsl</file>
+    <qresource prefix="">
+        <file>src/shaders/common.vs.glsl</file>
+        <file>src/shaders/cookTorrance.vs.glsl</file>
+        <file>src/shaders/cookTorrance.fs.glsl</file>
+        <file>src/shaders/background.vs.glsl</file>
+        <file>src/shaders/background.fs.glsl</file>
+        <file>src/shaders/hitbox.vs.glsl</file>
+        <file>src/shaders/hitbox.fs.glsl</file>
+        <file>src/shaders/ocean.vs.glsl</file>
+        <file>src/shaders/ocean.fs.glsl</file>
+        <file>src/shaders/postProcessing.vs.glsl</file>
+        <file>src/shaders/postProcessing.fs.glsl</file>
     </qresource>
 </RCC>

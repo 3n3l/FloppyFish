@@ -29,8 +29,8 @@ void Background::init() {
     _textureHandle = loadTexture(_texturePath);
 
     // Compile shader.
-    GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/background.vs.glsl");
-    GLuint fs = compileShader(GL_FRAGMENT_SHADER, "src/shaders/background.fs.glsl");
+    GLuint vs = compileShader(GL_VERTEX_SHADER, ":/src/shaders/background.vs.glsl");
+    GLuint fs = compileShader(GL_FRAGMENT_SHADER, ":/src/shaders/background.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);

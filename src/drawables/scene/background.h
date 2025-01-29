@@ -5,7 +5,7 @@
 
 class Background : public Drawable {
    public:
-    Background(std::string texture = "res/background.png");
+    Background(std::string texture = ":/res/background.png");
     Background(const Background&);
     ~Background() override;
 

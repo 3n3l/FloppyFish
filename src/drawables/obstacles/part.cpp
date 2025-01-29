@@ -35,8 +35,8 @@ void Part::init() {
     _program = glCreateProgram();
 
     // Compile shader.
-    GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/hitbox.vs.glsl");
-    GLuint fs = compileShader(GL_FRAGMENT_SHADER, "src/shaders/hitbox.fs.glsl");
+    GLuint vs = compileShader(GL_VERTEX_SHADER, ":/src/shaders/hitbox.vs.glsl");
+    GLuint fs = compileShader(GL_FRAGMENT_SHADER, ":/src/shaders/hitbox.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);

@@ -49,8 +49,8 @@ void FloppyMesh::init() {
     _program = glCreateProgram();
 
     // Compile shader.
-    GLuint vs = compileShader(GL_VERTEX_SHADER, "src/shaders/cookTorrance.vs.glsl");
-    GLuint fs = compileShader(GL_FRAGMENT_SHADER, "src/shaders/cookTorrance.fs.glsl");
+    GLuint vs = compileShader(GL_VERTEX_SHADER, ":/src/shaders/cookTorrance.vs.glsl");
+    GLuint fs = compileShader(GL_FRAGMENT_SHADER, ":/src/shaders/cookTorrance.fs.glsl");
 
     // Attach shader to the program.
     glAttachShader(_program, vs);
@@ -126,7 +126,7 @@ void FloppyMesh::init() {
     glDeleteBuffers(1, &indexBuffer);
 
     // Load texture.
-    _textureHandle = loadTexture("res/" + _textureName);
+    _textureHandle = loadTexture(":/res/" + _textureName);
 }
 
 void FloppyMesh::draw(glm::mat4 projectionMatrix, GLfloat lightPositions[], glm::vec3 moonDirection) {

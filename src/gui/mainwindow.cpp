@@ -40,7 +40,7 @@ GLMainWindow::GLMainWindow() : _updateTimer(this) {
     _stopWatch.start();
 
     // Create all the drawables.
-    _billMesh = std::make_shared<FloppyMesh>("res/BillDerLachs.obj", 2.0f, 90.0f),
+    _billMesh = std::make_shared<FloppyMesh>(":/res/BillDerLachs.obj", 2.0f, 90.0f),
 
     _drawables = {
         // The ocean background.
@@ -55,8 +55,8 @@ GLMainWindow::GLMainWindow() : _updateTimer(this) {
     std::mt19937 mt(rd());
     std::uniform_real_distribution<float> dist(-45.0f, 45.0f);
     for (std::size_t i = 0; i < Config::obstacleAmount; i++) {
-        auto upperMesh = std::make_shared<FloppyMesh>("res/Sign.obj", 2.0f, dist(mt));
-        auto lowerMesh = std::make_shared<FloppyMesh>("res/Lamp.obj", 1.0f, dist(mt));
+        auto upperMesh = std::make_shared<FloppyMesh>(":/res/Sign.obj", 2.0f, dist(mt));
+        auto lowerMesh = std::make_shared<FloppyMesh>(":/res/Lamp.obj", 1.0f, dist(mt));
         // Create the obstacle itself.
         float initialOffset = Config::obstacleInitialOffset + (i * Config::obstacleDistance);
         auto obstacle = std::make_shared<Obstacle>(initialOffset, upperMesh, lowerMesh);
@@ -71,14 +71,14 @@ GLMainWindow::GLMainWindow() : _updateTimer(this) {
     // TODO: Initialize the media player.
     _mediaPlayer = std::make_shared<QSoundEffect>();
     _mediaPlayer->setVolume(0.2f);
-    _mediaPlayer->setSource(QUrl::fromLocalFile("res/FloppyJumpOST_v1.wav"));
+    _mediaPlayer->setSource(QUrl::fromLocalFile(":/res/FloppyJumpOST_v1.wav"));
     _mediaPlayer->setLoopCount(99);
     _mediaPlayer->play();
 
     // Set sfx.
     for (int i = 0; i < 3; ++i) {
         _jumpSFX[i] = std::make_shared<QSoundEffect>();
-        QString sfxLocation = QString::fromStdString("res/FloppyJumpSFX" + std::to_string(i) + ".wav");
+        QString sfxLocation = QString::fromStdString(":/res/FloppyJumpSFX" + std::to_string(i) + ".wav");
         _jumpSFX[i]->setSource(QUrl::fromLocalFile(sfxLocation));
         _jumpSFX[i]->setVolume(0.2f);
     }
