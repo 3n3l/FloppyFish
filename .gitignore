@@ -55,5 +55,5 @@ ui_mainwindow.h
 # Ignore Qt folder
 .qt
 /.idea
-/build/cmake-build-debug
+/cmake-build-debug
 /.cmake
